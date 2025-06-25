@@ -1,0 +1,77 @@
+name: shb-python-win-builder
+run-name: shb-python-win-builder
+on: 
+  push:
+    paths:
+      - '.github/workflows/win-builder.yaml'
+    tags:
+      - shb-py
+    
+permissions:
+  contents: write
+env:
+  RUNNER_DEBUG: '1'
+  envName: 'shb-python'
+  version: ${{github.ref_name}}
+jobs:
+  update-release:
+    strategy:
+      matrix:
+        device: [cpu]
+
+    runs-on: windows-latest
+    steps:
+      - name: pull-code
+        uses: actions/checkout@v4
+        with:
+          repository: ${{secrets.INDEXTTS_REPO}}
+      - name: pull-code
+        uses: actions/checkout@v4
+        with:
+          repository: 'wszgrcy/shb-python2'
+          token: ${{ secrets.SHB_PY_TOKEN }}
+          path: ../${{ env.envName }}
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          activate-environment: whatever
+      - run: |
+          conda create -p ../${{ env.envName }}/.venv python=3.10
+          conda activate ../${{ env.envName }}/.venv
+          conda install -c conda-forge ffmpeg
+          conda install -c conda-forge pynini==2.1.6
+          pip install WeTextProcessing --no-deps
+      - name: install cuda
+        if: ${{ matrix.device=='cuda' }}
+        run: |
+          pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu118
+      - name: install common
+        if: ${{ matrix.device=='cuda' }}
+        run: |
+          pip install .
+          pip install fastapi
+          pip install uvicorn
+      - uses: wszgrcy/actions-pkg@1.1.4
+        with:
+          dir: '.'
+          outputPath: ./shb-python-addon-${{ env.version }}-win32-${{ matrix.device }}.tar.zstd
+          cleanPaths: |
+            ./.venv/**/*.{h,cpp,c,hpp,cmake}
+            ./.venv/conda-meta/**/*
+            ./.venv/etc/conda/**/*
+            ./.venv/Library/cmake
+            ./.venv/Library/include
+            ./.venv/Library/etc
+            ./.venv/fonts
+            ./.venv/include
+            ./.venv/etc
+
+      - run: |
+          ls
+        working-directory: ../${{ env.envName }}
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: shb-python-addon-${{ env.version }}-win32-${{ matrix.device }}.tar.zstd
+          tag_name: ${{ env.version }}
+          repository: ${{secrets.UPDATE_SHB_PY_REPO}}
+          token: ${{ secrets.SHB_PY_TOKEN }}
