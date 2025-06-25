@@ -17,7 +17,7 @@ jobs:
   update-release:
     strategy:
       matrix:
-        device: [cpu]
+        device: [cpu,cuda]
 
     runs-on: windows-latest
     steps:
@@ -43,19 +43,20 @@ jobs:
           conda install -c conda-forge pynini==2.1.6
           pip install WeTextProcessing --no-deps
         working-directory: ${{ env.envName }}
-      # - name: install cuda
-      #   if: ${{ matrix.device=='cuda' }}
-      #   run: |
-      #     pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu118
-      # - name: install common
-      #   run: |
-      #     pip install .
-      #     pip install fastapi
-      #     pip install uvicorn
+      - name: install cuda
+        if: ${{ matrix.device=='cuda' }}
+        run: |
+          pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu118
+      - name: install common
+        run: |
+          pip install .
+          pip install fastapi
+          pip install uvicorn
       - uses: wszgrcy/actions-pkg@1.1.4
         with:
           dir: ${{ env.envName }}
           outputPath: ./shb-python-addon-${{ env.version }}-win32-${{ matrix.device }}.tar.zstd
+          zstdLevel: '3'
           cleanPaths: |
             ./.venv/**/*.{h,cpp,c,hpp,cmake}
             ./.venv/conda-meta/**/*
