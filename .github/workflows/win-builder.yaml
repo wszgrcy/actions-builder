@@ -36,8 +36,9 @@ jobs:
         with:
           activate-environment: whatever
       - run: |
-          conda create -p .venv python=3.10
-          conda activate .venv
+          conda create -p ./.venv python=3.10
+          ls
+          conda activate ./.venv
           conda install -c conda-forge ffmpeg
           conda install -c conda-forge pynini==2.1.6
           pip install WeTextProcessing --no-deps
