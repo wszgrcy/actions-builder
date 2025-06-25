@@ -37,19 +37,21 @@ jobs:
           activate-environment: whatever
       - run: |
           conda create -p ./.venv python=3.10
-          ls
           conda activate ./.venv
+        working-directory: ${{ env.envName }}
+      - name: install common1
+        working-directory: indextts
+        run: |
           conda install -c conda-forge ffmpeg
           conda install -c conda-forge pynini==2.1.6
           pip install WeTextProcessing --no-deps
-        working-directory: ${{ env.envName }}
       - name: install cuda
         if: ${{ matrix.device=='cuda' }}
-        working-directory: ${{ env.envName }}
+        working-directory: indextts
         run: |
           pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu118
-      - name: install common
-        working-directory: ${{ env.envName }}
+      - name: install common2
+        working-directory: indextts
         run: |
           pip install .
           pip install fastapi
