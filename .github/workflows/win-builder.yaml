@@ -17,7 +17,7 @@ jobs:
   update-release:
     strategy:
       matrix:
-        device: [cpu,cuda]
+        device: [cpu,cuda,zluda]
 
     runs-on: windows-latest
     steps:
@@ -46,8 +46,14 @@ jobs:
           conda install -c conda-forge ffmpeg
           conda install -c conda-forge pynini==2.1.6
           pip install WeTextProcessing --no-deps
-      - name: install cuda
-        if: ${{ matrix.device=='cuda' }}
+      - name: install zluda1
+        if: ${{ matrix.device=='zluda' }}
+        working-directory: ${{ env.envName }}
+        run: |
+          conda activate ./.venv
+          python util/zluda_download.py
+      - name: install zluda/cuda
+        if: ${{ matrix.device=='cuda'||matrix.device=='zluda' }}
         working-directory: indextts
         run: |
           conda activate ../${{ env.envName }}/.venv
@@ -68,12 +74,21 @@ jobs:
             ./.venv/**/*.{h,cpp,c,hpp,cmake}
             ./.venv/conda-meta/**/*
             ./.venv/etc/conda/**/*
+            ./.venv/Library/man
+            ./.venv/Library/share
             ./.venv/Library/cmake
             ./.venv/Library/include
             ./.venv/Library/etc
+            ./.venv/Library/WebP
             ./.venv/fonts
             ./.venv/include
             ./.venv/etc
+            ./.venv/conda-meta
+            ./.venv/share
+            ./.git
+            ./.vscode
+            ./util
+
 
       - run: |
           ls
