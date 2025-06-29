@@ -15,7 +15,7 @@ jobs:
   update-release:
     strategy:
       matrix:
-        device: [cpu, cuda]
+        device: [cpu,]
 
     runs-on: ubuntu-latest
     steps:
@@ -91,7 +91,7 @@ jobs:
         with:
           dir: ${{ env.envName }}
           outputPath: ./shb-python-addon-${{ env.version }}-linux-x64-${{ matrix.device }}.tar.zstd
-          zstdLevel: '19'
+          zstdLevel: '15'
           cleanPaths: |
             ./.venv/**/*.{h,cpp,c,hpp,cmake}
             ./.venv/conda-meta/**/*
@@ -118,6 +118,8 @@ jobs:
       - run: |
           df -h
           ls -lh
+          find ./shb-python -type f -size +100M
+
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
