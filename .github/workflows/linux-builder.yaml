@@ -54,7 +54,7 @@ jobs:
       - name: install common1
         working-directory: indextts
         run: |
-          # conda deactivate
+          source "$HOME/.bashrc"
           conda activate ../${{ env.envName }}/.venv
           conda info --envs
           conda install -c conda-forge ffmpeg
