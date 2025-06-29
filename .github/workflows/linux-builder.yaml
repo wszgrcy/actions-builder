@@ -49,10 +49,12 @@ jobs:
           # source activate base
           # conda create -p ./.venv python=3.12
           conda info
-          # conda init bash
+          conda init --all
+          conda info
           # conda activate /home/runner/work/actions-builder/actions-builder/shb-python/.venv
           # conda info --envs
-          # # conda activate ./.venv
+          conda activate ./.venv
+          conda info
         working-directory: ${{ env.envName }}
       - name: install common1
         working-directory: indextts
