@@ -81,6 +81,7 @@ jobs:
             ./.venv/Library/etc
             ./.venv/Library/WebP
             ./.venv/Library/lib/pkgconfig
+            ./.venv/Library/ssl
             ./.venv/fonts
             ./.venv/include
             ./.venv/etc
