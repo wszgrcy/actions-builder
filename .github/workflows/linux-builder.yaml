@@ -61,6 +61,14 @@ jobs:
           # conda info --envs
           conda install -c conda-forge ffmpeg
 
+      - name: install cpu
+        if: ${{ matrix.device=='cpu' }}
+        working-directory: indextts
+        run: |
+          df -h
+          source $CONDA/etc/profile.d/conda.sh
+          conda activate ../${{ env.envName }}/.venv
+          pip3 install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
       - name: install cuda
         if: ${{ matrix.device=='cuda' }}
         working-directory: indextts
@@ -86,6 +94,7 @@ jobs:
           pip install .
           pip install fastapi
           pip install uvicorn
+          pip list
           df -h
       - uses: wszgrcy/actions-pkg@1.1.6
         with:
