@@ -47,6 +47,8 @@ jobs:
       - run: |
           conda create -p ./.venv python=3.12
           conda info --envs
+          conda activate /home/runner/work/actions-builder/actions-builder/shb-python/.venv
+          conda info --envs
           # conda init
           # conda activate ./.venv
         working-directory: ${{ env.envName }}
