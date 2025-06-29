@@ -49,6 +49,7 @@ jobs:
           free -m
           pwd
           df -h
+          df -h .
           # conda init --all
           source $CONDA/etc/profile.d/conda.sh
           conda activate ./.venv
