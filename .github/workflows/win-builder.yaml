@@ -65,7 +65,7 @@ jobs:
           pip install .
           pip install fastapi
           pip install uvicorn
-      - uses: wszgrcy/actions-pkg@1.1.4
+      - uses: wszgrcy/actions-pkg@1.1.6
         with:
           dir: ${{ env.envName }}
           outputPath: ./shb-python-addon-${{ env.version }}-win32-x64-${{ matrix.device }}.tar.zstd
