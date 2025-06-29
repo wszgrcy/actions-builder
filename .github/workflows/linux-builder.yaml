@@ -15,7 +15,7 @@ jobs:
   update-release:
     strategy:
       matrix:
-        device: [cpu,]
+        device: [cpu]
 
     runs-on: ubuntu-latest
     steps:
