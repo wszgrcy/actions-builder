@@ -45,20 +45,19 @@ jobs:
           auto-activate-base: true
           activate-environment: ""
       - run: |
-          echo "$SHELL"
           conda create -p ./.venv python=3.12
           conda info --envs
           conda init bash
-          conda activate /home/runner/work/actions-builder/actions-builder/shb-python/.venv
-          conda info --envs
-          # conda activate ./.venv
+          # conda activate /home/runner/work/actions-builder/actions-builder/shb-python/.venv
+          # conda info --envs
+          # # conda activate ./.venv
         working-directory: ${{ env.envName }}
       - name: install common1
         working-directory: indextts
         run: |
           conda info --envs
           # conda deactivate
-          # conda activate ../${{ env.envName }}/.venv
+          conda activate ../${{ env.envName }}/.venv
           conda install -c conda-forge ffmpeg
 
       - name: install cuda
