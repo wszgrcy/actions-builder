@@ -40,6 +40,7 @@ jobs:
       - name: install common1
         working-directory: indextts
         run: |
+          conda deactivate
           conda activate ../${{ env.envName }}/.venv
           conda install -c conda-forge ffmpeg
 
