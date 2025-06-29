@@ -47,9 +47,6 @@ jobs:
           python-version: '3.12'
       - run: |
           free -m
-          pwd
-          df -h
-          df -h .
           # conda init --all
           source $CONDA/etc/profile.d/conda.sh
           conda activate ./.venv
@@ -58,7 +55,6 @@ jobs:
       - name: install common1
         working-directory: indextts
         run: |
-          df -h
           source $CONDA/etc/profile.d/conda.sh
           conda activate ../${{ env.envName }}/.venv
           # conda info --envs
@@ -68,7 +64,6 @@ jobs:
         if: ${{ matrix.device=='cpu' }}
         working-directory: indextts
         run: |
-          df -h
           source $CONDA/etc/profile.d/conda.sh
           conda activate ../${{ env.envName }}/.venv
           pip3 install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
@@ -76,7 +71,6 @@ jobs:
         if: ${{ matrix.device=='cuda' }}
         working-directory: indextts
         run: |
-          df -h
           source $CONDA/etc/profile.d/conda.sh
           conda activate ../${{ env.envName }}/.venv
           pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu118
@@ -84,26 +78,22 @@ jobs:
         if: ${{ matrix.device=='rocm' }}
         working-directory: indextts
         run: |
-          df -h
           source $CONDA/etc/profile.d/conda.sh
           conda activate ../${{ env.envName }}/.venv
           pip install torch torchaudio --index-url https://download.pytorch.org/whl/rocm6.3
       - name: install common2
         working-directory: indextts
         run: |
-          df -h
           source $CONDA/etc/profile.d/conda.sh
           conda activate ../${{ env.envName }}/.venv
           pip install .
           pip install fastapi
           pip install uvicorn
-          pip list
-          df -h
-      - uses: wszgrcy/actions-pkg@1.1.7
+      - uses: wszgrcy/actions-pkg@1.1.9
         with:
           dir: ${{ env.envName }}
           outputPath: ./shb-python-addon-${{ env.version }}-linux-x64-${{ matrix.device }}.tar.zstd
-          zstdLevel: '19'
+          zstdLevel: '22'
           cleanPaths: |
             ./.venv/**/*.{h,cpp,c,hpp,cmake}
             ./.venv/conda-meta/**/*
@@ -130,7 +120,6 @@ jobs:
       - run: |
           df -h
           ls -lh
-          find ./shb-python -type f -size +100M
 
       - name: Release
         uses: softprops/action-gh-release@v2
