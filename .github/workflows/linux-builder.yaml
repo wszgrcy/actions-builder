@@ -15,20 +15,20 @@ jobs:
   update-release:
     strategy:
       matrix:
-        device: [cpu]
+        device: [cuda]
 
     runs-on: ubuntu-latest
     steps:
-      - name: Free Disk Space (Ubuntu)
-        uses: jlumbroso/free-disk-space@main
-        with:
-          tool-cache: true
-          android: true
-          dotnet: true
-          haskell: true
-          large-packages: true
-          docker-images: true
-          swap-storage: true
+      # - name: Free Disk Space (Ubuntu)
+      #   uses: jlumbroso/free-disk-space@main
+      #   with:
+      #     tool-cache: true
+      #     android: true
+      #     dotnet: true
+      #     haskell: true
+      #     large-packages: true
+      #     docker-images: true
+      #     swap-storage: true
       - name: pull-code
         uses: actions/checkout@v4
         with:
@@ -46,11 +46,13 @@ jobs:
           activate-environment: './${{ env.envName }}/.venv'
           python-version: '3.12'
       - run: |
+          free -m
           df -h
           # conda init --all
           source $CONDA/etc/profile.d/conda.sh
           conda activate ./.venv
           # conda info
+          exit 1
         working-directory: ${{ env.envName }}
       - name: install common1
         working-directory: indextts
