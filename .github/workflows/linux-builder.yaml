@@ -47,14 +47,14 @@ jobs:
           python-version: '3.12'
       - run: |
           # conda init --all
-          source "$HOME/.bashrc"
+          source $CONDA/etc/profile.d/conda.sh
           conda activate ./.venv
           # conda info
         working-directory: ${{ env.envName }}
       - name: install common1
         working-directory: indextts
         run: |
-          source "$HOME/.bashrc"
+          source $CONDA/etc/profile.d/conda.sh
           conda activate ../${{ env.envName }}/.venv
           # conda info --envs
           conda install -c conda-forge ffmpeg
@@ -63,20 +63,20 @@ jobs:
         if: ${{ matrix.device=='cuda' }}
         working-directory: indextts
         run: |
-          source "$HOME/.bashrc"
+          source $CONDA/etc/profile.d/conda.sh
           conda activate ../${{ env.envName }}/.venv
           pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu118
       - name: install rocm
         if: ${{ matrix.device=='rocm' }}
         working-directory: indextts
         run: |
-          source "$HOME/.bashrc"
+          source $CONDA/etc/profile.d/conda.sh
           conda activate ../${{ env.envName }}/.venv
           pip install torch torchaudio --index-url https://download.pytorch.org/whl/rocm6.3
       - name: install common2
         working-directory: indextts
         run: |
-          source "$HOME/.bashrc"
+          source $CONDA/etc/profile.d/conda.sh
           conda activate ../${{ env.envName }}/.venv
           pip install .
           pip install fastapi
