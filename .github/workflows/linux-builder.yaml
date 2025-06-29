@@ -4,8 +4,6 @@ on:
   push:
     paths:
       - '.github/workflows/linux-builder.yaml'
-    # tags:
-    #   - shb-py
     
 permissions:
   contents: write
@@ -37,6 +35,7 @@ jobs:
           activate-environment: whatever
       - run: |
           conda create -p ./.venv python=3.12
+          conda deactivate
           conda activate ./.venv
         working-directory: ${{ env.envName }}
       - name: install common1
