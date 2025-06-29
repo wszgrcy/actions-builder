@@ -51,7 +51,7 @@ jobs:
         working-directory: ${{ env.envName }}
         run: |
           conda activate ./.venv
-          python zluda_download.py
+          python zluda_init.py
       - name: install zluda/cuda
         if: ${{ matrix.device=='cuda'||matrix.device=='zluda' }}
         working-directory: indextts
@@ -80,6 +80,7 @@ jobs:
             ./.venv/Library/include
             ./.venv/Library/etc
             ./.venv/Library/WebP
+            ./.venv/Library/lib/pkgconfig
             ./.venv/fonts
             ./.venv/include
             ./.venv/etc
@@ -88,7 +89,7 @@ jobs:
             ./.git
             ./.vscode
             ./util
-            ./zluda_download.py
+            ./zluda_init.py
 
 
       - run: |
