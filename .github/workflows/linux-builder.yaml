@@ -1,0 +1,104 @@
+name: shb-python-linux-builder
+run-name: shb-python-linux-builder
+on: 
+  push:
+    paths:
+      - '.github/workflows/linux-builder.yaml'
+    # tags:
+    #   - shb-py
+    
+permissions:
+  contents: write
+env:
+  RUNNER_DEBUG: '1'
+  envName: 'shb-python'
+  version: 1.0.0
+jobs:
+  update-release:
+    strategy:
+      matrix:
+        device: [cpu,cuda,rocm]
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: pull-code
+        uses: actions/checkout@v4
+        with:
+          repository: ${{secrets.INDEXTTS_REPO}}
+          path: indextts
+      - name: pull-code
+        uses: actions/checkout@v4
+        with:
+          repository: 'wszgrcy/shb-python2'
+          token: ${{ secrets.SHB_PY_TOKEN }}
+          path: ${{ env.envName }}
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          activate-environment: whatever
+      - run: |
+          conda create -p ./.venv python=3.12
+          conda activate ./.venv
+        working-directory: ${{ env.envName }}
+      - name: install common1
+        working-directory: indextts
+        run: |
+          conda activate ../${{ env.envName }}/.venv
+          conda install -c conda-forge ffmpeg
+
+      - name: install cuda
+        if: ${{ matrix.device=='cuda' }}
+        working-directory: indextts
+        run: |
+          conda activate ../${{ env.envName }}/.venv
+          pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu118
+      - name: install rocm
+        if: ${{ matrix.device=='rocm' }}
+        working-directory: indextts
+        run: |
+          conda activate ../${{ env.envName }}/.venv
+          pip3 install torch torchaudio --index-url https://download.pytorch.org/whl/rocm6.3
+      - name: install common2
+        working-directory: indextts
+        run: |
+          conda activate ../${{ env.envName }}/.venv
+          pip install .
+          pip install fastapi
+          pip install uvicorn
+      - uses: wszgrcy/actions-pkg@1.1.4
+        with:
+          dir: ${{ env.envName }}
+          outputPath: ./shb-python-addon-${{ env.version }}-linux-x64-${{ matrix.device }}.tar.zstd
+          zstdLevel: '22'
+          cleanPaths: |
+            ./.venv/**/*.{h,cpp,c,hpp,cmake}
+            ./.venv/conda-meta/**/*
+            ./.venv/etc/conda/**/*
+            ./.venv/Library/man
+            ./.venv/Library/share
+            ./.venv/Library/cmake
+            ./.venv/Library/include
+            ./.venv/Library/etc
+            ./.venv/Library/WebP
+            ./.venv/Library/lib/pkgconfig
+            ./.venv/Library/ssl
+            ./.venv/Tools/demo
+            ./.venv/fonts
+            ./.venv/include
+            ./.venv/etc
+            ./.venv/conda-meta
+            ./.venv/share
+            ./.git
+            ./.vscode
+            ./util
+            ./zluda_init.py
+
+
+      - run: |
+          ls
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: shb-python-addon-${{ env.version }}-linux-x64-${{ matrix.device }}.tar.zstd
+          tag_name: ${{ env.version }}
+          repository: ${{secrets.UPDATE_SHB_PY_REPO}}
+          token: ${{ secrets.SHB_PY_TOKEN }}
