@@ -36,7 +36,7 @@ jobs:
         with:
           activate-environment: whatever
       - run: |
-          conda create -p ./.venv python=3.10
+          conda create -p ./.venv python=3.12
           conda activate ./.venv
         working-directory: ${{ env.envName }}
       - name: install common1
@@ -52,17 +52,12 @@ jobs:
         run: |
           conda activate ./.venv
           python zluda_init.py
-      - uses: TheMrMilchmann/setup-msvc-dev@v3
-        if: ${{ matrix.device=='cuda'||matrix.device=='zluda' }}
-        with:
-          arch: x64
       - name: install zluda/cuda
         if: ${{ matrix.device=='cuda'||matrix.device=='zluda' }}
         working-directory: indextts
         run: |
           conda activate ../${{ env.envName }}/.venv
           pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu118
-          conda install -c conda-forge deepspeed
       - name: install common2
         working-directory: indextts
         run: |
