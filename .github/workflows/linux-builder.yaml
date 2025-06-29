@@ -48,6 +48,8 @@ jobs:
       - run: |
           conda init --all
           source "$HOME/.bashrc"
+          conda activate ./.venv
+          conda info
         working-directory: ${{ env.envName }}
       - name: install common1
         working-directory: indextts
