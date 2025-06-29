@@ -32,9 +32,10 @@ jobs:
           path: ${{ env.envName }}
       - uses: conda-incubator/setup-miniconda@v3
         with:
-          activate-environment: whatever
+          auto-activate-base: true
+          activate-environment: ""
       - run: |
-          conda create -p ./.venv python=3.12
+          conda create -n abc -p ./.venv python=3.12
           conda init
           # conda activate ./.venv
         working-directory: ${{ env.envName }}
