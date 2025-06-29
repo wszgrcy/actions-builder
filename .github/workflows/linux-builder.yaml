@@ -42,11 +42,11 @@ jobs:
           path: ${{ env.envName }}
       - uses: conda-incubator/setup-miniconda@v3
         with:
-          auto-activate-base: true
-          activate-environment: ""
+          # auto-activate-base: true
+          activate-environment: "./${{ env.envName }}/.venv"
       - run: |
-          source activate base
-          conda create -p ./.venv python=3.12
+          # source activate base
+          # conda create -p ./.venv python=3.12
           conda info
           # conda init bash
           # conda activate /home/runner/work/actions-builder/actions-builder/shb-python/.venv
@@ -58,7 +58,7 @@ jobs:
         run: |
           conda info --envs
           # conda deactivate
-          conda activate ../${{ env.envName }}/.venv
+          # conda activate ../${{ env.envName }}/.venv
           conda install -c conda-forge ffmpeg
 
       - name: install cuda
