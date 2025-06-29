@@ -91,7 +91,7 @@ jobs:
         with:
           dir: ${{ env.envName }}
           outputPath: ./shb-python-addon-${{ env.version }}-linux-x64-${{ matrix.device }}.tar.zstd
-          zstdLevel: '8'
+          zstdLevel: '15'
           cleanPaths: |
             ./.venv/**/*.{h,cpp,c,hpp,cmake}
             ./.venv/conda-meta/**/*
@@ -117,7 +117,7 @@ jobs:
 
       - run: |
           df -h
-          ls
+          ls -lh
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
