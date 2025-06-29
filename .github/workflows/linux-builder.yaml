@@ -19,16 +19,16 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-      # - name: Free Disk Space (Ubuntu)
-      #   uses: jlumbroso/free-disk-space@main
-      #   with:
-      #     tool-cache: true
-      #     android: true
-      #     dotnet: true
-      #     haskell: true
-      #     large-packages: true
-      #     docker-images: true
-      #     swap-storage: true
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: true
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: true
       - name: pull-code
         uses: actions/checkout@v4
         with:
@@ -54,7 +54,6 @@ jobs:
           source $CONDA/etc/profile.d/conda.sh
           conda activate ./.venv
           # conda info
-          exit 1
         working-directory: ${{ env.envName }}
       - name: install common1
         working-directory: indextts
@@ -100,7 +99,7 @@ jobs:
           pip install uvicorn
           pip list
           df -h
-      - uses: wszgrcy/actions-pkg@1.1.6
+      - uses: wszgrcy/actions-pkg@1.1.7
         with:
           dir: ${{ env.envName }}
           outputPath: ./shb-python-addon-${{ env.version }}-linux-x64-${{ matrix.device }}.tar.zstd
