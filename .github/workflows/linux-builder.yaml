@@ -47,6 +47,7 @@ jobs:
           python-version: '3.12'
       - run: |
           free -m
+          pwd
           df -h
           # conda init --all
           source $CONDA/etc/profile.d/conda.sh
