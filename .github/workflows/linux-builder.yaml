@@ -19,16 +19,16 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-      # - name: Free Disk Space (Ubuntu)
-      #   uses: jlumbroso/free-disk-space@main
-      #   with:
-      #     tool-cache: true
-      #     android: true
-      #     dotnet: true
-      #     haskell: true
-      #     large-packages: true
-      #     docker-images: true
-      #     swap-storage: true
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: true
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: true
       - name: pull-code
         uses: actions/checkout@v4
         with:
@@ -49,33 +49,32 @@ jobs:
           conda init --all
           source "$HOME/.bashrc"
           conda activate ./.venv
-          conda info
+          # conda info
         working-directory: ${{ env.envName }}
       - name: install common1
         working-directory: indextts
         run: |
           source "$HOME/.bashrc"
           conda activate ../${{ env.envName }}/.venv
-          conda info --envs
+          # conda info --envs
           conda install -c conda-forge ffmpeg
-          exit
 
       - name: install cuda
         if: ${{ matrix.device=='cuda' }}
         working-directory: indextts
         run: |
-          # conda activate ../${{ env.envName }}/.venv
+          conda activate ../${{ env.envName }}/.venv
           pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu118
       - name: install rocm
         if: ${{ matrix.device=='rocm' }}
         working-directory: indextts
         run: |
-          # conda activate ../${{ env.envName }}/.venv
+          conda activate ../${{ env.envName }}/.venv
           pip install torch torchaudio --index-url https://download.pytorch.org/whl/rocm6.3
       - name: install common2
         working-directory: indextts
         run: |
-          # conda activate ../${{ env.envName }}/.venv
+          conda activate ../${{ env.envName }}/.venv
           pip install .
           pip install fastapi
           pip install uvicorn
