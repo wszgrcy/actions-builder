@@ -19,16 +19,16 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-      - name: Free Disk Space (Ubuntu)
-        uses: jlumbroso/free-disk-space@main
-        with:
-          tool-cache: true
-          android: true
-          dotnet: true
-          haskell: true
-          large-packages: true
-          docker-images: true
-          swap-storage: true
+      # - name: Free Disk Space (Ubuntu)
+      #   uses: jlumbroso/free-disk-space@main
+      #   with:
+      #     tool-cache: true
+      #     android: true
+      #     dotnet: true
+      #     haskell: true
+      #     large-packages: true
+      #     docker-images: true
+      #     swap-storage: true
       - name: pull-code
         uses: actions/checkout@v4
         with:
@@ -45,9 +45,10 @@ jobs:
           auto-activate-base: true
           activate-environment: ""
       - run: |
+          echo "$SHELL"
           conda create -p ./.venv python=3.12
           conda info --envs
-          conda init
+          conda init bash
           conda activate /home/runner/work/actions-builder/actions-builder/shb-python/.venv
           conda info --envs
           # conda activate ./.venv
