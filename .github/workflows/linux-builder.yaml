@@ -35,13 +35,14 @@ jobs:
           activate-environment: whatever
       - run: |
           conda create -p ./.venv python=3.12
+          conda init
           # conda activate ./.venv
         working-directory: ${{ env.envName }}
       - name: install common1
         working-directory: indextts
         run: |
           conda info --envs
-          conda deactivate
+          # conda deactivate
           conda activate ../${{ env.envName }}/.venv
           conda install -c conda-forge ffmpeg
 
