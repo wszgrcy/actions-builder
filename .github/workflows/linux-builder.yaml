@@ -45,9 +45,10 @@ jobs:
           auto-activate-base: true
           activate-environment: ""
       - run: |
+          source activate base
           conda create -p ./.venv python=3.12
           conda info --envs
-          conda init bash
+          # conda init bash
           # conda activate /home/runner/work/actions-builder/actions-builder/shb-python/.venv
           # conda info --envs
           # # conda activate ./.venv
