@@ -35,8 +35,9 @@ jobs:
           auto-activate-base: true
           activate-environment: ""
       - run: |
-          conda create -n abc -p ./.venv python=3.12
-          conda init
+          conda create -p ./.venv python=3.12
+          conda info --envs
+          # conda init
           # conda activate ./.venv
         working-directory: ${{ env.envName }}
       - name: install common1
@@ -44,25 +45,25 @@ jobs:
         run: |
           conda info --envs
           # conda deactivate
-          conda activate ../${{ env.envName }}/.venv
+          # conda activate ../${{ env.envName }}/.venv
           conda install -c conda-forge ffmpeg
 
       - name: install cuda
         if: ${{ matrix.device=='cuda' }}
         working-directory: indextts
         run: |
-          conda activate ../${{ env.envName }}/.venv
+          # conda activate ../${{ env.envName }}/.venv
           pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu118
       - name: install rocm
         if: ${{ matrix.device=='rocm' }}
         working-directory: indextts
         run: |
-          conda activate ../${{ env.envName }}/.venv
-          pip3 install torch torchaudio --index-url https://download.pytorch.org/whl/rocm6.3
+          # conda activate ../${{ env.envName }}/.venv
+          pip install torch torchaudio --index-url https://download.pytorch.org/whl/rocm6.3
       - name: install common2
         working-directory: indextts
         run: |
-          conda activate ../${{ env.envName }}/.venv
+          # conda activate ../${{ env.envName }}/.venv
           pip install .
           pip install fastapi
           pip install uvicorn
