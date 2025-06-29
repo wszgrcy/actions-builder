@@ -52,6 +52,17 @@ jobs:
         run: |
           conda activate ./.venv
           python zluda_init.py
+      - uses: TheMrMilchmann/setup-msvc-dev@v3
+        if: ${{ matrix.device=='cuda'||matrix.device=='zluda' }}
+        with:
+          arch: x64
+      - name: install zluda/cuda
+        if: ${{ matrix.device=='cuda'||matrix.device=='zluda' }}
+        working-directory: indextts
+        run: |
+          conda activate ../${{ env.envName }}/.venv
+          pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu118
+          pip install deepspeed
       - name: install zluda/cuda
         if: ${{ matrix.device=='cuda'||matrix.device=='zluda' }}
         working-directory: indextts
@@ -69,7 +80,7 @@ jobs:
       - uses: wszgrcy/actions-pkg@1.1.4
         with:
           dir: ${{ env.envName }}
-          outputPath: ./shb-python-addon-${{ env.version }}-win32-${{ matrix.device }}.tar.zstd
+          outputPath: ./shb-python-addon-${{ env.version }}-win32-x64-${{ matrix.device }}.tar.zstd
           zstdLevel: '22'
           cleanPaths: |
             ./.venv/**/*.{h,cpp,c,hpp,cmake}
@@ -100,7 +111,7 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
-          files: shb-python-addon-${{ env.version }}-win32-${{ matrix.device }}.tar.zstd
+          files: shb-python-addon-${{ env.version }}-win32-x64-${{ matrix.device }}.tar.zstd
           tag_name: ${{ env.version }}
           repository: ${{secrets.UPDATE_SHB_PY_REPO}}
           token: ${{ secrets.SHB_PY_TOKEN }}
