@@ -91,7 +91,7 @@ jobs:
         with:
           dir: ${{ env.envName }}
           outputPath: ./shb-python-addon-${{ env.version }}-linux-x64-${{ matrix.device }}.tar.zstd
-          zstdLevel: '22'
+          zstdLevel: '8'
           cleanPaths: |
             ./.venv/**/*.{h,cpp,c,hpp,cmake}
             ./.venv/conda-meta/**/*
@@ -116,6 +116,7 @@ jobs:
             ./zluda_init.py
 
       - run: |
+          df -h
           ls
       - name: Release
         uses: softprops/action-gh-release@v2
