@@ -15,7 +15,7 @@ jobs:
   update-release:
     strategy:
       matrix:
-        device: [cpu, cuda]
+        device: [cpu, cuda,rocm]
 
     runs-on: ubuntu-latest
     steps:
@@ -91,6 +91,9 @@ jobs:
           pip install .
           pip install fastapi
           pip install uvicorn
+          df -h
+          df -h .
+          pip cache purge
           df -h
           df -h .
       - uses: wszgrcy/actions-pkg@1.1.9
