@@ -15,7 +15,7 @@ jobs:
   update-release:
     strategy:
       matrix:
-        device: [cpu, cuda, rocm]
+        device: [cpu, cuda]
 
     runs-on: ubuntu-latest
     steps:
