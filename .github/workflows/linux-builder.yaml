@@ -15,7 +15,7 @@ jobs:
   update-release:
     strategy:
       matrix:
-        device: [cpu, cuda,rocm]
+        device: [cpu, cuda]
 
     runs-on: ubuntu-latest
     steps:
@@ -46,18 +46,14 @@ jobs:
           activate-environment: './${{ env.envName }}/.venv'
           python-version: '3.12'
       - run: |
-          free -m
-          # conda init --all
           source $CONDA/etc/profile.d/conda.sh
           conda activate ./.venv
-          # conda info
         working-directory: ${{ env.envName }}
       - name: install common1
         working-directory: indextts
         run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate ../${{ env.envName }}/.venv
-          # conda info --envs
           conda install -c conda-forge ffmpeg
 
       - name: install cpu
@@ -81,8 +77,6 @@ jobs:
           source $CONDA/etc/profile.d/conda.sh
           conda activate ../${{ env.envName }}/.venv
           pip install torch torchaudio --index-url https://download.pytorch.org/whl/rocm6.3
-          df -h
-          df -h .
       - name: install common2
         working-directory: indextts
         run: |
@@ -91,11 +85,7 @@ jobs:
           pip install .
           pip install fastapi
           pip install uvicorn
-          df -h
-          df -h .
           pip cache purge
-          df -h
-          df -h .
       - uses: wszgrcy/actions-pkg@1.1.9
         with:
           dir: ${{ env.envName }}
@@ -119,6 +109,7 @@ jobs:
             ./.venv/etc
             ./.venv/conda-meta
             ./.venv/share
+            ./.venv/LICENSE_PYTHON.txt
             ./.git
             ./.vscode
             ./util

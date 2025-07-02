@@ -89,6 +89,7 @@ jobs:
             ./.venv/etc
             ./.venv/conda-meta
             ./.venv/share
+            ./.venv/LICENSE_PYTHON.txt
             ./.git
             ./.vscode
             ./util
