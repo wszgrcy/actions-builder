@@ -12,7 +12,7 @@ permissions:
 env:
   RUNNER_DEBUG: '1'
   envName: 'shb-python'
-  version: 1.0.0
+  version: 1.1.0
 jobs:
   update-release:
     strategy:
@@ -66,7 +66,7 @@ jobs:
           pip install fastapi
           pip install uvicorn
           pip cache purge
-      - uses: wszgrcy/actions-pkg@1.1.9
+      - uses: wszgrcy/actions-pkg@1.2.1
         with:
           dir: ${{ env.envName }}
           outputPath: ./shb-python-addon-${{ env.version }}-win32-x64-${{ matrix.device }}.tar.zstd
