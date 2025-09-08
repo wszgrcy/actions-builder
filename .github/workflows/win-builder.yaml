@@ -26,6 +26,7 @@ jobs:
         with:
           repository: ${{secrets.INDEXTTS_REPO}}
           path: indextts
+          ref: build
       - name: pull-code
         uses: actions/checkout@v4
         with:
