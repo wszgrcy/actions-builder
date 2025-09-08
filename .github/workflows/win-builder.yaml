@@ -73,7 +73,7 @@ jobs:
           pip install fastapi
           pip install uvicorn
           pip cache purge
-          
+
       - uses: wszgrcy/actions-pkg@1.2.1
         with:
           dir: ${{ env.envName }}
