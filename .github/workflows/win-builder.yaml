@@ -43,7 +43,7 @@ jobs:
         working-directory: indextts
         run: |
           conda activate ../${{ env.envName }}/.venv
-          conda install -c conda-forge ffmpeg
+          # conda install -c conda-forge ffmpeg
           conda install -c conda-forge pynini==2.1.6
           pip install WeTextProcessing --no-deps
       - name: install zluda1
