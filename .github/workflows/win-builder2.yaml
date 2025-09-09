@@ -43,6 +43,9 @@ jobs:
           uv python install 3.10.18 --install-dir ./.bin
           uv venv --python  ./.bin/cpython-3.10.18-windows-x86_64-none
           .venv\Scripts\activate
+          Get-Command python -ErrorAction SilentlyContinue
+          Set-Item -Path Env:PATH -Value (".\.bin\cpython-3.10.18-windows-x86_64-none;"+$env:PATH)
+          Get-Command python -ErrorAction SilentlyContinue
           python --version
           ls
         working-directory: ${{ env.envName }}
