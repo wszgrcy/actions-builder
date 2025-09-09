@@ -42,8 +42,7 @@ jobs:
       - run: |
           uv python install 3.12.11 --install-dir ./.bin
           uv venv --python  ./.bin/cpython-3.12.11-windows-x86_64-none
-          .venv/Scripts/activate
-          type python
+          .venv\Scripts\activate
           python --version
         working-directory: ${{ env.envName }}
       - name: install zluda1
