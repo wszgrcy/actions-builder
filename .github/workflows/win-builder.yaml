@@ -1,12 +1,12 @@
 name: shb-python-win-builder
 run-name: shb-python-win-builder
-on: 
+on:
   push:
     paths:
       - '.github/workflows/win-builder.yaml'
     # tags:
     #   - shb-py
-    
+
 permissions:
   contents: write
 env:
@@ -17,7 +17,7 @@ jobs:
   update-release:
     strategy:
       matrix:
-        device: [cpu,cuda,zluda]
+        device: [cpu, cuda, zluda]
 
     runs-on: windows-latest
     steps:
@@ -74,7 +74,7 @@ jobs:
         with:
           dir: ${{ env.envName }}
           outputPath: ./shb-python-addon-${{ env.version }}-win32-x64-${{ matrix.device }}.tar.zstd
-          zstdLevel: '22'
+          zstdLevel: '19'
           chunkSize: '1.95GB'
           cleanPaths: |
             ./.venv/**/*.{h,cpp,c,hpp,cmake}
@@ -100,9 +100,6 @@ jobs:
             ./util
             ./zluda_init.py
 
-
-      - run: |
-          ls
       - name: cpu-release
         uses: softprops/action-gh-release@v2
         if: ${{ matrix.device=='cpu' }}
