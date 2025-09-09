@@ -69,7 +69,7 @@ jobs:
         run: |
           ls
           ..\${{ env.envName }}\.venv\Scripts\activate
-          uv sync
+          uv sync --active
           ls
           uv pip install .
           uv pip install fastapi
