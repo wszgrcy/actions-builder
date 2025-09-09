@@ -67,7 +67,7 @@ jobs:
       - name: sync
         working-directory: ${{ env.envName }}
         run: |
-          .venv\Scripts\activate
+          # .venv\Scripts\activate
           uv sync
       - name: install common2
         working-directory: indextts
