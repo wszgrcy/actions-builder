@@ -1,0 +1,114 @@
+name: shb-python-win-builder
+run-name: shb-python-win-builder
+on: 
+  push:
+    paths:
+      - '.github/workflows/win-builder2.yaml'
+    # tags:
+    #   - shb-py
+    
+permissions:
+  contents: write
+env:
+  RUNNER_DEBUG: '1'
+  envName: 'shb-python'
+  version: 1.2.0
+jobs:
+  update-release:
+    strategy:
+      matrix:
+        device: [cpu,cuda,zluda]
+
+    runs-on: windows-latest
+    steps:
+      - name: pull-code
+        uses: actions/checkout@v4
+        with:
+          repository: ${{secrets.INDEXTTS_REPO}}
+          path: indextts
+          ref: build
+      - name: pull-code
+        uses: actions/checkout@v4
+        with:
+          repository: 'wszgrcy/shb-python2'
+          token: ${{ secrets.SHB_PY_TOKEN }}
+          path: ${{ env.envName }}
+      # - name: "Set up Python"
+      #   uses: actions/setup-python@v5
+      #   with:
+      #     python-version-file: "${{ env.envName }}/.python-version"
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+      - run: |
+          uv python install 3.12.11 --install-dir ./.bin
+          uv venv --python  ./bin/cpython-3.12.11-windows-x86_64-none
+          source .venv/Scripts/activate
+          type python
+          python --version
+        working-directory: ${{ env.envName }}
+      - name: install zluda1
+        if: ${{ matrix.device=='zluda' }}
+        working-directory: ${{ env.envName }}
+        run: |
+          source .venv/Scripts/activate
+          python zluda_init.py
+      - name: install zluda/cuda
+        if: ${{ matrix.device=='cuda'||matrix.device=='zluda' }}
+        working-directory: indextts
+        run: |
+          source ../${{ env.envName }}/Scripts/activate
+          uv pip install torch torchaudio
+      - name: install cpu
+        if: ${{ matrix.device=='cpu' }}
+        working-directory: indextts
+        run: |
+          source ../${{ env.envName }}/Scripts/activate
+          uv pip install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
+      - name: install common2
+        working-directory: indextts
+        run: |
+          source ../${{ env.envName }}/Scripts/activate
+          uv pip install .
+          uv pip install fastapi
+          uv pip install uvicorn
+          uv pip cache purge
+
+      - uses: wszgrcy/actions-pkg@1.2.1
+        with:
+          dir: ${{ env.envName }}
+          outputPath: ./shb-python-addon-${{ env.version }}-win32-x64-${{ matrix.device }}.tar.zstd
+          zstdLevel: '19'
+          cleanPaths: |
+            ./.venv/**/*.{h,cpp,c,hpp,cmake}
+            ./.venv/conda-meta/**/*
+            ./.venv/etc/conda/**/*
+            ./.venv/Library/man
+            ./.venv/Library/share
+            ./.venv/Library/cmake
+            ./.venv/Library/include
+            ./.venv/Library/etc
+            ./.venv/Library/WebP
+            ./.venv/Library/lib/pkgconfig
+            ./.venv/Library/ssl
+            ./.venv/Tools/demo
+            ./.venv/fonts
+            ./.venv/include
+            ./.venv/etc
+            ./.venv/conda-meta
+            ./.venv/share
+            ./.venv/LICENSE_PYTHON.txt
+            ./.git
+            ./.vscode
+            ./util
+            ./zluda_init.py
+
+
+      - run: |
+          ls
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: shb-python-addon-${{ env.version }}-win32-x64-${{ matrix.device }}.tar.zstd
+          tag_name: ${{ env.version }}
+          repository: ${{secrets.UPDATE_SHB_PY_REPO}}
+          token: ${{ secrets.SHB_PY_TOKEN }}
