@@ -42,13 +42,6 @@ jobs:
           conda create -p ./.venv python=3.10.18
           conda activate ./.venv
         working-directory: ${{ env.envName }}
-      # - name: install common1
-      #   working-directory: indextts
-      #   run: |
-      #     conda activate ../${{ env.envName }}/.venv
-      #     conda install -c conda-forge ffmpeg
-      #     conda install -c conda-forge pynini==2.1.6
-      #     pip install WeTextProcessing --no-deps
       - name: install zluda1
         if: ${{ matrix.device=='zluda' }}
         working-directory: ${{ env.envName }}
@@ -70,9 +63,7 @@ jobs:
       - name: install common2
         working-directory: indextts
         run: |
-          python --version
           conda activate ../${{ env.envName }}/.venv
-          python --version
           uv sync --active
           pip install .
           pip install fastapi
@@ -83,7 +74,7 @@ jobs:
         with:
           dir: ${{ env.envName }}
           outputPath: ./shb-python-addon-${{ env.version }}-win32-x64-${{ matrix.device }}.tar.zstd
-          zstdLevel: '19'
+          zstdLevel: '22'
           cleanPaths: |
             ./.venv/**/*.{h,cpp,c,hpp,cmake}
             ./.venv/conda-meta/**/*
