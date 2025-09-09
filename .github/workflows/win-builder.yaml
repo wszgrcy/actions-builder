@@ -104,8 +104,19 @@ jobs:
           ls
       - name: Release
         uses: softprops/action-gh-release@v2
+        if: ${{ matrix.device!='zluda' }}
         with:
           files: shb-python-addon-${{ env.version }}-win32-x64-${{ matrix.device }}.tar.zstd
+          tag_name: ${{ env.version }}
+          repository: ${{secrets.UPDATE_SHB_PY_REPO}}
+          token: ${{ secrets.SHB_PY_TOKEN }}
+      - name: zluda-release
+        if: ${{ matrix.device=='zluda' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            shb-python-addon-${{ env.version }}-win32-x64-${{ matrix.device }}.tar.zstd.001
+            shb-python-addon-${{ env.version }}-win32-x64-${{ matrix.device }}.tar.zstd.002
           tag_name: ${{ env.version }}
           repository: ${{secrets.UPDATE_SHB_PY_REPO}}
           token: ${{ secrets.SHB_PY_TOKEN }}
