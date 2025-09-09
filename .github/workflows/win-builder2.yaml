@@ -41,8 +41,8 @@ jobs:
         uses: astral-sh/setup-uv@v6
       - run: |
           uv python install 3.12.11 --install-dir ./.bin
-          uv venv --python  ./bin/cpython-3.12.11-windows-x86_64-none
-          source .venv/Scripts/activate
+          uv venv --python  ./.bin/cpython-3.12.11-windows-x86_64-none
+          .venv/Scripts/activate
           type python
           python --version
         working-directory: ${{ env.envName }}
