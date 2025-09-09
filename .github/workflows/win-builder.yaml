@@ -36,17 +36,19 @@ jobs:
       - uses: conda-incubator/setup-miniconda@v3
         with:
           activate-environment: whatever
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
       - run: |
-          conda create -p ./.venv python=3.10
+          conda create -p ./.venv python=3.10.18
           conda activate ./.venv
         working-directory: ${{ env.envName }}
-      - name: install common1
-        working-directory: indextts
-        run: |
-          conda activate ../${{ env.envName }}/.venv
-          # conda install -c conda-forge ffmpeg
-          conda install -c conda-forge pynini==2.1.6
-          pip install WeTextProcessing --no-deps
+      # - name: install common1
+      #   working-directory: indextts
+      #   run: |
+      #     conda activate ../${{ env.envName }}/.venv
+      #     conda install -c conda-forge ffmpeg
+      #     conda install -c conda-forge pynini==2.1.6
+      #     pip install WeTextProcessing --no-deps
       - name: install zluda1
         if: ${{ matrix.device=='zluda' }}
         working-directory: ${{ env.envName }}
@@ -58,17 +60,20 @@ jobs:
         working-directory: indextts
         run: |
           conda activate ../${{ env.envName }}/.venv
-          pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu118
+          pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu129
       - name: install cpu
         if: ${{ matrix.device=='cpu' }}
         working-directory: indextts
         run: |
           conda activate ../${{ env.envName }}/.venv
-          pip install torch torchaudio
+          pip install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
       - name: install common2
         working-directory: indextts
         run: |
+          python --version
           conda activate ../${{ env.envName }}/.venv
+          python --version
+          uv sync --active
           pip install .
           pip install fastapi
           pip install uvicorn
