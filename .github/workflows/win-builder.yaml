@@ -75,6 +75,7 @@ jobs:
           dir: ${{ env.envName }}
           outputPath: ./shb-python-addon-${{ env.version }}-win32-x64-${{ matrix.device }}.tar.zstd
           zstdLevel: '22'
+          chunkSize: '1.95GB'
           cleanPaths: |
             ./.venv/**/*.{h,cpp,c,hpp,cmake}
             ./.venv/conda-meta/**/*
@@ -102,16 +103,16 @@ jobs:
 
       - run: |
           ls
-      - name: Release
+      - name: cpu-release
         uses: softprops/action-gh-release@v2
-        if: ${{ matrix.device!='zluda' }}
+        if: ${{ matrix.device=='cpu' }}
         with:
           files: shb-python-addon-${{ env.version }}-win32-x64-${{ matrix.device }}.tar.zstd
           tag_name: ${{ env.version }}
           repository: ${{secrets.UPDATE_SHB_PY_REPO}}
           token: ${{ secrets.SHB_PY_TOKEN }}
-      - name: zluda-release
-        if: ${{ matrix.device=='zluda' }}
+      - name: zluda/cuda-release
+        if: ${{ matrix.device!='cpu' }}
         uses: softprops/action-gh-release@v2
         with:
           files: |
