@@ -40,8 +40,8 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v6
       - run: |
-          uv python install 3.10 --install-dir ./.bin
-          uv venv --python  ./.bin/cpython-3.10-windows-x86_64-none
+          uv python install 3.10.18 --install-dir ./.bin
+          uv venv --python  ./.bin/cpython-3.10.18-windows-x86_64-none
           .venv\Scripts\activate
           python --version
           ls
