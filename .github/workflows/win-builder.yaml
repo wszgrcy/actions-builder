@@ -80,7 +80,7 @@ jobs:
         with:
           dir: ${{ env.envName }}
           outputPath: ./shb-python-addon-${{ env.version }}-win32-x64-${{ matrix.device }}.tar.zstd
-          zstdLevel: '19'
+          zstdLevel: '22'
           chunkSize: '1.95GB'
           cleanPaths: |
             ./.venv/**/*.{h,cpp,c,hpp,cmake}
