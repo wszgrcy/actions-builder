@@ -10,7 +10,7 @@ permissions:
 env:
   RUNNER_DEBUG: '1'
   envName: 'shb-python'
-  version: 1.1.0
+  version: 1.2.0
 jobs:
   update-release:
     strategy:
@@ -44,7 +44,9 @@ jobs:
         with:
           # auto-activate-base: true
           activate-environment: './${{ env.envName }}/.venv'
-          python-version: '3.12'
+          python-version: '3.10'
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
       - run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate ./.venv
@@ -69,24 +71,25 @@ jobs:
         run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate ../${{ env.envName }}/.venv
-          pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu118
+          pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu129
       - name: install rocm
         if: ${{ matrix.device=='rocm' }}
         working-directory: indextts
         run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate ../${{ env.envName }}/.venv
-          pip install torch torchaudio --index-url https://download.pytorch.org/whl/rocm6.3
+          pip install torch torchaudio --index-url https://download.pytorch.org/whl/rocm6.4
       - name: install common2
         working-directory: indextts
         run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate ../${{ env.envName }}/.venv
+          uv sync --active
           pip install .
           pip install fastapi
           pip install uvicorn
           pip cache purge
-      - uses: wszgrcy/actions-pkg@1.2.1
+      - uses: wszgrcy/actions-pkg@1.2.2
         with:
           dir: ${{ env.envName }}
           outputPath: ./shb-python-addon-${{ env.version }}-linux-x64-${{ matrix.device }}.tar.zstd
@@ -120,22 +123,14 @@ jobs:
           df -h
           ls -lh
 
-      - name: rocm-release
-        if: ${{ matrix.device=='rocm' }}
+      - name: release
         uses: softprops/action-gh-release@v2
 
         with:
           files: |
             shb-python-addon-${{ env.version }}-linux-x64-${{ matrix.device }}.tar.zstd.001
             shb-python-addon-${{ env.version }}-linux-x64-${{ matrix.device }}.tar.zstd.002
-          tag_name: ${{ env.version }}
-          repository: ${{secrets.UPDATE_SHB_PY_REPO}}
-          token: ${{ secrets.SHB_PY_TOKEN }}
-      - name: common-release
-        if: ${{ matrix.device!='rocm' }}
-        uses: softprops/action-gh-release@v2
-        with:
-          files: shb-python-addon-${{ env.version }}-linux-x64-${{ matrix.device }}.tar.zstd
+            shb-python-addon-${{ env.version }}-linux-x64-${{ matrix.device }}.tar.zstd
           tag_name: ${{ env.version }}
           repository: ${{secrets.UPDATE_SHB_PY_REPO}}
           token: ${{ secrets.SHB_PY_TOKEN }}
