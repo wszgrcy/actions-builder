@@ -84,7 +84,7 @@ jobs:
         run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate ../${{ env.envName }}/.venv
-          uv sync --active
+          uv sync --active --extra deepspeed
           pip install .
           pip install fastapi
           pip install uvicorn
