@@ -15,7 +15,7 @@ jobs:
   update-release:
     strategy:
       matrix:
-        device: [cpu, cuda, rocm]
+        device: [cpu]
 
     runs-on: ubuntu-latest
     steps:
@@ -42,4 +42,6 @@ jobs:
           source $CONDA/etc/profile.d/conda.sh
           conda activate ./.venv
           python test.py
+          uname -a
+          ls **/* -lh
 
