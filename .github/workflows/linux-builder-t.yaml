@@ -43,5 +43,5 @@ jobs:
           conda activate ./.venv
           python test.py
           uname -a
-          ls **/* -lh
+          ls .venv/**/* -lh
 
