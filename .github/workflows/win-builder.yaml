@@ -17,7 +17,7 @@ jobs:
   update-release:
     strategy:
       matrix:
-        device: [cpu, cuda, zluda]
+        device: [cpu, cuda, zluda, xpu]
 
     runs-on: windows-latest
     steps:
@@ -60,6 +60,12 @@ jobs:
         run: |
           conda activate ../${{ env.envName }}/.venv
           pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu118
+      - name: install xpu
+        if: ${{ matrix.device=='xpu' }}
+        working-directory: indextts
+        run: |
+          conda activate ../${{ env.envName }}/.venv
+          pip install torch torchaudio --index-url https://download.pytorch.org/whl/xpu
       - name: install cpu
         if: ${{ matrix.device=='cpu' }}
         working-directory: indextts
@@ -116,4 +122,3 @@ jobs:
           tag_name: ${{ env.version }}
           repository: ${{secrets.UPDATE_SHB_PY_REPO}}
           token: ${{ secrets.SHB_PY_TOKEN }}
- 
