@@ -10,7 +10,7 @@ permissions:
 env:
   RUNNER_DEBUG: '1'
   envName: 'shb-python'
-  version: 1.2.0
+  version: 1.2.1
 jobs:
   update-release:
     strategy:
