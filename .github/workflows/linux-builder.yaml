@@ -96,6 +96,24 @@ jobs:
           zstdLevel: '22'
           chunkSize: '1.95GB'
           cleanPaths: |
+            ./.venv/**/*.{h,cpp,c,hpp,cmake}
+            ./.venv/conda-meta/**/*
+            ./.venv/etc/conda/**/*
+            ./.venv/Library/man
+            ./.venv/Library/share
+            ./.venv/Library/cmake
+            ./.venv/Library/include
+            ./.venv/Library/etc
+            ./.venv/Library/WebP
+            ./.venv/Library/lib/pkgconfig
+            ./.venv/Library/ssl
+            ./.venv/Tools/demo
+            ./.venv/fonts
+            ./.venv/include
+            ./.venv/etc
+            ./.venv/conda-meta
+            ./.venv/share
+            ./.venv/LICENSE_PYTHON.txt
             ./.git
             ./.vscode
             ./util
