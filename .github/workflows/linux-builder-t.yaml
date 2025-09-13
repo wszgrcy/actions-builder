@@ -1,0 +1,45 @@
+name: shb-python-linux-builder
+run-name: shb-python-linux-builder
+on:
+  push:
+    paths:
+      - '.github/workflows/linux-builder-t.yaml'
+
+permissions:
+  contents: write
+env:
+  RUNNER_DEBUG: '1'
+  envName: 'shb-python'
+  version: 1.2.1
+jobs:
+  update-release:
+    strategy:
+      matrix:
+        device: [cpu, cuda, rocm]
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: pull-code
+        uses: actions/checkout@v4
+        with:
+          repository: 'wszgrcy/shb-python2'
+          token: ${{ secrets.SHB_PY_TOKEN }}
+          path: ${{ env.envName }}
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          # auto-activate-base: true
+          activate-environment: './${{ env.envName }}/.venv'
+          python-version: '3.10'
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+      - run: |
+          source $CONDA/etc/profile.d/conda.sh
+          conda activate ./.venv
+        working-directory: ${{ env.envName }}
+      - name: test
+        working-directory: ${{ env.envName }}
+        run: |
+          source $CONDA/etc/profile.d/conda.sh
+          conda activate ./.venv
+          python test.py
+
