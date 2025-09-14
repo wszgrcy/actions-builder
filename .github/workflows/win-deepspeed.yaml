@@ -10,27 +10,32 @@ permissions:
 env:
   RUNNER_DEBUG: '1'
   version: 1.2.2
+  DeepSpeedVersion: '0.17.5'
 jobs:
   update-release:
     strategy:
       matrix:
-        device: [cuda]
+        device: [cu129, cu118]
 
     runs-on: windows-latest
     steps:
       - uses: Jimver/cuda-toolkit@v0.2.24
-        if: ${{ matrix.device=='cuda' }}
-        id: cuda-toolkit
+        if: ${{ matrix.device=='cu129' }}
+        id: cuda129-toolkit
         with:
           cuda: '12.9.0'
+      - uses: Jimver/cuda-toolkit@v0.2.24
+        if: ${{ matrix.device=='cu118' }}
+        id: cuda118-toolkit
+        with:
+          cuda: '11.8.0'
       - run: nvcc -V
-        if: ${{ matrix.device=='cuda' }}
       - name: pull-code
         uses: actions/checkout@v4
         with:
           repository: wszgrcy/DeepSpeed
-          ref: 'v0.17.5'
-      - name: Configure build for x86
+          ref: v${{env.DeepSpeedVersion}}
+      - name: MSVC
         uses: ilammy/msvc-dev-cmd@v1.13.0
         with:
           arch: x64
@@ -38,28 +43,35 @@ jobs:
       - uses: conda-incubator/setup-miniconda@v3
         with:
           activate-environment: whatever
-      - run: |
+      - name: install dep
+        run: |
           conda create -p ./.venv python=3.10.18
-
-      - name: install cuda
-        if: ${{ matrix.device=='cuda' }}
-        run: |
           conda activate ./.venv
-          pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu129
-
-
-      - name: install common2
-        run: |
-          conda activate ./.venv
+          pip install torch torchaudio --index-url https://download.pytorch.org/whl/${{ matrix.device }}
           pip install wheel ninja packaging py-cpuinfo psutil
           pip install tqdm pydantic msgpack hjson einops
-          pip install numpy  build 
+          pip install numpy  build
+          Set-Item -Path "Env:XXXYYY" -Value "${{ matrix.device }}"
+
+      - name: build
+        if: ${{ matrix.device=='cu129' }}
+        run: |
+          conda activate ./.venv
           Set-Item -Path "Env:DS_ACCELERATOR" -Value "${{ matrix.device }}"
           Set-Item -Path "Env:TORCH_CUDA_ARCH_LIST" -Value "6.1;7.0;7.5;8.0;8.6;8.9;9.0;10.0;10.3;12.0"
           Set-Item -Path "Env:CUDA_HOME" -Value "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.9"
-          Set-Item -Path "Env:DS_BUILD_STRING" -Value "+cu129"
+          Set-Item -Path "Env:DS_BUILD_STRING" -Value "+${{ matrix.device }}"
           ./build_win.bat
-          ls ./dist
+      - name: build
+        if: ${{ matrix.device=='cu118' }}
+        run: |
+          conda activate ./.venv
+          Set-Item -Path "Env:DS_ACCELERATOR" -Value "${{ matrix.device }}"
+          Set-Item -Path "Env:TORCH_CUDA_ARCH_LIST" -Value "6.1;7.0;7.5;8.0;8.6;8.9;9.0"
+          Set-Item -Path "Env:CUDA_HOME" -Value "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.8"
+          Set-Item -Path "Env:DS_BUILD_STRING" -Value "+${{ matrix.device }}"
+          ./build_win.bat
+      - run: ls ./dist
       - name: release
         uses: softprops/action-gh-release@v2
         with:
@@ -70,5 +82,5 @@ jobs:
           token: ${{ secrets.SHB_PY_TOKEN }}
       - run: |
           conda activate ./.venv
-          pip install .\dist\deepspeed-0.17.5+cu129-cp310-cp310-win_amd64.whl
+          pip install .\dist\deepspeed-${{env.DeepSpeedVersion}}+${{ matrix.device }}-cp310-cp310-win_amd64.whl
           python -m deepspeed.env_report
