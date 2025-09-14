@@ -50,6 +50,13 @@ jobs:
               --add Microsoft.VisualStudio.Component.TestTools.BuildTools `
               --add Microsoft.VisualStudio.Component.Windows10SDK.18362 `
               --add Microsoft.VisualStudio.Component.VC.CMake.Project
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v2
+        with:
+          vs-version: '[16.0,18.0)'
+      - run: |
+          ls "C:\Program Files (x86)\Microsoft Visual Studio"
+          ls "C:\Program Files\Microsoft Visual Studio"
       # - uses: TheMrMilchmann/setup-msvc-dev@v4
       #   with:
       #     arch: x64
