@@ -28,14 +28,18 @@ jobs:
 
     runs-on: windows-latest
     steps:
+      - uses: TheMrMilchmann/setup-msvc-dev@v4
+        with:
+          arch: x64
+          toolset: '16.0'
       - run: |
           ls "C:\Program Files (x86)\Microsoft Visual Studio"
           ls "C:\Program Files\Microsoft Visual Studio"
-      - name: MSVC
-        uses: ilammy/msvc-dev-cmd@v1.13.0
-        with:
-          arch: x64
-          vsversion: '16.0'
+      # - name: MSVC
+      #   uses: ilammy/msvc-dev-cmd@v1.13.0
+      #   with:
+      #     arch: x64
+      #     vsversion: '16.0'
       - uses: Jimver/cuda-toolkit@v0.2.24
         id: cuda-toolkit
         with:
