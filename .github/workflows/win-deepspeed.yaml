@@ -71,6 +71,6 @@ jobs:
         # working-directory: indextts
         run: |
           conda activate ./.venv
-          build_win.bat
+          ./build_win.bat
           ls
 
