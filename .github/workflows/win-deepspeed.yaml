@@ -28,13 +28,17 @@ jobs:
 
     runs-on: windows-latest
     steps:
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v2
+        with:
+          vs-version: '[16.0,17.0)'
+      - run: |
+              ls "C:\Program Files (x86)\Microsoft Visual Studio"
+              ls "C:\Program Files\Microsoft Visual Studio"
       - uses: TheMrMilchmann/setup-msvc-dev@v4
         with:
           arch: x64
           toolset: '16.0'
-      - run: |
-          ls "C:\Program Files (x86)\Microsoft Visual Studio"
-          ls "C:\Program Files\Microsoft Visual Studio"
       # - name: MSVC
       #   uses: ilammy/msvc-dev-cmd@v1.13.0
       #   with:
