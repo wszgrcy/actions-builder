@@ -11,24 +11,27 @@ env:
   RUNNER_DEBUG: '1'
   version: 1.2.2
   DeepSpeedVersion: '0.17.5'
+  
 jobs:
   update-release:
     strategy:
       matrix:
-        device: [cu129, cu118]
+        include: 
+          - device: cu129
+            version: '12.9.0'
+            versionPath: '12.9'
+            archList: '6.1;7.0;7.5;8.0;8.6;8.9;9.0;10.0;10.3;12.0'
+          - device: cu118
+            version: '11.8.0'
+            versionPath: '11.8'
+            archList: '6.1;7.0;7.5;8.0;8.6;8.9;9.0'
 
     runs-on: windows-latest
     steps:
       - uses: Jimver/cuda-toolkit@v0.2.24
-        if: ${{ matrix.device=='cu129' }}
-        id: cuda129-toolkit
+        id: cuda-toolkit
         with:
-          cuda: '12.9.0'
-      - uses: Jimver/cuda-toolkit@v0.2.24
-        if: ${{ matrix.device=='cu118' }}
-        id: cuda118-toolkit
-        with:
-          cuda: '11.8.0'
+          cuda: ${{ matrix.version }}
       - run: nvcc -V
       - name: pull-code
         uses: actions/checkout@v4
@@ -54,21 +57,11 @@ jobs:
           Set-Item -Path "Env:XXXYYY" -Value "${{ matrix.device }}"
 
       - name: build
-        if: ${{ matrix.device=='cu129' }}
         run: |
           conda activate ./.venv
-          Set-Item -Path "Env:DS_ACCELERATOR" -Value "${{ matrix.device }}"
-          Set-Item -Path "Env:TORCH_CUDA_ARCH_LIST" -Value "6.1;7.0;7.5;8.0;8.6;8.9;9.0;10.0;10.3;12.0"
-          Set-Item -Path "Env:CUDA_HOME" -Value "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.9"
-          Set-Item -Path "Env:DS_BUILD_STRING" -Value "+${{ matrix.device }}"
-          ./build_win.bat
-      - name: build
-        if: ${{ matrix.device=='cu118' }}
-        run: |
-          conda activate ./.venv
-          Set-Item -Path "Env:DS_ACCELERATOR" -Value "${{ matrix.device }}"
-          Set-Item -Path "Env:TORCH_CUDA_ARCH_LIST" -Value "6.1;7.0;7.5;8.0;8.6;8.9;9.0"
-          Set-Item -Path "Env:CUDA_HOME" -Value "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.8"
+          Set-Item -Path "Env:DS_ACCELERATOR" -Value "cuda"
+          Set-Item -Path "Env:TORCH_CUDA_ARCH_LIST" -Value "${{matrix.archList}}"
+          Set-Item -Path "Env:CUDA_HOME" -Value "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v${{matrix.versionPath}}"
           Set-Item -Path "Env:DS_BUILD_STRING" -Value "+${{ matrix.device }}"
           ./build_win.bat
       - run: ls ./dist
