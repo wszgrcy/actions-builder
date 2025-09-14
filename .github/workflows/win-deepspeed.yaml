@@ -17,11 +17,12 @@ jobs:
   update-release:
     strategy:
       matrix:
-        device: [cuda]
+        device: [cuda,xpu]
 
     runs-on: windows-latest
     steps:
       - uses: Jimver/cuda-toolkit@v0.2.24
+        if: ${{ matrix.device=='cuda' }}
         id: cuda-toolkit
         with:
           cuda: '12.9.0'
@@ -40,9 +41,6 @@ jobs:
         with:
           arch: x64
           vsversion: '2022'
-      - name: Check Visual Studio Environment Variables
-        run: |
-          Get-Item Env:*
       - uses: conda-incubator/setup-miniconda@v3
         with:
           activate-environment: whatever
@@ -50,49 +48,34 @@ jobs:
           conda create -p ./.venv python=3.10.18
           conda activate ./.venv
         # working-directory: ${{ env.envName }}
-      - name: install zluda1
-        if: ${{ matrix.device=='zluda' }}
-        # working-directory: ${{ env.envName }}
-        run: |
-          conda activate ./.venv
-          python zluda_init.py
+
       - name: install cuda
         if: ${{ matrix.device=='cuda' }}
         # working-directory: indextts
         run: |
           conda activate ./.venv
           pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu129
-      - name: install zluda
-        if: ${{ matrix.device=='zluda' }}
-        # working-directory: indextts
-        run: |
-          conda activate ./.venv
-          pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu118
+
       - name: install xpu
         if: ${{ matrix.device=='xpu' }}
-        # working-directory: indextts
         run: |
           conda activate ./.venv
-          pip install torch torchaudio --index-url https://download.pytorch.org/whl/xpu
-      - name: install cpu
-        if: ${{ matrix.device=='cpu' }}
-        # working-directory: indextts
-        run: |
-          conda activate ./.venv
-          pip install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
+          pip install torch==2.8.0 torchaudio==2.8.0 --index-url https://download.pytorch.org/whl/xpu
+          pip install intel-extension-for-pytorch==2.8.10+xpu oneccl_bind_pt==2.8.0+xpu --extra-index-url https://pytorch-extension.intel.com/release-whl/stable/xpu/us/
+
 
       - name: install common2
         # working-directory: indextts
         run: |
           ls
           conda activate ./.venv
-          pip list
           pip install setuptools wheel ninja packaging py-cpuinfo psutil
           pip install tqdm pydantic msgpack hjson einops
-          pip install   numpy  build setuptools==72.2.0
-          Set-Item -Path "Env:DS_ACCELERATOR" -Value "cuda"
+          pip install numpy  build setuptools==72.2.0
+          Set-Item -Path "Env:DS_ACCELERATOR" -Value "${{ matrix.device }}"
+          Set-Item -Path "Env:TORCH_CUDA_ARCH_LIST" -Value "6.1;7.0;7.5;8.0;8.6;8.9;9.0;10.0;10.3;12.0"
           Set-Item -Path "Env:CUDA_HOME" -Value "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.9"
-          pip list
+          Set-Item -Path "Env:DS_BUILD_STRING" -Value "-cu129"
           ./build_win.bat
           ls
           ls ./dist
@@ -105,5 +88,6 @@ jobs:
           repository: ${{secrets.UPDATE_SHB_PY_REPO}}
           token: ${{ secrets.SHB_PY_TOKEN }}
       - run: |
-          pip install .\dist\deepspeed-0.17.5+047a759-cp310-cp310-win_amd64.whl
+          conda activate ./.venv
+          pip install .\dist\deepspeed-0.17.5-cu129-cp310-cp310-win_amd64.whl
           python -m deepspeed.env_report
