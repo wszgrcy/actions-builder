@@ -11,12 +11,12 @@ env:
   RUNNER_DEBUG: '1'
   version: 1.2.2
   DeepSpeedVersion: '0.17.5'
-  
+
 jobs:
   update-release:
     strategy:
       matrix:
-        include: 
+        include:
           - device: cu129
             version: '12.9.0'
             versionPath: '12.9'
@@ -33,8 +33,23 @@ jobs:
       #   with:
       #     vs-version: '[16.0,18.0)'
       - run: |
-              ls "C:\Program Files (x86)\Microsoft Visual Studio"
-              ls "C:\Program Files\Microsoft Visual Studio"
+          ls "C:\Program Files (x86)\Microsoft Visual Studio"
+          ls "C:\Program Files\Microsoft Visual Studio"
+      - name: Install VS2019 Build Tools (if needed)
+        shell: powershell
+        run: |
+          # Download the VS2019 Build Tools installer
+          Invoke-WebRequest -Uri "https://aka.ms/vs/16/release/vs_buildtools.exe" -OutFile "vs_buildtools.exe"
+
+          # Install specific components for C++ development
+          .\vs_buildtools.exe --quiet --wait --norestart --nocache `
+              --add Microsoft.VisualStudio.Workload.VCTools `
+              --includeRecommended `
+              --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 `
+              --add Microsoft.VisualStudio.Component.VC.ATL `
+              --add Microsoft.VisualStudio.Component.TestTools.BuildTools `
+              --add Microsoft.VisualStudio.Component.Windows10SDK.18362 `
+              --add Microsoft.VisualStudio.Component.VC.CMake.Project
       # - uses: TheMrMilchmann/setup-msvc-dev@v4
       #   with:
       #     arch: x64
@@ -43,8 +58,8 @@ jobs:
         uses: ilammy/msvc-dev-cmd@v1.13.0
         with:
           arch: x64
-          vsversion: '2022'
-          toolset: '16.XX'
+          vsversion: '16.0'
+          # toolset: '16.XX'
       - uses: Jimver/cuda-toolkit@v0.2.24
         id: cuda-toolkit
         with:
