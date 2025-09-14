@@ -30,6 +30,7 @@ jobs:
     steps:
       - run: |
           ls "C:\Program Files (x86)\Microsoft Visual Studio"
+          ls "C:\Program Files\Microsoft Visual Studio"
       - name: MSVC
         uses: ilammy/msvc-dev-cmd@v1.13.0
         with:
