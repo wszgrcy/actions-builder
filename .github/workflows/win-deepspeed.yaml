@@ -57,7 +57,7 @@ jobs:
           Set-Item -Path "Env:DS_ACCELERATOR" -Value "${{ matrix.device }}"
           Set-Item -Path "Env:TORCH_CUDA_ARCH_LIST" -Value "6.1;7.0;7.5;8.0;8.6;8.9;9.0;10.0;10.3;12.0"
           Set-Item -Path "Env:CUDA_HOME" -Value "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.9"
-          Set-Item -Path "Env:DS_BUILD_STRING" -Value "-cu129"
+          Set-Item -Path "Env:DS_BUILD_STRING" -Value "+cu129"
           ./build_win.bat
           ls ./dist
       - name: release
