@@ -72,6 +72,7 @@ jobs:
         run: |
           ls
           conda activate ./.venv
+          pip install build
           ./build_win.bat
           ls
 
