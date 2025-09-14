@@ -35,6 +35,16 @@ jobs:
       - run: |
           ls "C:\Program Files (x86)\Microsoft Visual Studio"
           ls "C:\Program Files\Microsoft Visual Studio"
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: true
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: true
       - name: Install VS2019 Build Tools (if needed)
         shell: powershell
         run: |
