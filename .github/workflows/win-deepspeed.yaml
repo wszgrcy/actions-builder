@@ -35,6 +35,144 @@ jobs:
         with:
           arch: x64
           vsversion: '2022'
+      - name: Check Visual Studio Environment Variables
+        run: |
+         echo "=== Visual Studio Environment Check ==="
+         echo "Current time: $(Get-Date)"
+         echo ""
+        
+         # Check key environment variables
+         $vsInstallDir = $env:VSINSTALLDIR
+         $vsCommonTools = $env:VS170COMNTOOLS
+         $devEnvDir = $env:DevEnvDir
+        
+         Write-Host "1. Checking Environment Variables:"
+         if ($vsInstallDir) {
+           Write-Host "✓ VSINSTALLDIR: $vsInstallDir"
+         } else {
+           Write-Host "✗ VSINSTALLDIR not found"
+         }
+        
+         if ($vsCommonTools) {
+           Write-Host "✓ VS170COMNTOOLS: $vsCommonTools"
+         } else {
+           Write-Host "✗ VS170COMNTOOLS not found"
+         }
+        
+         if ($devEnvDir) {
+           Write-Host "✓ DevEnvDir: $devEnvDir"
+         } else {
+           Write-Host "✗ DevEnvDir not found"
+         }
+        
+         echo ""
+         echo "2. Checking PATH for Visual Studio:"
+         $path = $env:PATH
+         if ($path -match "Microsoft Visual Studio") {
+           Write-Host "✓ Visual Studio paths found in PATH"
+         } else {
+           Write-Host "✗ No Visual Studio paths found in PATH"
+         }
+        
+         echo ""
+         echo "3. Checking for Visual Studio IDE:"
+         $devenv = Get-Command devenv 2>$null
+         if ($devenv) {
+           Write-Host "✓ Visual Studio IDE detected"
+           devenv /version
+         } else {
+           Write-Host "✗ Visual Studio IDE not detected"
+         }
+        
+         echo ""
+         echo "4. Current working directory:"
+         Get-Location
+        
+         echo ""
+         echo "5. Current command line:"
+         Write-Host "COMSPEC: $env:COMSPEC"
+        
+         echo ""
+         echo "=== Check Complete ==="
+        
+        shell: powershell
+        
+      - name: Verify VS Developer Command Prompt
+        run: |
+          # Additional verification for VS Developer Command Prompt
+          Write-Host "=== Additional VS Developer Command Prompt Verification ==="
+        
+          # Check if we're in a VS command prompt by looking for specific paths
+          $vsPaths = @(
+              "Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat",
+              "Microsoft Visual Studio\2022\Professional\VC\Auxiliary\Build\vcvarsall.bat",
+              "Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat"
+          )
+
+          $foundVS = $false
+          foreach ($path in $vsPaths) {
+             if (Test-Path "$env:ProgramFiles\$path") {
+                 Write-Host "✓ Found VS path: $path"
+                 $foundVS = $true
+             }
+          }
+        
+          if ($foundVS) {
+              Write-Host "✓ Confirmed: Running in Visual Studio Developer Command Prompt"
+          } else {
+              Write-Host "⚠ Warning: May not be in VS Developer Command Prompt"
+          }
+        
+          # Show current environment
+          Write-Host "Current PATH contains:"
+          $env:PATH -split ';' | Where-Object { $_ -match "Visual Studio" } | ForEach-Object {
+              Write-Host "  $_"
+          }
+        
+        shell: powershell
+
+      - name: Display System Information
+        run: |
+          Write-Host "=== System Information ==="
+          Write-Host "OS: $(Get-CimInstance -ClassName Win32_OperatingSystem | Select-Object -ExpandProperty Caption)"
+          Write-Host "Architecture: $(Get-CimInstance -ClassName Win32_OperatingSystem | Select-Object -ExpandProperty OSArchitecture)"
+          Write-Host "Processor: $(Get-CimInstance -ClassName Win32_Processor | Select-Object -ExpandProperty Name)"
+        
+          # Check installed Visual Studio versions
+          Write-Host "=== Installed Visual Studio Versions ==="
+          Get-ChildItem -Path "HKLM:\SOFTWARE\Microsoft\VisualStudio" -Recurse | Where-Object { $_.PSChildName -match "^[0-9]+\." } |   ForEach-Object {
+              Write-Host "Found VS version: $($_.PSChildName)"
+          }
+        
+        shell: powershell
+
+      - name: Create Environment Report
+        run: |
+          # Create a detailed environment report
+          $report = @"
+          Visual Studio Environment Report
+          ================================
+          
+          Timestamp: $(Get-Date)
+          OS: $(Get-CimInstance -ClassName Win32_OperatingSystem | Select-Object -ExpandProperty Caption)
+          Architecture: $(Get-CimInstance -ClassName Win32_OperatingSystem | Select-Object -ExpandProperty OSArchitecture)
+          
+          Environment Variables:
+          - VSINSTALLDIR: $env:VSINSTALLDIR
+          - VS170COMNTOOLS: $env:VS170COMNTOOLS
+          - DevEnvDir: $env:DevEnvDir
+          - COMSPEC: $env:COMSPEC
+          
+          PATH Analysis:
+          $(($env:PATH -split ';' | Where-Object { $_ -match "Visual Studio" } | ForEach-Object { "  $_" }) -join "`n")
+        
+          === End Report ===
+          "@
+        
+          Write-Output $report | Out-File -FilePath "vs_environment_report.txt"
+          Write-Host "Environment report created: vs_environment_report.txt"
+        
+        shell: powershell      
       - uses: conda-incubator/setup-miniconda@v3
         with:
           activate-environment: whatever
