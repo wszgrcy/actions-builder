@@ -34,7 +34,7 @@ jobs:
         uses: ilammy/msvc-dev-cmd@v1.13.0
         with:
           arch: x64
-          vsversion: '16'
+          vsversion: '16.0'
       - uses: Jimver/cuda-toolkit@v0.2.24
         id: cuda-toolkit
         with:
