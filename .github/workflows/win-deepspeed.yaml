@@ -44,7 +44,7 @@ jobs:
         with:
           arch: x64
           vsversion: '2022'
-          toolset: '16.xx'
+          toolset: '16.XX'
       - uses: Jimver/cuda-toolkit@v0.2.24
         id: cuda-toolkit
         with:
