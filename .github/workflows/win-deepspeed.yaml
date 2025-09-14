@@ -24,7 +24,7 @@ jobs:
       - name: pull-code
         uses: actions/checkout@v4
         with:
-          path: deepspeedai/DeepSpeed
+          path: wszgrcy/DeepSpeed
           ref: v0.17.5
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v2
