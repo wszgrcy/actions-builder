@@ -91,8 +91,7 @@ jobs:
           pip install setuptools wheel ninja packaging py-cpuinfo psutil
           pip install tqdm pydantic msgpack hjson einops
           pip install wheel ninja numpy psutil build setuptools==72.2.0
-          pip install oneccl-devel
-          pip install impi-devel
+          Set-Item -Path "Env:DS_ACCELERATOR" -Value "cuda"
           pip list
           pip install build
           ./build_win.bat
