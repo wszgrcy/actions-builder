@@ -70,5 +70,5 @@ jobs:
           token: ${{ secrets.SHB_PY_TOKEN }}
       - run: |
           conda activate ./.venv
-          pip install .\dist\deepspeed-0.17.5-cu129-cp310-cp310-win_amd64.whl
+          pip install .\dist\deepspeed-0.17.5+cu129-cp310-cp310-win_amd64.whl
           python -m deepspeed.env_report
