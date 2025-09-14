@@ -31,7 +31,7 @@ jobs:
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v2
         with:
-          vs-version: '[16.0,17.0)'
+          vs-version: '[16.0,18.0)'
       - run: |
               ls "C:\Program Files (x86)\Microsoft Visual Studio"
               ls "C:\Program Files\Microsoft Visual Studio"
