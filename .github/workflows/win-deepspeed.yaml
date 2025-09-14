@@ -27,6 +27,7 @@ jobs:
         with:
           cuda: '12.9.0'
       - run: nvcc -V
+        if: ${{ matrix.device=='cuda' }}
       - name: pull-code
         uses: actions/checkout@v4
         with:
