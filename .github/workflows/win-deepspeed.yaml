@@ -26,13 +26,15 @@ jobs:
             versionPath: '11.8'
             archList: '6.1;7.0;7.5;8.0;8.6;8.9;9.0'
 
-    runs-on: windows-2019
+    runs-on: windows-latest
     steps:
+      - run: |
+          ls C:\Program Files (x86)\Microsoft Visual Studio
       - name: MSVC
         uses: ilammy/msvc-dev-cmd@v1.13.0
         with:
           arch: x64
-          vsversion: '2019'
+          vsversion: '16'
       - uses: Jimver/cuda-toolkit@v0.2.24
         id: cuda-toolkit
         with:
