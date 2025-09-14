@@ -12,7 +12,7 @@ permissions:
 env:
   RUNNER_DEBUG: '1'
   envName: 'shb-python'
-  version: 1.2.1
+  version: 1.2.2
 jobs:
   update-release:
     strategy:
@@ -35,11 +35,11 @@ jobs:
       #   uses: microsoft/setup-msbuild@v2
       #   with:
       #     msbuild-architecture: x64
-      - name: Configure build for x86
-        uses: ilammy/msvc-dev-cmd@v1.13.0
-        with:
-          arch: x64
-          vsversion: '2022'
+      # - name: Configure build for x86
+      #   uses: ilammy/msvc-dev-cmd@v1.13.0
+      #   with:
+      #     arch: x64
+      #     vsversion: '2022'
       - name: Check Visual Studio Environment Variables
         run: |
           Get-Item Env:*
@@ -81,7 +81,6 @@ jobs:
           conda activate ./.venv
           pip install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
 
-
       - name: install common2
         # working-directory: indextts
         run: |
@@ -90,9 +89,18 @@ jobs:
           pip list
           pip install setuptools wheel ninja packaging py-cpuinfo psutil
           pip install tqdm pydantic msgpack hjson einops
-          pip install wheel ninja numpy psutil build setuptools==72.2.0
+          pip install   numpy  build setuptools==72.2.0
           Set-Item -Path "Env:DS_ACCELERATOR" -Value "cuda"
+          Set-Item -Path "Env:CUDA_HOME" -Value "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.9"
           pip list
-          pip install build
           ./build_win.bat
           ls
+          ls ./dist
+      - name: release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            ./dist/**/*
+          tag_name: ${{ env.version }}
+          repository: ${{secrets.UPDATE_SHB_PY_REPO}}
+          token: ${{ secrets.SHB_PY_TOKEN }}
