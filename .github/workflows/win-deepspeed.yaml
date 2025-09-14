@@ -31,7 +31,7 @@ jobs:
       #   with:
       #     msbuild-architecture: x64
       - name: Configure build for x86
-        uses: ilammy/msvc-dev-cmd
+        uses: ilammy/msvc-dev-cmd@v1.13.0
         with:
           arch: x64
           vsversion: '2022'
