@@ -24,10 +24,8 @@ jobs:
       - name: pull-code
         uses: actions/checkout@v4
         with:
-          path: wszgrcy/DeepSpeed
-          # ref: 'refs/tags/v0.17.5'
-          # fetch-depth: 1
-          # fetch-tags: true
+          repository: wszgrcy/DeepSpeed
+          ref: 'v0.17.5'
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v2
         with:
@@ -74,6 +72,6 @@ jobs:
         run: |
           ls
           conda activate ./.venv
-          .\build_win.bat
+          ./build_win.bat
           ls
 
