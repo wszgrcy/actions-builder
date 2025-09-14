@@ -34,12 +34,12 @@ jobs:
       # - name: Add msbuild to PATH
       #   uses: microsoft/setup-msbuild@v2
       #   with:
-      #     msbuild-architecture: x64
-      # - name: Configure build for x86
-      #   uses: ilammy/msvc-dev-cmd@v1.13.0
-      #   with:
-      #     arch: x64
-      #     vsversion: '2022'
+          # msbuild-architecture: x64
+      - name: Configure build for x86
+        uses: ilammy/msvc-dev-cmd@v1.13.0
+        with:
+          arch: x64
+          vsversion: '2022'
       - name: Check Visual Studio Environment Variables
         run: |
           Get-Item Env:*
@@ -105,4 +105,5 @@ jobs:
           repository: ${{secrets.UPDATE_SHB_PY_REPO}}
           token: ${{ secrets.SHB_PY_TOKEN }}
       - run: |
+          pip install .\dist\deepspeed-0.17.5+047a759-cp310-cp310-win_amd64.whl
           python -m deepspeed.env_report
