@@ -54,7 +54,6 @@ jobs:
           pip install wheel ninja packaging py-cpuinfo psutil
           pip install tqdm pydantic msgpack hjson einops
           pip install numpy  build
-          Set-Item -Path "Env:XXXYYY" -Value "${{ matrix.device }}"
 
       - name: build
         run: |
