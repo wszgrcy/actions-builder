@@ -26,7 +26,7 @@ jobs:
             versionPath: '11.8'
             archList: '6.1;7.0;7.5;8.0;8.6;8.9;9.0'
 
-    runs-on: windows-2022
+    runs-on: windows-2019
     steps:
       - name: MSVC
         uses: ilammy/msvc-dev-cmd@v1.13.0
