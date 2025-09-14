@@ -104,3 +104,5 @@ jobs:
           tag_name: ${{ env.version }}
           repository: ${{secrets.UPDATE_SHB_PY_REPO}}
           token: ${{ secrets.SHB_PY_TOKEN }}
+      - run: |
+          python -m deepspeed.env_report
