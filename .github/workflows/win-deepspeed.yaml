@@ -30,6 +30,11 @@ jobs:
       #   uses: microsoft/setup-msbuild@v2
       #   with:
       #     msbuild-architecture: x64
+      - name: Configure build for x86
+        uses: ilammy/msvc-dev-cmd
+        with:
+          arch: x64
+          vsversion: '2022'
       - uses: conda-incubator/setup-miniconda@v3
         with:
           activate-environment: whatever
