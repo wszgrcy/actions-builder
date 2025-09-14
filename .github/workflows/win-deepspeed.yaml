@@ -27,6 +27,7 @@ jobs:
           path: wszgrcy/DeepSpeed
           ref: 'v0.17.5'
           fetch-depth: 1
+          fetch-tags: true
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v2
         with:
