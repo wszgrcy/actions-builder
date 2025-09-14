@@ -47,30 +47,30 @@ jobs:
         if: ${{ matrix.device=='cuda' }}
         # working-directory: indextts
         run: |
-          conda activate ../${{ env.envName }}/.venv
+          conda activate ./.venv
           pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu129
       - name: install zluda
         if: ${{ matrix.device=='zluda' }}
         # working-directory: indextts
         run: |
-          conda activate ../${{ env.envName }}/.venv
+          conda activate ./.venv
           pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu118
       - name: install xpu
         if: ${{ matrix.device=='xpu' }}
         # working-directory: indextts
         run: |
-          conda activate ../${{ env.envName }}/.venv
+          conda activate ./.venv
           pip install torch torchaudio --index-url https://download.pytorch.org/whl/xpu
       - name: install cpu
         if: ${{ matrix.device=='cpu' }}
         # working-directory: indextts
         run: |
-          conda activate ../${{ env.envName }}/.venv
+          conda activate ./.venv
           pip install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
       - name: install common2
         # working-directory: indextts
         run: |
-          conda activate ../${{ env.envName }}/.venv
+          conda activate ./.venv
           build_win.bat
           ls
 
