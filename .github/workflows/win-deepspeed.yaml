@@ -81,7 +81,9 @@ jobs:
           ls
           conda activate ./.venv
           pip list
-          pip install -r ./requirements/requirements.txt
+          pip install setuptools wheel ninja packaging py-cpuinfo psutil
+          pip install tqdm pydantic msgpack hjson einops
+          pip install wheel ninja numpy psutil build setuptools==72.2.0
           pip list
           pip install build
           ./build_win.bat
