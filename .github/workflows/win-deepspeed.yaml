@@ -21,6 +21,12 @@ jobs:
 
     runs-on: windows-latest
     steps:
+      - uses: Jimver/cuda-toolkit@v0.2.27
+        id: cuda-toolkit
+        with:
+          cuda: '12.9.0'
+          use-github-cache: false
+      - run: nvcc -V
       - name: pull-code
         uses: actions/checkout@v4
         with:
@@ -75,11 +81,8 @@ jobs:
         run: |
           conda activate ./.venv
           pip install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
-      - uses: Jimver/cuda-toolkit@v0.2.24
-        id: cuda-toolkit
-        with:
-          cuda: '12.5.0'
-      - run: nvcc -V
+
+
       - name: install common2
         # working-directory: indextts
         run: |
