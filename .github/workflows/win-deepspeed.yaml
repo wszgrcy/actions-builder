@@ -4,20 +4,17 @@ on:
   push:
     paths:
       - '.github/workflows/win-deepspeed.yaml'
-    # tags:
-    #   - shb-py
 
 permissions:
   contents: write
 env:
   RUNNER_DEBUG: '1'
-  envName: 'shb-python'
   version: 1.2.2
 jobs:
   update-release:
     strategy:
       matrix:
-        device: [cuda, xpu.external]
+        device: [cuda]
 
     runs-on: windows-latest
     steps:
@@ -33,10 +30,6 @@ jobs:
         with:
           repository: wszgrcy/DeepSpeed
           ref: 'v0.17.5'
-      # - name: Add msbuild to PATH
-      #   uses: microsoft/setup-msbuild@v2
-      #   with:
-      # msbuild-architecture: x64
       - name: Configure build for x86
         uses: ilammy/msvc-dev-cmd@v1.13.0
         with:
@@ -47,38 +40,25 @@ jobs:
           activate-environment: whatever
       - run: |
           conda create -p ./.venv python=3.10.18
-          conda activate ./.venv
-        # working-directory: ${{ env.envName }}
 
       - name: install cuda
         if: ${{ matrix.device=='cuda' }}
-        # working-directory: indextts
         run: |
           conda activate ./.venv
           pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu129
 
-      - name: install xpu
-        if: ${{ matrix.device=='xpu.external' }}
-        run: |
-          conda activate ./.venv
-          pip install torch==2.8.0 torchaudio==2.8.0 --index-url https://download.pytorch.org/whl/xpu
-          pip install intel-extension-for-pytorch==2.8.10+xpu --extra-index-url https://pytorch-extension.intel.com/release-whl/stable/xpu/us/
-          pip install intel-extension-for-deepspeed
 
       - name: install common2
-        # working-directory: indextts
         run: |
-          ls
           conda activate ./.venv
-          pip install setuptools wheel ninja packaging py-cpuinfo psutil
+          pip install wheel ninja packaging py-cpuinfo psutil
           pip install tqdm pydantic msgpack hjson einops
-          pip install numpy  build setuptools==72.2.0
+          pip install numpy  build 
           Set-Item -Path "Env:DS_ACCELERATOR" -Value "${{ matrix.device }}"
           Set-Item -Path "Env:TORCH_CUDA_ARCH_LIST" -Value "6.1;7.0;7.5;8.0;8.6;8.9;9.0;10.0;10.3;12.0"
           Set-Item -Path "Env:CUDA_HOME" -Value "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.9"
           Set-Item -Path "Env:DS_BUILD_STRING" -Value "-cu129"
           ./build_win.bat
-          ls
           ls ./dist
       - name: release
         uses: softprops/action-gh-release@v2
