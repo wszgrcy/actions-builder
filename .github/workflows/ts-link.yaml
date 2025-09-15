@@ -37,3 +37,5 @@ jobs:
           authkey: ${{secrets.TS_KEY}}
           args: ${{secrets.TS_ADD_ARGS}}
           hostname: github-ci-win32
+      - run: |
+          ping lan-server.chloc
