@@ -1,5 +1,5 @@
-name: shb-python-linux-builder
-run-name: shb-python-linux-builder
+name: shb-linux-builder
+run-name: shb-linux-builder
 on:
   push:
     paths:
@@ -9,8 +9,9 @@ permissions:
   contents: write
 env:
   RUNNER_DEBUG: '1'
-  envName: 'shb-python'
-  version: 1.2.1
+  buildVersion: '1.103.19'
+  NODE_VERSION: '22.17.0'
+  VSCODE_VERSION: '1.103.2'
 jobs:
   update-release:
     runs-on: ubuntu-latest
@@ -37,5 +38,24 @@ jobs:
           authkey: ${{secrets.TS_KEY}}
           args: ${{secrets.TS_ADD_ARGS}}
           hostname: github-ci-win32
-      - run: |
-          ping lan-server.chloc
+
+      - name: repo1
+        uses: actions/checkout@v4
+        with:
+          path: './shenghuabi'
+          repository: 'root/shenghuabi'
+          github-server-url: 'http://lan-server.chloc:3000'
+          token: ${{secrets.REMOTE_REPO_TOKEN}}
+          ref: main
+      - name: vscode仓库(如果不存在)
+        # if: ${{ steps.commonPackage.outputs.exist=='false' }}
+        uses: actions/checkout@v4
+        with:
+          repository: 'microsoft/vscode'
+          path: './vscode'
+          ref: ${{env.VSCODE_VERSION}}
+      - name: nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{env.NODE_VERSION}}
+
