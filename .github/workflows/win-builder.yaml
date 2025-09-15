@@ -12,7 +12,7 @@ permissions:
 env:
   RUNNER_DEBUG: '1'
   envName: 'shb-python'
-  version: 1.2.2
+  version: 1.2.1
 jobs:
   update-release:
     strategy:
@@ -54,7 +54,7 @@ jobs:
         run: |
           conda activate ../${{ env.envName }}/.venv
           pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu129
-          pip install https://github.com/wszgrcy/shb-python-addon-repo/releases/download/1.2.2/deepspeed-0.17.5+cu129-cp310-cp310-win_amd64.whl
+
 
       - name: install zluda
         if: ${{ matrix.device=='zluda' }}
@@ -62,7 +62,7 @@ jobs:
         run: |
           conda activate ../${{ env.envName }}/.venv
           pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu118
-          pip install https://github.com/wszgrcy/shb-python-addon-repo/releases/download/1.2.2/deepspeed-0.17.5+cu118-cp310-cp310-win_amd64.whl
+
       - name: install xpu
         if: ${{ matrix.device=='xpu' }}
         working-directory: indextts
