@@ -66,10 +66,7 @@ jobs:
         run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate ./.venv
-          set DS_ACCELERATOR=cuda
-          set TORCH_CUDA_ARCH_LIST=${{matrix.archList}}
-          set DS_BUILD_STRING="+${{ matrix.device }}"
-          ./build_win.bat
+          DS_BUILD_STRING="+${{ matrix.device }}" TORCH_CUDA_ARCH_LIST=${{matrix.archList}} DS_ACCELERATOR=cuda pip install .
       - run: ls ./dist
       - name: release
         uses: softprops/action-gh-release@v2
