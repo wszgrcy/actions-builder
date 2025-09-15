@@ -33,6 +33,17 @@ jobs:
       #   with:
       #     repository: ${{secrets.INDEXTTS_REPO}}
       #     path: indextts
+      - run: |
+         gcc -v
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: |
+          apt-get install build-essential g++ libx11-dev libxkbfile-dev libsecret-1-dev libkrb5-dev python-is-python3
+      - name: nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{env.NODE_VERSION}}
       - name: Tailscale
         uses: tailscale/github-action@v3
         with:
@@ -49,6 +60,15 @@ jobs:
           github-server-url: 'http://lan-server.chloc:3000'
           token: ${{secrets.REMOTE_REPO_TOKEN}}
           ref: main
+      
+      
+      - name: npm
+        run: echo "${{ secrets.REMOTE_NPMCONFIG }}" >>  ~/.npmrc
+      - name: main/webview
+        run: npm i
+        working-directory: './shenghuabi'
+        env:
+          ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
       - name: vscode仓库(如果不存在)
         # if: ${{ steps.commonPackage.outputs.exist=='false' }}
         uses: actions/checkout@v4
@@ -56,8 +76,5 @@ jobs:
           repository: 'microsoft/vscode'
           path: './vscode'
           ref: ${{env.VSCODE_VERSION}}
-      - name: nodejs
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{env.NODE_VERSION}}
+      
 
