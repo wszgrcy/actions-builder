@@ -13,10 +13,6 @@ env:
   version: 1.2.1
 jobs:
   update-release:
-    strategy:
-      matrix:
-        device: [cpu, cuda, rocm, xpu]
-
     runs-on: ubuntu-latest
     steps:
       # - name: Free Disk Space (Ubuntu)
@@ -40,3 +36,4 @@ jobs:
           tags: tag:ci
           authkey: ${{secrets.TS_KEY}}
           args: ${{secrets.TS_ADD_ARGS}}
+          hostname: github-ci-win32
