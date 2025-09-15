@@ -64,7 +64,9 @@ jobs:
         run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate ../${{ env.envName }}/.venv
-          pip3 install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
+          pip install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
+          pip install oneccl-devel
+          pip install impi-devel
       - name: install cuda
         if: ${{ matrix.device=='cuda' }}
         working-directory: indextts
