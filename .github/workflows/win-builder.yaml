@@ -92,6 +92,7 @@ jobs:
           zstdLevel: '22'
           chunkSize: '1.95GB'
           cleanPaths: |
+            ./.venv/**/*.{h,cpp,c,hpp,cmake}
             ./.venv/conda-meta/**/*
             ./.venv/etc/conda/**/*
             ./.venv/Library/man
