@@ -64,6 +64,10 @@ jobs:
 
       - name: npm config
         run: echo "${{ secrets.REMOTE_NPMCONFIG }}" >>  ~/.npmrc
+      - name: init
+        run: |
+          git config --global user.name "wszgrcy"
+          git config --global user.email "wszgrcy@gmail.com"
       - name: main/webview install
         run: npm i
         working-directory: './shenghuabi'
@@ -91,6 +95,7 @@ jobs:
           cleanUnzipDir: false
       - run: |
           ls -lh
+          cat /proc/meminfo
       - name: 添加提交
         if: ${{ steps.commonPackage.outputs.exist=='true' }}
         run: |
