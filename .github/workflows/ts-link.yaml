@@ -90,7 +90,6 @@ jobs:
           strip: 1
           cleanUnzipDir: false
       - run: |
-          ls
           ls -lh
       - name: 添加提交
         if: ${{ steps.commonPackage.outputs.exist=='true' }}
@@ -108,7 +107,8 @@ jobs:
           repository: 'microsoft/vscode'
           path: './vscode'
           ref: ${{env.VSCODE_VERSION}}
-
+      - run: |
+          ls -lh
       - name: vscode构建
         if: ${{ steps.commonPackage.outputs.exist=='false' }}
         run: npm run build:common-package
