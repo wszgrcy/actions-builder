@@ -1,0 +1,41 @@
+name: shb-python-linux-builder
+run-name: shb-python-linux-builder
+on:
+  push:
+    paths:
+      - '.github/workflows/linux-builder.yaml'
+
+permissions:
+  contents: write
+env:
+  RUNNER_DEBUG: '1'
+  envName: 'shb-python'
+  version: 1.2.1
+jobs:
+  update-release:
+    strategy:
+      matrix:
+        device: [cpu, cuda, rocm, xpu]
+
+    runs-on: ubuntu-latest
+    steps:
+      # - name: Free Disk Space (Ubuntu)
+      #   uses: jlumbroso/free-disk-space@main
+      #   with:
+      #     tool-cache: true
+      #     android: true
+      #     dotnet: true
+      #     haskell: true
+      #     large-packages: true
+      #     docker-images: true
+      #     swap-storage: true
+      # - name: pull-code
+      #   uses: actions/checkout@v4
+      #   with:
+      #     repository: ${{secrets.INDEXTTS_REPO}}
+      #     path: indextts
+      - name: Tailscale
+        uses: tailscale/github-action@v3
+        with:
+          tags: tag:ci
+          authkey: 
