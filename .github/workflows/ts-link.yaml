@@ -76,8 +76,8 @@ jobs:
           aws_key_id: ${{secrets.S3_ID}}
           aws_secret_access_key: ${{secrets.S3_KEY}}
           endpoint: ${{secrets.S3_ENDPOINT}}
-          aws_bucket: 'pre-build'
-          source_dir: ${{env.VSCODE_VERSION}}
+          aws_bucket: 'shenghuabi-repo'
+          source_dir: pre-build/${{env.VSCODE_VERSION}}
           destination_dir: './pre-build'
       - name: unzip
         uses: wszgrcy/actions-pkg@1.2.4
@@ -131,6 +131,6 @@ jobs:
           aws_key_id: ${{secrets.S3_ID}}
           aws_secret_access_key: ${{secrets.S3_KEY}}
           endpoint: ${{secrets.S3_ENDPOINT}}
-          aws_bucket: 'pre-build'
+          aws_bucket: 'shenghuabi-repo'
           source_dir: ${{steps.zipPreBuild.outputs.zipFilePath}}
           destination_dir: './${{env.VSCODE_VERSION}}'
