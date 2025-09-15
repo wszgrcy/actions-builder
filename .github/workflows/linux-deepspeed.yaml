@@ -67,7 +67,7 @@ jobs:
           source $CONDA/etc/profile.d/conda.sh
           conda activate ./.venv
           echo "hello"
-          DS_BUILD_STRING="+${{ matrix.device }}" DS_ACCELERATOR=cuda pip install .
+          DS_BUILD_OPS=1  DS_BUILD_STRING="+${{ matrix.device }}" DS_ACCELERATOR=cuda python -m build --wheel --no-isolation --config-setting="--build-option=build_ext" --config-setting="--build-option=-j8"
       - run: ls ./dist
       - name: release
         uses: softprops/action-gh-release@v2
