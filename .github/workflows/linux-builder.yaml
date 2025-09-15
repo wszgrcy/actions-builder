@@ -10,7 +10,7 @@ permissions:
 env:
   RUNNER_DEBUG: '1'
   envName: 'shb-python'
-  version: 1.2.1
+  version: 1.2.2
 jobs:
   update-release:
     strategy:
@@ -93,7 +93,7 @@ jobs:
           conda activate ../${{ env.envName }}/.venv
           uv sync --active --extra deepspeed
           pip install .
-          pip install deepspeed==0.17.1
+          DS_BUILD_OPS=1 pip install deepspeed==0.17.1
           pip install fastapi
           pip install uvicorn
           pip cache purge
