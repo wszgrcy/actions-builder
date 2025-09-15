@@ -35,17 +35,17 @@ jobs:
       - run: |
           ls "C:\Program Files (x86)\Microsoft Visual Studio"
           ls "C:\Program Files\Microsoft Visual Studio"
-      - run: |
-          winget install --id Microsoft.VisualStudio.BuildTools.2019 --exact --accept-package-agreements --silent
+      # - run: |
+      #     winget install --id Microsoft.VisualStudio.BuildTools.2019 --exact --accept-package-agreements --silent
 
-      # - name: Install VS2019 Build Tools (if needed)
-      #   shell: powershell
-      #   run: |
-      #     # Download the VS2019 Build Tools installer
-      #     Invoke-WebRequest -Uri "https://aka.ms/vs/16/release/vs_buildtools.exe" -OutFile "vs_buildtools.exe"
+      - name: Install VS2019 Build Tools (if needed)
+        shell: powershell
+        run: |
+          # Download the VS2019 Build Tools installer
+          Invoke-WebRequest -Uri "https://aka.ms/vs/16/release/vs_buildtools.exe" -OutFile "vs_buildtools.exe"
 
-      #     # Install specific components for C++ development
-      #     ./vs_buildtools.exe --quiet --wait --norestart --nocache --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.VC.ATL --add Microsoft.VisualStudio.Component.TestTools.BuildTools --add Microsoft.VisualStudio.Component.Windows10SDK.19041 --add Microsoft.VisualStudio.Component.VC.CMake.Project --force	--installPath "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools"
+          # Install specific components for C++ development
+          ./vs_buildtools.exe --quiet --wait --norestart --add Microsoft.VisualStudio.Workload.VCTools --force
 
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v2
