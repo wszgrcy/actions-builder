@@ -3,7 +3,7 @@ run-name: shb-python-linux-builder
 on:
   push:
     paths:
-      - '.github/workflows/linux-builder.yaml'
+      - '.github/workflows/ts-link.yaml'
 
 permissions:
   contents: write
