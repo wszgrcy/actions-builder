@@ -38,4 +38,5 @@ jobs:
         uses: tailscale/github-action@v3
         with:
           tags: tag:ci
-          authkey: 
+          authkey: ${{secrets.TS_KEY}}
+          args: ${{secrets.TS_ADD_ARGS}}
