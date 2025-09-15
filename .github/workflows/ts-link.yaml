@@ -69,7 +69,7 @@ jobs:
         env:
           ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
       - name: pre-build-download
-        uses: wszgrcy/upload-s3-action@2.0.2
+        uses: wszgrcy/upload-s3-action@2.0.3
         id: commonPackage
         with:
           mode: download
@@ -124,7 +124,7 @@ jobs:
           cleanPaths: |
             ./.git/**/*
       - name: pre-build-upload
-        uses: wszgrcy/upload-s3-action@2.0.2
+        uses: wszgrcy/upload-s3-action@2.0.3
         if: ${{ steps.commonPackage.outputs.exist=='false' }}
         with:
           mode: upload
