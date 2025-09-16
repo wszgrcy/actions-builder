@@ -76,7 +76,7 @@ jobs:
         if: ${{ steps.commonPackage.outputs.exist=='true' }}
         with:
           mode: unzip
-          unzipDir: .
+          unzipDir: ./vscode
           zipPath: ./pre-build/${{env.VSCODE_VERSION}}/${{env.__platform}}-${{env.__arch}}-${{env.VSCODE_VERSION}}.tar.zstd
           strip: 1
           cleanUnzipDir: false
