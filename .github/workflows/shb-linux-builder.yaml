@@ -3,13 +3,13 @@ run-name: shb-linux-builder
 on:
   push:
     paths:
-      - '.github/workflows/ts-link.yaml'
+      - '.github/workflows/shb-linux-builder.yaml'
 
 permissions:
   contents: write
 env:
   RUNNER_DEBUG: '1'
-  buildVersion: '1.103.19'
+  PUBLISH_VERSION: '1.103.19'
   NODE_VERSION: '22.17.0'
   VSCODE_VERSION: '1.103.2'
   ACTIONS_STEP_DEBUG: true
@@ -154,15 +154,15 @@ jobs:
         working-directory: './vscode'
       - name: 构建tar.gz
         run: |
-          tar -czf ./shenghuabi-linux-x64-cuda-${{env.buildVersion}}.tar.gz -C ../VSCode-linux-x64 .
+          tar -czf ./shenghuabi-linux-x64-cuda-${{env.PUBLISH_VERSION}}.tar.gz -C ../VSCode-linux-x64 .
           rm -rf ../VSCode-linux-x64/resources/app/extensions/shenghuabi/node_modules/onnxruntime-node/bin/napi-v3/linux/x64/libonnxruntime_providers_cuda.so
-          tar -czf ./shenghuabi-linux-x64-cpu-${{env.buildVersion}}.tar.gz -C ../VSCode-linux-x64 .
+          tar -czf ./shenghuabi-linux-x64-cpu-${{env.PUBLISH_VERSION}}.tar.gz -C ../VSCode-linux-x64 .
         working-directory: './vscode'
       - name: 复制到文件夹
         run: |
           mkdir ./.build/linux/publish
-          cp ./shenghuabi-linux-x64-cuda-${{env.buildVersion}}.tar.gz ./.build/linux/publish/
-          cp ./shenghuabi-linux-x64-cpu-${{env.buildVersion}}.tar.gz ./.build/linux/publish/
+          cp ./shenghuabi-linux-x64-cuda-${{env.PUBLISH_VERSION}}.tar.gz ./.build/linux/publish/
+          cp ./shenghuabi-linux-x64-cpu-${{env.PUBLISH_VERSION}}.tar.gz ./.build/linux/publish/
           cp ./.build/linux/deb/amd64/deb/* ./.build/linux/publish/
         working-directory: './vscode'
       - name: github发行
