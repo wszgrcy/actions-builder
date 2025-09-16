@@ -52,7 +52,7 @@ jobs:
       - run: |
           nvcc -V
           printenv
-          sudo find /usr -name "libcuda.so*" 2>/dev/null
+          # sudo find /usr -name "libcuda.so*" 2>/dev/null
           # whereis cuda
           # sudo ls -lh /usr/local
           # sudo find / -name cuda
@@ -60,7 +60,7 @@ jobs:
           # whereis cuda
           # which cuda
           # locate cuda
-          ls -lh /usr/local/cuda/lib64/**/*
+          # ls -lh /usr/local/cuda/lib64/**/*
           # ls -lh /usr/local/cuda-12.9
           # ls -lh /usr/local/cuda-12.9/bin
           # ls -lh /usr/local/cuda-12.9/include 
