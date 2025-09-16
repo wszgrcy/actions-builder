@@ -89,8 +89,7 @@ jobs:
           aws_bucket: 'shenghuabi-repo'
           source_dir: ${{env.VSCODE_VERSION}}/${{env.platform}}-${{env.arch}}-${{env.VSCODE_VERSION}}.tar.zstd
           destination_dir: './pre-build'
-      - run: |
-          ls -lh
+
       - name: unzip
         uses: wszgrcy/actions-pkg@1.2.5
         if: ${{ steps.commonPackage.outputs.exist=='true' }}
@@ -100,8 +99,7 @@ jobs:
           zipPath: ./pre-build/${{env.VSCODE_VERSION}}/${{env.platform}}-${{env.arch}}-${{env.VSCODE_VERSION}}.tar.zstd
           strip: 1
           cleanUnzipDir: false
-      - run: |
-          ls -lh
+
           
 
       - name: 添加提交
@@ -137,8 +135,7 @@ jobs:
           cleanPaths: |
             ./.git/**/*
           cleanUnzipDir: false
-      - run: |
-          ls -lh
+
       - name: 预构建上传
         uses: wszgrcy/upload-s3-action@2.0.6
         if: ${{ steps.commonPackage.outputs.exist=='false' }}
@@ -179,6 +176,7 @@ jobs:
           files: './vscode/.build/linux/publish/**/*.{exe,deb,tar.gz}'
           repository: wszgrcy/shenghuabi-repo
           token: ${{secrets.SHB_REPO_UPLOAD}}
+          tag_name: ${{env.PUBLISH_VERSION}}
       - name: hosts
         run: |
           sudo echo "${{secrets.REMOTE_MANAGEMENT_HOST}}" | sudo tee -a /etc/hosts
