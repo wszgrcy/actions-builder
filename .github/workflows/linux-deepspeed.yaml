@@ -39,6 +39,9 @@ jobs:
           large-packages: true
           docker-images: true
           swap-storage: true
+      - run: |
+          sudo apt-get install -y libnccl2=2.8.3-1+cuda12.9 libnccl-dev=2.8.3-1+cuda12.9
+          
       - uses: Jimver/cuda-toolkit@v0.2.27
         id: cuda-toolkit
         with:
@@ -68,7 +71,7 @@ jobs:
           source $CONDA/etc/profile.d/conda.sh
           conda activate ./.venv
           echo "hello"
-          DS_BUILD_OPS=1  DS_BUILD_STRING="+${{ matrix.device }}" DS_ACCELERATOR=cuda python -m build --wheel --no-isolation --config-setting="--build-option=build_ext" --config-setting="--build-option=-j8"
+          NCCL_DEBUG=INFO DS_BUILD_OPS=1  DS_BUILD_STRING="+${{ matrix.device }}" DS_ACCELERATOR=cuda python -m build --wheel --no-isolation --config-setting="--build-option=build_ext" --config-setting="--build-option=-j8"
       - run: ls ./dist
       - name: release
         uses: softprops/action-gh-release@v2
