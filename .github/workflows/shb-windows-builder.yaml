@@ -9,7 +9,7 @@ permissions:
   contents: write
 env:
   RUNNER_DEBUG: '1'
-  buildVersion: '1.103.19'
+  PUBLISH_VERSION: '1.103.19'
   NODE_VERSION: '22.17.0'
   VSCODE_VERSION: '1.103.2'
   ACTIONS_STEP_DEBUG: true
@@ -115,7 +115,7 @@ jobs:
             ./.git/**/*
           cleanUnzipDir: false
       - run: |
-          ls -lh
+          ls 
       - name: pre-build-upload
         uses: wszgrcy/upload-s3-action@2.0.6
         if: ${{ steps.commonPackage.outputs.exist=='false' }}
