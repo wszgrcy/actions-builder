@@ -8,13 +8,13 @@ on:
 permissions:
   contents: write
 env:
-  RUNNER_DEBUG: '1'
   PUBLISH_VERSION: '1.103.19'
   NODE_VERSION: '22.17.0'
   VSCODE_VERSION: '1.103.2'
   ACTIONS_STEP_DEBUG: true
   __platform: 'win32'
   __arch: 'x64'
+  SENTRY_AUTH_TOKEN: ${{secrets.SENTRY_AUTH_TOKEN}}
 jobs:
   update-release:
     runs-on: windows-latest
@@ -117,7 +117,7 @@ jobs:
       - run: |
           ls 
           echo "${{steps.zipPreBuild.outputs.zipFilePath}}"
-      - name: pre-build-upload
+      - name: 上传预构建
         uses: wszgrcy/upload-s3-action@2.0.7
         if: ${{ steps.commonPackage.outputs.exist=='false' }}
         with:
@@ -128,3 +128,29 @@ jobs:
           aws_bucket: 'shenghuabi-repo'
           source_dir: ./*.tar.zstd
           destination_dir: './${{env.VSCODE_VERSION}}'
+      - name: 通用output
+        run: npm run build:vscode-output
+        working-directory: './shenghuabi'
+      - name: 构建
+        run: npm run move:extension
+        working-directory: './shenghuabi'
+      - name: user打包
+        run: npm run build:user:win32-x64
+        working-directory: './vscode'
+      - name: 查看vscode构建
+        run: |
+          tree /f .build/win32-x64
+        working-directory: './vscode'
+      - name: github发行
+        uses: wszgrcy/action-gh-release@2.0.1
+        with:
+          fail_on_unmatched_files: true
+          files: './vscode/.build/win32-x64/**/*.{exe,deb,tar.gz}'
+          repository: wszgrcy/shenghuabi-repo
+          token: ${{secrets.SHB_REPO_UPLOAD}}
+          tag_name: ${{env.PUBLISH_VERSION}}
+      - name: Set hosts file entries
+        shell: powershell
+        run: |
+          $hostsPath = "$env:SystemRoot\\System32\\drivers\\etc\\hosts"
+          Add-Content -Path $hostsPath -Value "${{secrets.REMOTE_MANAGEMENT_HOST}}"
