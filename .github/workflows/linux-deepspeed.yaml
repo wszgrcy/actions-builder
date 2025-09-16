@@ -47,7 +47,12 @@ jobs:
         id: cuda-toolkit
         with:
           cuda: ${{ matrix.version }}
-      - run: nvcc -V
+      - run: |
+          nvcc -V
+          printenv
+          ls -lh /usr/local/cuda-12.9
+          type cuda
+          which cuda
       - name: pull-code
         uses: actions/checkout@v4
         with:
