@@ -61,7 +61,7 @@ jobs:
           pip install wheel ninja packaging py-cpuinfo psutil
           pip install tqdm pydantic msgpack hjson einops
           pip install numpy  build
-          pip install deepspeed-kernels
+          pip install -r requirements/requirements-dev.txt
 
       - name: build
         run: |
