@@ -33,10 +33,10 @@ jobs:
         uses: jlumbroso/free-disk-space@main
         with:
           tool-cache: true
-          android: true
+          android: false
           dotnet: true
           haskell: true
-          large-packages: true
+          large-packages: false
           docker-images: true
           swap-storage: true
       - run: |
@@ -47,29 +47,14 @@ jobs:
           cuda: ${{ matrix.version }}
       - run: |
           df -h /
-      - name: Set CUDA linker path
-        run: echo "/usr/local/cuda/lib64" | sudo tee -a /etc/ld.so.conf.d/cuda.conf && sudo ldconfig
+      # - name: Set CUDA linker path
+      #   run: echo "/usr/local/cuda/lib64" | sudo tee -a /etc/ld.so.conf.d/cuda.conf && sudo ldconfig
       - run: |
           nvcc -V
           printenv
-          # sudo find /usr -name "libcuda.so*" 2>/dev/null
-          # whereis cuda
-          # sudo ls -lh /usr/local
-          # sudo find / -name cuda
-          # sudo updatedb
-          # whereis cuda
-          # which cuda
-          # locate cuda
-          # ls -lh /usr/local/cuda/lib64/**/*
-          # ls -lh /usr/local/cuda-12.9
-          # ls -lh /usr/local/cuda-12.9/bin
-          # ls -lh /usr/local/cuda-12.9/include 
-          # ls -lh /usr/local/cuda-12.9/lib64  
-          # sudo ls -lh /usr/lib
-          # echo "-------"
-          # sudo ls -lh /usr/lib/cuda
-          # export PATH="$PATH:/usr/local"
-          # type cuda
+          # export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/cuda/lib64/stubs"
+          # ls /usr/local/cuda/lib64/stubs -lh
+          # ldconfig -v 2>/dev/null | grep cuda
       - run: |
           sudo apt-get install -y libnccl2 libnccl-dev libaio-dev
       - name: pull-code
@@ -102,7 +87,7 @@ jobs:
           source $CONDA/etc/profile.d/conda.sh
           conda activate ./.venv
           echo "hello"
-          LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/cuda/lib64/stubs" TORCH_CUDA_ARCH_LIST="${{matrix.archList}}" DS_BUILD_SPARSE_ATTN=0 NCCL_DEBUG=INFO DS_BUILD_OPS=1  DS_BUILD_STRING="+${{ matrix.device }}" DS_ACCELERATOR=cuda ./install.sh
+          LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/cuda/lib64/stubs" LIBRARY_PATH="$LIBRARY_PATH:/usr/local/cuda/lib64/stubs" TORCH_CUDA_ARCH_LIST="${{matrix.archList}}" DS_BUILD_SPARSE_ATTN=0 NCCL_DEBUG=INFO DS_BUILD_OPS=1  DS_BUILD_STRING="+${{ matrix.device }}" DS_ACCELERATOR=cuda ./install.sh
       - run: ls ./dist
       - name: release
         uses: softprops/action-gh-release@v2
