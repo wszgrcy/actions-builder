@@ -170,7 +170,7 @@ jobs:
           cp ./.build/linux/deb/amd64/deb/* ./.build/linux/publish/
         working-directory: './vscode'
       - name: github发行
-        uses: softprops/action-gh-release@v2.3.3
+        uses: wszgrcy/action-gh-release@1.2.0
         with:
           fail_on_unmatched_files: true
           files: './vscode/.build/linux/publish/**/*.{exe,deb,tar.gz}'
