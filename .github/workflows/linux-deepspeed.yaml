@@ -40,7 +40,8 @@ jobs:
           docker-images: true
           swap-storage: true
       - run: |
-          sudo apt-get install -y libnccl2 libnccl-dev
+          sudo apt-get install -y libnccl2 libnccl-dev libaio-dev
+          
           
       - uses: Jimver/cuda-toolkit@v0.2.27
         id: cuda-toolkit
@@ -52,6 +53,11 @@ jobs:
         with:
           repository: wszgrcy/DeepSpeed
           ref: v${{env.DeepSpeedVersion}}
+      - name: pull-code
+        uses: actions/checkout@v4
+        with:
+          repository: NVIDIA/cutlass
+          path: __cutlass
       - uses: conda-incubator/setup-miniconda@v3
         with:
           activate-environment: './.venv'
@@ -72,7 +78,7 @@ jobs:
           source $CONDA/etc/profile.d/conda.sh
           conda activate ./.venv
           echo "hello"
-          DS_BUILD_SPARSE_ATTN=0 NCCL_DEBUG=INFO DS_BUILD_OPS=1  DS_BUILD_STRING="+${{ matrix.device }}" DS_ACCELERATOR=cuda ./install.sh
+          CUTLASS_PATH=./__cutlass DS_BUILD_SPARSE_ATTN=0 NCCL_DEBUG=INFO DS_BUILD_OPS=1  DS_BUILD_STRING="+${{ matrix.device }}" DS_ACCELERATOR=cuda ./install.sh
       - run: ls ./dist
       - name: release
         uses: softprops/action-gh-release@v2
@@ -85,5 +91,5 @@ jobs:
       - run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate ./.venv
-          pip install .\dist\deepspeed-${{env.DeepSpeedVersion}}+${{ matrix.device }}-cp310-cp310-linux_amd64.whl
+          pip install .\dist\deepspeed-${{env.DeepSpeedVersion}}+${{ matrix.device }}-cp310-cp310-linux_x86_64.whl
           python -m deepspeed.env_report
