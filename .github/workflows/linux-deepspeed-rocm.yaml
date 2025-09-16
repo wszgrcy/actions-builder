@@ -29,6 +29,9 @@ jobs:
       - run: |
           sudo apt-get install -y libnccl2 libnccl-dev libaio-dev
       - run: |
+          uname -m && cat /etc/*release
+          uname -srmv
+
           wget https://repo.radeon.com/amdgpu-install/6.4.3/ubuntu/jammy/amdgpu-install_6.4.60403-1_all.deb
           sudo apt install ./amdgpu-install_6.4.60403-1_all.deb
           sudo apt update
@@ -36,6 +39,8 @@ jobs:
           sudo usermod -a -G render,video $LOGNAME # Add the current user to the render and video groups
           sudo apt install rocm
           printenv
+          rocminfo
+          clinfo
       - name: pull-code
         uses: actions/checkout@v4
         with:
@@ -61,7 +66,7 @@ jobs:
           source $CONDA/etc/profile.d/conda.sh
           conda activate ./.venv
           echo "hello"
-          DS_BUILD_SPARSE_ATTN=0 NCCL_DEBUG=INFO DS_BUILD_OPS=1  DS_BUILD_STRING="+rocm" ./install.sh
+          LD_LIBRARY_PATH=/opt/rocm-6.4.3/lib PATH=$PATH:/opt/rocm-6.4.3/bin DS_BUILD_SPARSE_ATTN=0 NCCL_DEBUG=INFO DS_BUILD_OPS=1  DS_BUILD_STRING="+rocm" ./install.sh
       - run: ls ./dist
       - name: release
         uses: softprops/action-gh-release@v2
