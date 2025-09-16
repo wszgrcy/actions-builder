@@ -39,22 +39,12 @@ jobs:
           large-packages: false
           docker-images: true
           swap-storage: true
-      - run: |
-          df -h /
+
       - uses: Jimver/cuda-toolkit@v0.2.27
         id: cuda-toolkit
         with:
           cuda: ${{ matrix.version }}
-      - run: |
-          df -h /
-      # - name: Set CUDA linker path
-      #   run: echo "/usr/local/cuda/lib64" | sudo tee -a /etc/ld.so.conf.d/cuda.conf && sudo ldconfig
-      - run: |
-          nvcc -V
-          printenv
-          # export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/cuda/lib64/stubs"
-          # ls /usr/local/cuda/lib64/stubs -lh
-          # ldconfig -v 2>/dev/null | grep cuda
+
       - run: |
           sudo apt-get install -y libnccl2 libnccl-dev libaio-dev
       - name: pull-code
@@ -86,7 +76,6 @@ jobs:
         run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate ./.venv
-          echo "hello"
           LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/cuda/lib64/stubs" LIBRARY_PATH="$LIBRARY_PATH:/usr/local/cuda/lib64/stubs" TORCH_CUDA_ARCH_LIST="${{matrix.archList}}" DS_BUILD_SPARSE_ATTN=0 NCCL_DEBUG=INFO DS_BUILD_OPS=1  DS_BUILD_STRING="+${{ matrix.device }}" DS_ACCELERATOR=cuda ./install.sh
       - run: ls ./dist
       - name: release
