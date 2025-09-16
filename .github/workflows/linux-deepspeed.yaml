@@ -49,6 +49,7 @@ jobs:
       - run: |
           nvcc -V
           printenv
+          sudo find /usr -name "libcuda.so*" 2>/dev/null
           # whereis cuda
           # sudo ls -lh /usr/local
           # sudo find / -name cuda
