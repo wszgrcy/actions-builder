@@ -39,7 +39,6 @@ jobs:
           sudo usermod -a -G render,video $LOGNAME # Add the current user to the render and video groups
           sudo apt install rocm
           printenv
-          rocminfo
           clinfo
       - name: pull-code
         uses: actions/checkout@v4
