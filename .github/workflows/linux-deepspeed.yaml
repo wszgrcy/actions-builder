@@ -50,10 +50,11 @@ jobs:
           whereis cuda
           ls -lh /usr/local/cuda-12.9
           ls -lh /usr/local/cuda-12.9/bin
-          ls -lh /usr/local/cuda-12.9/include 
-          ls -lh /usr/local/cuda-12.9/lib64  
-          ls -lh /usr/lib
-          ls -lh /usr/lib/cuda
+          # ls -lh /usr/local/cuda-12.9/include 
+          # ls -lh /usr/local/cuda-12.9/lib64  
+          sudo ls -lh /usr/lib
+          echo "-------"
+          sudo ls -lh /usr/lib/cuda
       - run: |
           sudo apt-get install -y libnccl2 libnccl-dev libaio-dev
       - name: pull-code
