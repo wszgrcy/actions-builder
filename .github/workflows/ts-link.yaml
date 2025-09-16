@@ -74,7 +74,7 @@ jobs:
         env:
           ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
       - name: pre-build-download
-        uses: wszgrcy/upload-s3-action@2.0.3
+        uses: wszgrcy/upload-s3-action@2.0.4
         id: commonPackage
         with:
           mode: download
@@ -93,9 +93,7 @@ jobs:
           zipPath: ./pre-build/linux-x64-${{env.VSCODE_VERSION}}.tar.zstd
           strip: 1
           cleanUnzipDir: false
-      - run: |
-          ls -lh
-          cat /proc/meminfo
+
       - name: 添加提交
         if: ${{ steps.commonPackage.outputs.exist=='true' }}
         run: |
@@ -112,8 +110,7 @@ jobs:
           repository: 'microsoft/vscode'
           path: './vscode'
           ref: ${{env.VSCODE_VERSION}}
-      - run: |
-          ls -lh
+
       - name: vscode构建
         if: ${{ steps.commonPackage.outputs.exist=='false' }}
         run: npm run build:common-package
@@ -126,11 +123,13 @@ jobs:
           mode: zip
           unzipDir: ./vscode
           zipPath: ./linux-x64-${{env.VSCODE_VERSION}}.tar.zstd
-          zstdLevel: '15'
+          zstdLevel: '19'
           cleanPaths: |
             ./.git/**/*
+      - run: |
+          ls -lh
       - name: pre-build-upload
-        uses: wszgrcy/upload-s3-action@2.0.3
+        uses: wszgrcy/upload-s3-action@2.0.4
         if: ${{ steps.commonPackage.outputs.exist=='false' }}
         with:
           mode: upload
