@@ -16,8 +16,10 @@ env:
   platform: 'linux'
   arch: 'x64'
   SENTRY_AUTH_TOKEN: ${{secrets.SENTRY_AUTH_TOKEN}}
+  
 jobs:
   update-release:
+    
     runs-on: ubuntu-latest
     # container:
     #   image: catthehacker/ubuntu:act-22.04
@@ -85,8 +87,10 @@ jobs:
           aws_secret_access_key: ${{secrets.S3_KEY}}
           endpoint: ${{secrets.S3_ENDPOINT}}
           aws_bucket: 'shenghuabi-repo'
-          source_dir: pre-build/${{env.VSCODE_VERSION}}
+          source_dir: ${{env.VSCODE_VERSION}}/${{env.platform}}-${{env.arch}}-${{env.VSCODE_VERSION}}.tar.zstd
           destination_dir: './pre-build'
+      - run: |
+          ls -lh
       - name: unzip
         uses: wszgrcy/actions-pkg@1.2.5
         if: ${{ steps.commonPackage.outputs.exist=='true' }}
@@ -96,6 +100,9 @@ jobs:
           zipPath: ./pre-build/${{env.platform}}-${{env.arch}}-${{env.VSCODE_VERSION}}.tar.zstd
           strip: 1
           cleanUnzipDir: false
+      - run: |
+          ls -lh
+          
 
       - name: 添加提交
         if: ${{ steps.commonPackage.outputs.exist=='true' }}
