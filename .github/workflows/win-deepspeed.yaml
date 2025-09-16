@@ -86,9 +86,9 @@ jobs:
           conda activate ./.venv
           Set-Item -Path "Env:DS_ACCELERATOR" -Value "cuda"
           Set-Item -Path "Env:TORCH_CUDA_ARCH_LIST" -Value "${{matrix.archList}}"
-          Set-Item -Path "Env:CUDA_HOME" -Value "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v${{matrix.versionPath}}"
           Set-Item -Path "Env:DS_BUILD_STRING" -Value "+${{ matrix.device }}"
           ./build_win.bat
+          .\bin\ds_report.bat
       - run: ls ./dist
       - name: release
         uses: softprops/action-gh-release@v2
