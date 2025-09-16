@@ -40,13 +40,13 @@ jobs:
           docker-images: true
           swap-storage: true
       - run: |
-          df -h
+          df -h /
       - uses: Jimver/cuda-toolkit@v0.2.27
         id: cuda-toolkit
         with:
           cuda: ${{ matrix.version }}
       - run: |
-          df -h
+          df -h /
       - name: Set CUDA linker path
         run: echo "/usr/local/cuda/lib64" | sudo tee -a /etc/ld.so.conf.d/cuda.conf && sudo ldconfig
       - run: |
