@@ -50,6 +50,8 @@ jobs:
           whereis cuda
           ls -lh /usr/local/cuda-12.9
           ls -lh /usr/local/cuda-12.9/bin
+          ls -lh /usr/local/cuda-12.9/include 
+          ls -lh /usr/local/cuda-12.9/lib64  
           # type cuda
           which cuda
       - run: |
