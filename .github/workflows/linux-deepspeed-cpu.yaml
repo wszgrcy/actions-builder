@@ -54,5 +54,5 @@ jobs:
       - run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate ./.venv
-          pip install ./dist/deepspeed-${{env.DeepSpeedVersion}}+cpu-cp310-cp310-linux_x86_64.whl
+          DS_BUILD_OPS=1 pip install ./dist/deepspeed-${{env.DeepSpeedVersion}}+cpu-cp310-cp310-linux_x86_64.whl
           python -m deepspeed.env_report
