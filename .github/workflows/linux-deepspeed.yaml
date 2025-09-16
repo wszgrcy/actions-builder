@@ -30,9 +30,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          sudo ls -lh /usr/lib
-          echo "-------"
-          sudo ls -lh /usr/lib/cuda
+          whereis cuda
+          which cuda
+          locate cuda
       - name: Free Disk Space (Ubuntu)
         uses: jlumbroso/free-disk-space@main
         with:
@@ -52,13 +52,18 @@ jobs:
           nvcc -V
           printenv
           whereis cuda
+          find / -name cuda
+          which cuda
+          locate cuda
+          sudo updatedb
+          whereis cuda
           ls -lh /usr/local/cuda-12.9
           ls -lh /usr/local/cuda-12.9/bin
           # ls -lh /usr/local/cuda-12.9/include 
           # ls -lh /usr/local/cuda-12.9/lib64  
-          sudo ls -lh /usr/lib
-          echo "-------"
-          sudo ls -lh /usr/lib/cuda
+          # sudo ls -lh /usr/lib
+          # echo "-------"
+          # sudo ls -lh /usr/lib/cuda
       - run: |
           sudo apt-get install -y libnccl2 libnccl-dev libaio-dev
       - name: pull-code
