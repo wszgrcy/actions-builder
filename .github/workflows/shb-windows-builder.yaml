@@ -61,7 +61,7 @@ jobs:
         env:
           ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
       - name: pre-build-download
-        uses: wszgrcy/upload-s3-action@2.0.6
+        uses: wszgrcy/upload-s3-action@2.0.7
         id: commonPackage
         with:
           mode: download
@@ -116,8 +116,9 @@ jobs:
           cleanUnzipDir: false
       - run: |
           ls 
+          echo "${{steps.zipPreBuild.outputs.zipFilePath}}"
       - name: pre-build-upload
-        uses: wszgrcy/upload-s3-action@2.0.6
+        uses: wszgrcy/upload-s3-action@2.0.7
         if: ${{ steps.commonPackage.outputs.exist=='false' }}
         with:
           mode: upload
@@ -125,5 +126,5 @@ jobs:
           aws_secret_access_key: ${{secrets.S3_KEY}}
           endpoint: ${{secrets.S3_ENDPOINT}}
           aws_bucket: 'shenghuabi-repo'
-          source_dir: ${{steps.zipPreBuild.outputs.zipFilePath}}
+          source_dir: ./*.tar.zstd
           destination_dir: './${{env.VSCODE_VERSION}}'
