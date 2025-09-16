@@ -1,0 +1,129 @@
+name: shb-windows-builder
+run-name: shb-windows-builder
+on:
+  push:
+    paths:
+      - '.github/workflows/shb-windows-builder.yaml'
+
+permissions:
+  contents: write
+env:
+  RUNNER_DEBUG: '1'
+  buildVersion: '1.103.19'
+  NODE_VERSION: '22.17.0'
+  VSCODE_VERSION: '1.103.2'
+  ACTIONS_STEP_DEBUG: true
+  platform: 'win32'
+  arch: 'x64'
+jobs:
+  update-release:
+    runs-on: windows-latest
+    # container:
+    #   image: catthehacker/ubuntu:act-22.04
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{env.NODE_VERSION}}
+      - name: Tailscale
+        uses: tailscale/github-action@v3
+        with:
+          tags: tag:ci
+          authkey: ${{secrets.TS_KEY}}
+          args: ${{secrets.TS_ADD_ARGS}}
+          hostname: github-ci-${{env.platform}}-${{env.arch}}
+
+      - name: shenghuabi
+        uses: actions/checkout@v4
+        with:
+          path: './shenghuabi'
+          repository: 'root/shenghuabi'
+          github-server-url: 'http://lan-server.chloc:3000'
+          token: ${{secrets.REMOTE_REPO_TOKEN}}
+          ref: main
+      - name: MSVC
+        uses: ilammy/msvc-dev-cmd@v1.13.0
+        with:
+          arch: x64
+          vsversion: '2022'
+      - name: npm config
+        run: echo "${{ secrets.REMOTE_NPMCONFIG }}" >>  ~/.npmrc
+      - name: init
+        run: |
+          git config --global user.name "wszgrcy"
+          git config --global user.email "wszgrcy@gmail.com"
+      - name: main/webview install
+        run: npm i
+        working-directory: './shenghuabi'
+        env:
+          ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+      - name: pre-build-download
+        uses: wszgrcy/upload-s3-action@2.0.6
+        id: commonPackage
+        with:
+          mode: download
+          aws_key_id: ${{secrets.S3_ID}}
+          aws_secret_access_key: ${{secrets.S3_KEY}}
+          endpoint: ${{secrets.S3_ENDPOINT}}
+          aws_bucket: 'shenghuabi-repo'
+          source_dir: pre-build/${{env.VSCODE_VERSION}}
+          destination_dir: './pre-build'
+      - name: 解压缩预构建
+        uses: wszgrcy/actions-pkg@1.2.5
+        if: ${{ steps.commonPackage.outputs.exist=='true' }}
+        with:
+          mode: unzip
+          unzipDir: .
+          zipPath: ./pre-build/${{env.platform}}-${{env.arch}}-${{env.VSCODE_VERSION}}.tar.zstd
+          strip: 1
+          cleanUnzipDir: false
+
+      - name: 添加提交
+        if: ${{ steps.commonPackage.outputs.exist=='true' }}
+        run: |
+          cd vscode
+          rm -rf .git
+          git init
+          git add .
+          git commit -m '1'
+
+      - name: vscode仓库(如果不存在)
+        if: ${{ steps.commonPackage.outputs.exist=='false' }}
+        uses: actions/checkout@v4
+        with:
+          repository: 'microsoft/vscode'
+          path: './vscode'
+          ref: ${{env.VSCODE_VERSION}}
+
+      - name: vscode构建
+        if: ${{ steps.commonPackage.outputs.exist=='false' }}
+        run: npm run build:common-package
+        working-directory: './shenghuabi'
+      - name: 压缩预构建
+        uses: wszgrcy/actions-pkg@1.2.5
+        if: ${{ steps.commonPackage.outputs.exist=='false' }}
+        id: zipPreBuild
+        with:
+          mode: zip
+          unzipDir: ./vscode
+          zipPath: ./${{env.platform}}-${{env.arch}}-${{env.VSCODE_VERSION}}.tar.zstd
+          zstdLevel: '19'
+          cleanPaths: |
+            ./.git/**/*
+          cleanUnzipDir: false
+      - run: |
+          ls -lh
+      - name: pre-build-upload
+        uses: wszgrcy/upload-s3-action@2.0.6
+        if: ${{ steps.commonPackage.outputs.exist=='false' }}
+        with:
+          mode: upload
+          aws_key_id: ${{secrets.S3_ID}}
+          aws_secret_access_key: ${{secrets.S3_KEY}}
+          endpoint: ${{secrets.S3_ENDPOINT}}
+          aws_bucket: 'shenghuabi-repo'
+          source_dir: ${{steps.zipPreBuild.outputs.zipFilePath}}
+          destination_dir: './${{env.VSCODE_VERSION}}'
