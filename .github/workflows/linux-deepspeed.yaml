@@ -47,12 +47,13 @@ jobs:
       - run: |
           nvcc -V
           printenv
-          whereis cuda
-          find / -name cuda
-          sudo updatedb
-          whereis cuda
-          which cuda
-          locate cuda
+          # whereis cuda
+          sudo ls -lh /usr/local
+          # sudo find / -name cuda
+          # sudo updatedb
+          # whereis cuda
+          # which cuda
+          # locate cuda
           ls -lh /usr/local/cuda-12.9
           ls -lh /usr/local/cuda-12.9/bin
           # ls -lh /usr/local/cuda-12.9/include 
