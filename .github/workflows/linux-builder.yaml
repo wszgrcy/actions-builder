@@ -66,7 +66,7 @@ jobs:
           source $CONDA/etc/profile.d/conda.sh
           conda activate ../${{ env.envName }}/.venv
           pip install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
-          conda install conda-forge::deepspeed
+          pip install https://github.com/wszgrcy/shb-python-addon-repo/releases/download/1.2.2/deepspeed-0.17.5+cpu-cp310-cp310-linux_x86_64.whl
 
       - name: install cuda
         if: ${{ matrix.device=='cuda' }}
@@ -75,7 +75,7 @@ jobs:
           source $CONDA/etc/profile.d/conda.sh
           conda activate ../${{ env.envName }}/.venv
           pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu129
-          conda install conda-forge::deepspeed
+          pip install https://github.com/wszgrcy/shb-python-addon-repo/releases/download/1.2.2/deepspeed-0.17.5+cu129-cp310-cp310-linux_x86_64.whl
 
       - name: install rocm
         if: ${{ matrix.device=='rocm' }}
