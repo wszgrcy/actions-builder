@@ -40,7 +40,7 @@ jobs:
           docker-images: true
           swap-storage: true
       - run: |
-          sudo apt-get install -y libnccl2=2.8.3 libnccl-dev=2.8.3
+          sudo apt-get install -y libnccl2 libnccl-dev
           
       - uses: Jimver/cuda-toolkit@v0.2.27
         id: cuda-toolkit
