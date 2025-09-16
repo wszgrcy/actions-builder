@@ -54,7 +54,7 @@ jobs:
           source $CONDA/etc/profile.d/conda.sh
           conda activate ./.venv
           echo "hello"
-          DS_BUILD_SPARSE_ATTN=0 NCCL_DEBUG=INFO DS_BUILD_OPS=1  DS_BUILD_STRING="+${{ matrix.device }}" ./install.sh
+          DS_BUILD_SPARSE_ATTN=0 NCCL_DEBUG=INFO DS_BUILD_OPS=1  DS_BUILD_STRING="+rocm" ./install.sh
       - run: ls ./dist
       - name: release
         uses: softprops/action-gh-release@v2
@@ -67,5 +67,5 @@ jobs:
       - run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate ./.venv
-          pip install ./dist/deepspeed-${{env.DeepSpeedVersion}}+${{ matrix.device }}-cp310-cp310-linux_x86_64.whl
+          pip install ./dist/deepspeed-${{env.DeepSpeedVersion}}+rocm-cp310-cp310-linux_x86_64.whl
           python -m deepspeed.env_report
