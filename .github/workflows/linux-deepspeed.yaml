@@ -29,6 +29,10 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
+      - run: |
+          sudo ls -lh /usr/lib
+          echo "-------"
+          sudo ls -lh /usr/lib/cuda
       - name: Free Disk Space (Ubuntu)
         uses: jlumbroso/free-disk-space@main
         with:
