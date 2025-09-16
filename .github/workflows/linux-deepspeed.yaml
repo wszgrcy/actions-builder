@@ -39,10 +39,7 @@ jobs:
           large-packages: true
           docker-images: true
           swap-storage: true
-      - run: |
-          sudo apt-get install -y libnccl2 libnccl-dev libaio-dev
-          
-          
+
       - uses: Jimver/cuda-toolkit@v0.2.27
         id: cuda-toolkit
         with:
@@ -52,8 +49,11 @@ jobs:
           printenv
           whereis cuda
           ls -lh /usr/local/cuda-12.9
-          type cuda
+          ls -lh /usr/local/cuda-12.9/bin
+          # type cuda
           which cuda
+      - run: |
+          sudo apt-get install -y libnccl2 libnccl-dev libaio-dev
       - name: pull-code
         uses: actions/checkout@v4
         with:
@@ -99,5 +99,5 @@ jobs:
       - run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate ./.venv
-          pip install .\dist\deepspeed-${{env.DeepSpeedVersion}}+${{ matrix.device }}-cp310-cp310-linux_x86_64.whl
+          pip install ./dist/deepspeed-${{env.DeepSpeedVersion}}+${{ matrix.device }}-cp310-cp310-linux_x86_64.whl
           python -m deepspeed.env_report
