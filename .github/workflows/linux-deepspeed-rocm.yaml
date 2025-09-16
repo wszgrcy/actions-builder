@@ -1,0 +1,71 @@
+name: linux-deepspeed-rocm
+run-name: linux-deepspeed-rocm
+on:
+  push:
+    paths:
+      - '.github/workflows/linux-deepspeed-rocm.yaml'
+
+permissions:
+  contents: write
+env:
+  RUNNER_DEBUG: '1'
+  version: 1.2.2
+  DeepSpeedVersion: '0.17.5'
+  TorchVersion: '2.8.0'
+jobs:
+  update-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: true
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: true
+      - run: |
+          sudo apt-get install -y libnccl2 libnccl-dev libaio-dev
+
+      - name: pull-code
+        uses: actions/checkout@v4
+        with:
+          repository: wszgrcy/DeepSpeed
+          ref: v${{env.DeepSpeedVersion}}
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          activate-environment: './.venv'
+          python-version: '3.10'
+      - name: install dep
+        run: |
+          source $CONDA/etc/profile.d/conda.sh
+          conda activate ./.venv
+          pip install torch==${{env.TorchVersion}} torchaudio==${{env.TorchVersion}} --index-url https://download.pytorch.org/whl/rocm6.4
+          pip install wheel ninja packaging py-cpuinfo psutil
+          pip install tqdm pydantic msgpack hjson einops
+          pip install numpy  build
+          pip install -r requirements/requirements-dev.txt
+          pip install -r requirements/requirements.txt
+
+      - name: build
+        run: |
+          source $CONDA/etc/profile.d/conda.sh
+          conda activate ./.venv
+          echo "hello"
+          DS_BUILD_SPARSE_ATTN=0 NCCL_DEBUG=INFO DS_BUILD_OPS=1  DS_BUILD_STRING="+${{ matrix.device }}" DS_ACCELERATOR=cuda ./install.sh
+      - run: ls ./dist
+      - name: release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            ./dist/**/*
+          tag_name: ${{ env.version }}
+          repository: ${{secrets.UPDATE_SHB_PY_REPO}}
+          token: ${{ secrets.SHB_PY_TOKEN }}
+      - run: |
+          source $CONDA/etc/profile.d/conda.sh
+          conda activate ./.venv
+          pip install .\dist\deepspeed-${{env.DeepSpeedVersion}}+${{ matrix.device }}-cp310-cp310-linux_x86_64.whl
+          python -m deepspeed.env_report
