@@ -69,7 +69,7 @@ jobs:
           aws_secret_access_key: ${{secrets.S3_KEY}}
           endpoint: ${{secrets.S3_ENDPOINT}}
           aws_bucket: 'shenghuabi-repo'
-          source_dir: ${{env.VSCODE_VERSION}}/${{env.platform}}-${{env.arch}}-${{env.VSCODE_VERSION}}.tar.zstd
+          source_dir: ${{env.VSCODE_VERSION}}/${{env.__platform}}-${{env.__arch}}-${{env.VSCODE_VERSION}}.tar.zstd
           destination_dir: './pre-build'
       - name: 解压缩预构建
         uses: wszgrcy/actions-pkg@1.2.5
