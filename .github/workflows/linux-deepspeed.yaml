@@ -44,6 +44,8 @@ jobs:
         id: cuda-toolkit
         with:
           cuda: ${{ matrix.version }}
+      - name: Set CUDA linker path
+        run: echo "/usr/local/cuda/lib64" | sudo tee -a /etc/ld.so.conf.d/cuda.conf && sudo ldconfig
       - run: |
           nvcc -V
           printenv
@@ -61,6 +63,8 @@ jobs:
           # sudo ls -lh /usr/lib
           # echo "-------"
           # sudo ls -lh /usr/lib/cuda
+          # export PATH="$PATH:/usr/local"
+          # type cuda
       - run: |
           sudo apt-get install -y libnccl2 libnccl-dev libaio-dev
       - name: pull-code
@@ -93,7 +97,7 @@ jobs:
           source $CONDA/etc/profile.d/conda.sh
           conda activate ./.venv
           echo "hello"
-          PATH="$PATH:/usr/local" TORCH_CUDA_ARCH_LIST="6.1;7.0;7.5;8.0;8.6;8.9;9.0;10.0;10.3;12.0" DS_BUILD_SPARSE_ATTN=0 NCCL_DEBUG=INFO DS_BUILD_OPS=1  DS_BUILD_STRING="+${{ matrix.device }}" DS_ACCELERATOR=cuda ./install.sh
+          TORCH_CUDA_ARCH_LIST="${{matrix.archList}}" DS_BUILD_SPARSE_ATTN=0 NCCL_DEBUG=INFO DS_BUILD_OPS=1  DS_BUILD_STRING="+${{ matrix.device }}" DS_ACCELERATOR=cuda ./install.sh
       - run: ls ./dist
       - name: release
         uses: softprops/action-gh-release@v2
