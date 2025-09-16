@@ -50,6 +50,7 @@ jobs:
       - run: |
           nvcc -V
           printenv
+          whereis cuda
           ls -lh /usr/local/cuda-12.9
           type cuda
           which cuda
