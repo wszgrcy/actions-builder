@@ -83,9 +83,9 @@ jobs:
 
       - name: 添加提交
         if: ${{ steps.commonPackage.outputs.exist=='true' }}
+        working-directory: ./vscode
         run: |
-          cd vscode
-          rm -rf .git
+          ls
           git init
           git add .
           git commit -m '1'
