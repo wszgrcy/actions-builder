@@ -97,7 +97,7 @@ jobs:
         with:
           mode: unzip
           unzipDir: .
-          zipPath: ./pre-build/${{env.platform}}-${{env.arch}}-${{env.VSCODE_VERSION}}.tar.zstd
+          zipPath: ./pre-build/${{env.VSCODE_VERSION}}/${{env.platform}}-${{env.arch}}-${{env.VSCODE_VERSION}}.tar.zstd
           strip: 1
           cleanUnzipDir: false
       - run: |
