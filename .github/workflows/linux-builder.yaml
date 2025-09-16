@@ -66,9 +66,8 @@ jobs:
           source $CONDA/etc/profile.d/conda.sh
           conda activate ../${{ env.envName }}/.venv
           pip install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
-          pip install oneccl-devel
-          pip install impi-devel
-          DS_BUILD_OPS=1 pip install deepspeed==0.17.1
+          conda install conda-forge::deepspeed
+
       - name: install cuda
         if: ${{ matrix.device=='cuda' }}
         working-directory: indextts
@@ -76,9 +75,8 @@ jobs:
           source $CONDA/etc/profile.d/conda.sh
           conda activate ../${{ env.envName }}/.venv
           pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu129
-          set DS_ACCELERATOR=cuda
-          set TORCH_CUDA_ARCH_LIST=${{matrix.archList}}
-          DS_BUILD_OPS=1 pip install deepspeed==0.17.1
+          conda install conda-forge::deepspeed
+
       - name: install rocm
         if: ${{ matrix.device=='rocm' }}
         working-directory: indextts
@@ -86,7 +84,7 @@ jobs:
           source $CONDA/etc/profile.d/conda.sh
           conda activate ../${{ env.envName }}/.venv
           pip install torch torchaudio --index-url https://download.pytorch.org/whl/rocm6.4
-          DS_BUILD_OPS=1 pip install deepspeed==0.17.1
+
       - name: install xpu
         if: ${{ matrix.device=='xpu' }}
         working-directory: indextts
@@ -94,8 +92,7 @@ jobs:
           source $CONDA/etc/profile.d/conda.sh
           conda activate ../${{ env.envName }}/.venv
           pip install torch torchaudio --index-url https://download.pytorch.org/whl/xpu
-          set DS_ACCELERATOR=xpu
-          DS_BUILD_OPS=1 pip install deepspeed==0.17.1
+
       - name: install common2
         working-directory: indextts
         run: |
