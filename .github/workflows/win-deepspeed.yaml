@@ -69,12 +69,13 @@ jobs:
         with:
           repository: wszgrcy/DeepSpeed
           ref: v${{env.DeepSpeedVersion}}
+          path: deepSpeed
       - uses: conda-incubator/setup-miniconda@v3
         with:
           activate-environment: whatever
       - name: install dep
         run: |
-          conda create -p ./.venv python=3.11
+          conda create -p ./.venv python=3.10.18
           conda activate ./.venv
           pip install torch torchaudio --index-url https://download.pytorch.org/whl/${{ matrix.device }}
           pip install wheel ninja packaging py-cpuinfo psutil
@@ -82,23 +83,24 @@ jobs:
           pip install numpy  build
 
       - name: build
+        working-directory: deepSpeed
         run: |
-          conda activate ./.venv
+          conda activate ../.venv
           Set-Item -Path "Env:DS_ACCELERATOR" -Value "cuda"
           Set-Item -Path "Env:TORCH_CUDA_ARCH_LIST" -Value "${{matrix.archList}}"
           Set-Item -Path "Env:DS_BUILD_STRING" -Value "+${{ matrix.device }}"
           ./build_win.bat
-          
       - run: ls ./dist
+        working-directory: deepSpeed
       - name: release
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            ./dist/**/*
+            ./deepSpeed/dist/**/*
           tag_name: ${{ env.version }}
           repository: ${{secrets.UPDATE_SHB_PY_REPO}}
           token: ${{ secrets.SHB_PY_TOKEN }}
       - run: |
           conda activate ./.venv
-          pip install .\dist\deepspeed-${{env.DeepSpeedVersion}}+${{ matrix.device }}-cp311-cp311-win_amd64.whl
+          pip install ./deepSpeed/dist/deepspeed-${{env.DeepSpeedVersion}}+${{ matrix.device }}-cp311-cp311-win_amd64.whl
           python -m deepspeed.env_report
