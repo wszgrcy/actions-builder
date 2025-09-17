@@ -8,13 +8,12 @@ on:
 permissions:
   contents: write
 env:
-  RUNNER_DEBUG: '1'
   PUBLISH_VERSION: '1.103.20'
   NODE_VERSION: '22.17.0'
   VSCODE_VERSION: '1.103.2'
   ACTIONS_STEP_DEBUG: true
-  platform: 'linux'
-  arch: 'x64'
+  __platform: 'linux'
+  __arch: 'x64'
   SENTRY_AUTH_TOKEN: ${{secrets.SENTRY_AUTH_TOKEN}}
   channel: stable
 
@@ -35,7 +34,7 @@ jobs:
           tags: tag:ci
           authkey: ${{secrets.TS_KEY}}
           args: ${{secrets.TS_ADD_ARGS}}
-          hostname: github-ci-${{env.platform}}-${{env.arch}}
+          hostname: github-ci-${{env.__platform}}-${{env.__arch}}
 
       - name: shenghuabi
         uses: actions/checkout@v4
@@ -71,7 +70,7 @@ jobs:
           aws_secret_access_key: ${{secrets.S3_KEY}}
           endpoint: ${{secrets.S3_ENDPOINT}}
           aws_bucket: 'shenghuabi-repo'
-          source_dir: ${{env.VSCODE_VERSION}}/${{env.platform}}-${{env.arch}}-${{env.VSCODE_VERSION}}.tar.zstd
+          source_dir: ${{env.VSCODE_VERSION}}/${{env.__platform}}-${{env.__arch}}-${{env.VSCODE_VERSION}}.tar.zstd
           destination_dir: './pre-build'
 
       - name: unzip
@@ -80,7 +79,7 @@ jobs:
         with:
           mode: unzip
           unzipDir: ./vscode
-          zipPath: ./pre-build/${{env.VSCODE_VERSION}}/${{env.platform}}-${{env.arch}}-${{env.VSCODE_VERSION}}.tar.zstd
+          zipPath: ./pre-build/${{env.VSCODE_VERSION}}/${{env.__platform}}-${{env.__arch}}-${{env.VSCODE_VERSION}}.tar.zstd
           strip: 1
           cleanUnzipDir: false
 
@@ -112,7 +111,7 @@ jobs:
         with:
           mode: zip
           unzipDir: ./vscode
-          zipPath: ./${{env.platform}}-${{env.arch}}-${{env.VSCODE_VERSION}}.tar.zstd
+          zipPath: ./${{env.__platform}}-${{env.__arch}}-${{env.VSCODE_VERSION}}.tar.zstd
           zstdLevel: '15'
           cleanPaths: |
             ./.git/**/*
