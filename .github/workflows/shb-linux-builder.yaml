@@ -16,7 +16,7 @@ env:
   platform: 'linux'
   arch: 'x64'
   SENTRY_AUTH_TOKEN: ${{secrets.SENTRY_AUTH_TOKEN}}
-  channel: test
+  channel: stable
   
 jobs:
   update-release:
@@ -34,6 +34,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{env.NODE_VERSION}}
+          cache: 'npm'
+          cache-dependency-path: shenghuabi/package-lock.json
       - name: Tailscale
         uses: tailscale/github-action@v3
         with:
