@@ -164,7 +164,7 @@ jobs:
           url: http://shenghuabi-management.local/api/version-management/publish
           headers: |
             Accept: */*
-            token: ${{secrets.PUBLISH_TOKEN}}
+            token: ${{secrets.SHB_PUBLISH_TOKEN}}
             Content-Type: application/json
           body: |
             {"version":"${{env.PUBLISH_VERSION}}","platform":"win32_x64","list":["shenghuabi-win32-x64-${{env.PUBLISH_VERSION}}.setup.exe"]}

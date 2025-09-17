@@ -169,7 +169,7 @@ jobs:
           url: http://shenghuabi-management.local/api/version-management/publish
           headers: |
             Accept: */*
-            token: ${{secrets.PUBLISH_TOKEN}}
+            token: ${{secrets.SHB_PUBLISH_TOKEN}}
             Content-Type: application/json
           body: |
             {"version":"${{env.PUBLISH_VERSION}}","platform":"linux_x64","list":["shenghuabi-linux-x64-cuda-${{github.ref_name}}.tar.gz","shenghuabi-linux-x64-cpu-${{github.ref_name}}.tar.gz","shenghuabi-linux-x64-${{github.ref_name}}.setup.deb"]}
