@@ -17,25 +17,18 @@ env:
   arch: 'x64'
   SENTRY_AUTH_TOKEN: ${{secrets.SENTRY_AUTH_TOKEN}}
   channel: stable
-  
+
 jobs:
   update-release:
-    
     runs-on: ubuntu-latest
 
     steps:
-
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       - run: |
           sudo apt-get install build-essential g++ libx11-dev libxkbfile-dev libsecret-1-dev libkrb5-dev
-      - name: nodejs
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{env.NODE_VERSION}}
-          cache: 'npm'
-          cache-dependency-path: shenghuabi/package-lock.json
+
       - name: Tailscale
         uses: tailscale/github-action@v3
         with:
@@ -52,7 +45,12 @@ jobs:
           github-server-url: 'http://lan-server.chloc:3000'
           token: ${{secrets.REMOTE_REPO_TOKEN}}
           ref: main
-
+      - name: nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{env.NODE_VERSION}}
+          cache: 'npm'
+          cache-dependency-path: shenghuabi/package-lock.json
       - name: npm config
         run: echo "${{ secrets.REMOTE_NPMCONFIG }}" >>  ~/.npmrc
       - name: init
@@ -85,8 +83,6 @@ jobs:
           zipPath: ./pre-build/${{env.VSCODE_VERSION}}/${{env.platform}}-${{env.arch}}-${{env.VSCODE_VERSION}}.tar.zstd
           strip: 1
           cleanUnzipDir: false
-
-          
 
       - name: 添加提交
         if: ${{ steps.commonPackage.outputs.exist=='true' }}
@@ -166,7 +162,7 @@ jobs:
       - name: hosts
         run: |
           sudo echo "${{secrets.REMOTE_MANAGEMENT_HOST}}" | sudo tee -a /etc/hosts
-      
+
       - uses: wszgrcy/curl-actions@1.0.3
         if: ${{ env.channel=='stable' }}
         with:
