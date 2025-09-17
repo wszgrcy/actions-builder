@@ -43,8 +43,8 @@ jobs:
       - name: pull-code
         uses: actions/checkout@v4
         with:
-          repository: wszgrcy/DeepSpeed
-          ref: v${{env.DeepSpeedVersion}}
+          repository: deepspeedai/DeepSpeed
+          # ref: v${{env.DeepSpeedVersion}}
       - uses: conda-incubator/setup-miniconda@v3
         with:
           activate-environment: './.venv'
