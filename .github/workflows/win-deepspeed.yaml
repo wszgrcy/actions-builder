@@ -9,7 +9,7 @@ permissions:
   contents: write
 env:
   RUNNER_DEBUG: '1'
-  version: 1.2.2
+  version: 1.2.3
   DeepSpeedVersion: '0.17.5'
 
 jobs:
@@ -74,7 +74,7 @@ jobs:
           activate-environment: whatever
       - name: install dep
         run: |
-          conda create -p ./.venv python=3.10.18
+          conda create -p ./.venv python=3.11
           conda activate ./.venv
           pip install torch torchaudio --index-url https://download.pytorch.org/whl/${{ matrix.device }}
           pip install wheel ninja packaging py-cpuinfo psutil
@@ -100,5 +100,5 @@ jobs:
           token: ${{ secrets.SHB_PY_TOKEN }}
       - run: |
           conda activate ./.venv
-          pip install .\dist\deepspeed-${{env.DeepSpeedVersion}}+${{ matrix.device }}-cp310-cp310-win_amd64.whl
+          pip install .\dist\deepspeed-${{env.DeepSpeedVersion}}+${{ matrix.device }}-cp311-cp311-win_amd64.whl
           python -m deepspeed.env_report
