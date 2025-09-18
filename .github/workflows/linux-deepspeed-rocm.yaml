@@ -23,11 +23,11 @@ jobs:
           android: true
           dotnet: true
           haskell: true
-          large-packages: true
+          large-packages: false
           docker-images: true
           swap-storage: true
       - run: |
-          sudo apt-get install -y libnccl2 libnccl-dev libaio-dev
+          sudo apt-get install -y  libaio-dev
       - uses: conda-incubator/setup-miniconda@v3
         with:
           activate-environment: './.venv'
