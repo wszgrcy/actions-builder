@@ -102,5 +102,6 @@ jobs:
           token: ${{ secrets.SHB_PY_TOKEN }}
       - run: |
           conda activate ./.venv
+          Set-Item -Path "Env:DS_ACCELERATOR" -Value "cuda"
           pip install ./deepSpeed/dist/deepspeed-${{env.DeepSpeedVersion}}+${{ matrix.device }}-cp310-cp310-win_amd64.whl
           python -m deepspeed.env_report
