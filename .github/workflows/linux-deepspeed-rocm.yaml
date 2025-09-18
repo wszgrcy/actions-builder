@@ -66,9 +66,10 @@ jobs:
           source $CONDA/etc/profile.d/conda.sh
           conda activate ./.venv
           echo "hello"
+          echo '#/bin/bash\necho gfx1100' > /opt/rocm/llvm/bin/amdgpu-arch && chmod 755 /opt/rocm/llvm/bin/amdgpu-arch
           ls -lh /opt
           ls -lh /etc/alternatives/rocm
-          DS_ACCELERATOR=cuda LD_LIBRARY_PATH=/opt/rocm-6.4.3/lib PATH=$PATH:/opt/rocm-6.4.3/bin DS_BUILD_SPARSE_ATTN=0 NCCL_DEBUG=INFO DS_BUILD_OPS=1  DS_BUILD_STRING="+rocm" ./install.sh
+          DS_ACCELERATOR=cuda LD_LIBRARY_PATH=/opt/rocm/lib PATH=$PATH:/opt/rocm/bin DS_BUILD_SPARSE_ATTN=0 NCCL_DEBUG=INFO DS_BUILD_OPS=1  DS_BUILD_STRING="+rocm" ./install.sh
       - run: ls ./dist
       - name: release
         uses: softprops/action-gh-release@v2
