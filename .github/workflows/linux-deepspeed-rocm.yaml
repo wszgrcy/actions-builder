@@ -14,7 +14,7 @@ env:
   TorchVersion: '2.8.0'
 jobs:
   update-release:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Free Disk Space (Ubuntu)
         uses: jlumbroso/free-disk-space@main
