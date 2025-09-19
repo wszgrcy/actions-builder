@@ -33,18 +33,15 @@ jobs:
           uname -srmv
           sudo apt update
           sudo apt install -y environment-modules libaio-dev
-      - uses: conda-incubator/setup-miniconda@v3
+      - uses: actions/setup-python@v6
         with:
-          activate-environment: './.venv'
-          python-version: '3.10'
+          python-version: '3.12' 
       - run: |
-          source $CONDA/etc/profile.d/conda.sh
-          conda activate ./.venv
           python --version
           wget https://repo.radeon.com/amdgpu-install/6.4.3/ubuntu/noble/amdgpu-install_6.4.60403-1_all.deb
           sudo apt install ./amdgpu-install_6.4.60403-1_all.deb
           sudo amdgpu-install --list-usecase
-          amdgpu-install -y --usecase=graphics,rocm
+          amdgpu-install -y --usecase=rocmdev,rocm
           sudo usermod -a -G render,video $LOGNAME # Add the current user to the render and video groups
           groups
           printenv
@@ -60,8 +57,7 @@ jobs:
 
       - name: install dep
         run: |
-          source $CONDA/etc/profile.d/conda.sh
-          conda activate ./.venv
+          ls -lh
           pip install torch==${{env.TorchVersion}} torchaudio==${{env.TorchVersion}} --index-url https://download.pytorch.org/whl/rocm6.4
 
           pip install wheel ninja packaging py-cpuinfo psutil 
@@ -72,8 +68,6 @@ jobs:
 
       - name: build
         run: |
-          source $CONDA/etc/profile.d/conda.sh
-          conda activate ./.venv
           echo "hello"
           sudo echo '#/bin/bash\necho gfx1100' > /opt/rocm/llvm/bin/amdgpu-arch && sudo chmod 755 /opt/rocm/llvm/bin/amdgpu-arch
           ls -lh /opt
@@ -89,7 +83,6 @@ jobs:
           repository: ${{secrets.UPDATE_SHB_PY_REPO}}
           token: ${{ secrets.SHB_PY_TOKEN }}
       - run: |
-          source $CONDA/etc/profile.d/conda.sh
-          conda activate ./.venv
+
           pip install ./dist/deepspeed-${{env.DeepSpeedVersion}}+rocm-cp310-cp310-linux_x86_64.whl
           python -m deepspeed.env_report
