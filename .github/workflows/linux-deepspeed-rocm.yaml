@@ -57,6 +57,7 @@ jobs:
 
       - name: install dep
         run: |
+          python --version
           ls -lh
           pip install torch==${{env.TorchVersion}} torchaudio==${{env.TorchVersion}} --index-url https://download.pytorch.org/whl/rocm6.4
 
@@ -68,6 +69,7 @@ jobs:
 
       - name: build
         run: |
+          python --version
           echo "hello"
           sudo echo '#/bin/bash\necho gfx1100' > /opt/rocm/llvm/bin/amdgpu-arch && sudo chmod 755 /opt/rocm/llvm/bin/amdgpu-arch
           ls -lh /opt
