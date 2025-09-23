@@ -10,7 +10,7 @@ permissions:
 env:
   RUNNER_DEBUG: '1'
   version: 1.2.2
-  DeepSpeedVersion: '0.17.5'
+  DeepSpeedVersion: '0.17.6'
   TorchVersion: '2.8.0'
 jobs:
   update-release:
@@ -52,8 +52,8 @@ jobs:
       - name: pull-code
         uses: actions/checkout@v4
         with:
-          repository: wszgrcy/DeepSpeed
-          ref: v${{env.DeepSpeedVersion}}-rocm
+          repository: deepspeedai/DeepSpeed
+          ref: v${{env.DeepSpeedVersion}}
 
       - name: install dep
         run: |
