@@ -8,14 +8,14 @@ on:
 permissions:
   contents: write
 env:
-  PUBLISH_VERSION: '1.103.21'
+  PUBLISH_VERSION: '1.103.22'
   NODE_VERSION: '22.17.0'
   VSCODE_VERSION: '1.103.2'
   ACTIONS_STEP_DEBUG: true
   __platform: 'win32'
   __arch: 'x64'
   SENTRY_AUTH_TOKEN: ${{secrets.SENTRY_AUTH_TOKEN}}
-  channel: stable
+  channel: test
 jobs:
   update-release:
     runs-on: windows-latest
@@ -85,6 +85,11 @@ jobs:
           strip: 1
           cleanUnzipDir: false
 
+      - name: product.json
+        if: ${{ steps.commonPackage.outputs.exist=='true' }}
+        working-directory: ./shenghuabi
+        run: |
+          npm run update:product
       - name: 添加提交
         if: ${{ steps.commonPackage.outputs.exist=='true' }}
         working-directory: ./vscode
