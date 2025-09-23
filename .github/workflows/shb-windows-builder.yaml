@@ -85,11 +85,7 @@ jobs:
           strip: 1
           cleanUnzipDir: false
 
-      - name: product.json
-        if: ${{ steps.commonPackage.outputs.exist=='true' }}
-        working-directory: ./shenghuabi
-        run: |
-          npm run update:product
+
       - name: 添加提交
         if: ${{ steps.commonPackage.outputs.exist=='true' }}
         working-directory: ./vscode

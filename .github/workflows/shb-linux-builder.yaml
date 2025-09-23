@@ -82,11 +82,6 @@ jobs:
           zipPath: ./pre-build/${{env.VSCODE_VERSION}}/${{env.__platform}}-${{env.__arch}}-${{env.VSCODE_VERSION}}.tar.zstd
           strip: 1
           cleanUnzipDir: false
-      - name: product.json
-        if: ${{ steps.commonPackage.outputs.exist=='true' }}
-        working-directory: ./shenghuabi
-        run: |
-          npm run update:product
       - name: 添加提交
         if: ${{ steps.commonPackage.outputs.exist=='true' }}
         run: |
