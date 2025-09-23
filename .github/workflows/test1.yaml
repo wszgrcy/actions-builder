@@ -1,0 +1,18 @@
+name: test1
+run-name: test1
+on:
+  push:
+    paths:
+      - '.github/workflows/test1.yaml'
+
+permissions:
+  contents: write
+env: {}
+
+jobs:
+  update-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Release Asset with gh CLI
+        run: |
+          gh release download --repo wszgrcy/shb-ext-tts --pattern 'tts-1.0.1.vsix' --dir ./vscode/extension-dist
