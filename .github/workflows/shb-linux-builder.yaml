@@ -15,7 +15,7 @@ env:
   __platform: 'linux'
   __arch: 'x64'
   SENTRY_AUTH_TOKEN: ${{secrets.SENTRY_AUTH_TOKEN}}
-  channel: test
+  channel: stable
 
 jobs:
   update-release:
