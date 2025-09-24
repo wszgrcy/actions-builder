@@ -40,8 +40,7 @@ jobs:
           python --version
           wget https://repo.radeon.com/amdgpu-install/6.4.1/ubuntu/noble/amdgpu-install_6.4.60401-1_all.deb
           sudo apt install ./amdgpu-install_6.4.60401-1_all.deb
-          sudo amdgpu-install --list-usecase
-          amdgpu-install -y --usecase=dkms,rocmdev,rocm,rocmdevtools,hip,hiplibsdk,openmpsdk,mllib,mlsdk
+          sudo apt install libelf1 kmod file python3-dev python3-pip rocm-dev rocm-libs build-essential
           sudo usermod -a -G render,video $LOGNAME # Add the current user to the render and video groups
           groups
           printenv
@@ -49,6 +48,7 @@ jobs:
           dkms status
           type python
           python --version
+          
       - name: pull-code
         uses: actions/checkout@v4
         with:
