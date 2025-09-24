@@ -58,7 +58,7 @@ jobs:
         run: |
           python --version
           ls -lh
-          pip install torch==${{env.TorchVersion}} torchaudio==${{env.TorchVersion}} --index-url https://download.pytorch.org/whl/rocm6.4
+          pip install torch==${{env.TorchVersion}} torchaudio==${{env.TorchVersion}} --index-url https://download.pytorch.org/whl/nightly/rocm6.4
           pip install wheel ninja packaging py-cpuinfo psutil 
           pip install tqdm pydantic msgpack hjson einops
           pip install numpy  build
