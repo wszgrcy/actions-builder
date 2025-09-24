@@ -36,7 +36,6 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
-          cache: 'pip'
       - run: |
           python --version
           wget https://repo.radeon.com/amdgpu-install/6.4.1/ubuntu/noble/amdgpu-install_6.4.60401-1_all.deb
