@@ -89,5 +89,5 @@ jobs:
       - run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate ./.venv
-          pip install ./dist/deepspeed-${{env.DeepSpeedVersion}}+${{ matrix.device }}-cp310-cp310-linux_x86_64.whl
+          DS_ACCELERATOR=cuda pip install ./dist/deepspeed-${{env.DeepSpeedVersion}}+${{ matrix.device }}-cp310-cp310-linux_x86_64.whl
           python -m deepspeed.env_report
