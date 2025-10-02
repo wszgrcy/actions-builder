@@ -92,6 +92,7 @@ jobs:
           
           pip install fastapi
           pip install uvicorn
+          pip install huggingface_hub
           pip cache purge
       - uses: wszgrcy/actions-pkg@1.2.2
         with:
