@@ -128,12 +128,12 @@ jobs:
           ls -lh
     
       - name: upload
-        uses: wszgrcy/upload-s3-action@2.0.6
+        uses: wszgrcy/upload-s3-action@2.0.7
         with:
           mode: upload
           aws_key_id: ${{secrets.S3_ID}}
           aws_secret_access_key: ${{secrets.S3_KEY}}
           endpoint: ${{secrets.S3_ENDPOINT}}
           aws_bucket: 'shenghuabi-repo'
-          source_dir: ./*.zstd
+          source_dir: ./*.{zstd,001,002,003,004}
           destination_dir: './${{env.VSCODE_VERSION}}'
