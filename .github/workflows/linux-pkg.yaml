@@ -1,0 +1,139 @@
+name: python-linux-pkg
+run-name: python-linux-pkg
+on:
+  push:
+    paths:
+      - '.github/workflows/linux-pkg.yaml'
+
+permissions:
+  contents: write
+env:
+  envName: 'funasr-env'
+  version: 1.0.0
+jobs:
+  update-release:
+    strategy:
+      matrix:
+        device: [rocm]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: true
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: false
+          docker-images: true
+          swap-storage: true
+      - name: pull-code
+        uses: actions/checkout@v4
+        with:
+          repository: 'modelscope/FunASR'
+          path: './funasr'
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          # auto-activate-base: true
+          activate-environment: './${{ env.envName }}/.venv'
+          python-version: '3.10'
+    #   - name: Install uv
+    #     uses: astral-sh/setup-uv@v6
+      - run: |
+          source $CONDA/etc/profile.d/conda.sh
+          conda activate ./.venv
+        working-directory: ${{ env.envName }}
+      - name: install common1
+        working-directory: funasr
+        run: |
+          source $CONDA/etc/profile.d/conda.sh
+          conda activate ../${{ env.envName }}/.venv
+
+    #   - name: install cpu
+    #     if: ${{ matrix.device=='cpu' }}
+    #     working-directory: indextts
+    #     run: |
+    #       source $CONDA/etc/profile.d/conda.sh
+    #       conda activate ../${{ env.envName }}/.venv
+    #       pip install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
+    #       pip install https://github.com/wszgrcy/shb-python-addon-repo/releases/download/1.2.2/deepspeed-0.17.5+cpu-cp310-cp310-linux_x86_64.whl
+
+    #   - name: install cuda
+    #     if: ${{ matrix.device=='cuda' }}
+    #     working-directory: indextts
+    #     run: |
+    #       source $CONDA/etc/profile.d/conda.sh
+    #       conda activate ../${{ env.envName }}/.venv
+    #       pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu129
+    #       pip install https://github.com/wszgrcy/shb-python-addon-repo/releases/download/1.2.2/deepspeed-0.17.5+cu129-cp310-cp310-linux_x86_64.whl
+
+      - name: install rocm
+        if: ${{ matrix.device=='rocm' }}
+        working-directory: indextts
+        run: |
+          source $CONDA/etc/profile.d/conda.sh
+          conda activate ../${{ env.envName }}/.venv
+          pip install torch torchaudio --index-url https://download.pytorch.org/whl/rocm6.4
+
+    #   - name: install xpu
+    #     if: ${{ matrix.device=='xpu' }}
+    #     working-directory: indextts
+    #     run: |
+    #       source $CONDA/etc/profile.d/conda.sh
+    #       conda activate ../${{ env.envName }}/.venv
+    #       pip install torch torchaudio --index-url https://download.pytorch.org/whl/xpu
+
+      - name: install common2
+        working-directory: indextts
+        run: |
+          source $CONDA/etc/profile.d/conda.sh
+          conda activate ../${{ env.envName }}/.venv
+          pip install .
+          
+          pip install fastapi
+          pip install uvicorn
+          pip cache purge
+      - uses: wszgrcy/actions-pkg@1.2.2
+        with:
+          dir: ${{ env.envName }}
+          outputPath: ./${{env.envName}}-${{ env.version }}-linux-x64-${{ matrix.device }}.tar.zstd
+          zstdLevel: '15'
+          chunkSize: '1.95GB'
+          cleanPaths: |
+            ./.venv/**/*.{h,cpp,c,hpp,cmake}
+            ./.venv/conda-meta/**/*
+            ./.venv/etc/conda/**/*
+            ./.venv/Library/man
+            ./.venv/Library/share
+            ./.venv/Library/cmake
+            ./.venv/Library/include
+            ./.venv/Library/etc
+            ./.venv/Library/WebP
+            ./.venv/Library/lib/pkgconfig
+            ./.venv/Library/ssl
+            ./.venv/Tools/demo
+            ./.venv/fonts
+            ./.venv/include
+            ./.venv/etc
+            ./.venv/conda-meta
+            ./.venv/share
+            ./.venv/LICENSE_PYTHON.txt
+            ./.git
+            ./.vscode
+            ./util
+            ./zluda_init.py
+
+      - run: |
+          df -h
+          ls -lh
+    
+      - name: upload
+        uses: wszgrcy/upload-s3-action@2.0.6
+        with:
+          mode: upload
+          aws_key_id: ${{secrets.S3_ID}}
+          aws_secret_access_key: ${{secrets.S3_KEY}}
+          endpoint: ${{secrets.S3_ENDPOINT}}
+          aws_bucket: 'shenghuabi-repo'
+          source_dir: ./*.zstd
+          destination_dir: './${{env.VSCODE_VERSION}}'
