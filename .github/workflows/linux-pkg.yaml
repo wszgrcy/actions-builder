@@ -93,13 +93,14 @@ jobs:
           pip install fastapi
           pip install uvicorn
           pip install huggingface_hub
+          pip install openai-whisper
           pip cache purge
       - uses: wszgrcy/actions-pkg@1.2.2
         with:
           dir: ${{ env.envName }}
           outputPath: ./${{env.envName}}-${{ env.version }}-linux-x64-${{ matrix.device }}.tar.zstd
-          zstdLevel: '15'
-          chunkSize: '0.85GB'
+          zstdLevel: '12'
+          chunkSize: '1.95GB'
           cleanPaths: |
             ./.venv/**/*.{h,cpp,c,hpp,cmake}
             ./.venv/conda-meta/**/*
@@ -128,13 +129,27 @@ jobs:
           df -h
           ls -lh
     
-      - name: upload
-        uses: wszgrcy/upload-s3-action@2.0.7
+      # - name: upload
+      #   uses: wszgrcy/upload-s3-action@2.0.7
+      #   with:
+      #     mode: upload
+      #     aws_key_id: ${{secrets.S3_ID}}
+      #     aws_secret_access_key: ${{secrets.S3_KEY}}
+      #     endpoint: ${{secrets.S3_ENDPOINT}}
+      #     aws_bucket: 'shenghuabi-repo'
+      #     source_dir: ./*.{zstd,001,002,003,004}
+      #     destination_dir: './${{env.VSCODE_VERSION}}'
+      - name: release
+        uses: softprops/action-gh-release@v2
+
         with:
-          mode: upload
-          aws_key_id: ${{secrets.S3_ID}}
-          aws_secret_access_key: ${{secrets.S3_KEY}}
-          endpoint: ${{secrets.S3_ENDPOINT}}
-          aws_bucket: 'shenghuabi-repo'
-          source_dir: ./*.{zstd,001,002,003,004}
-          destination_dir: './${{env.VSCODE_VERSION}}'
+          files: |
+            *.tar.zstd
+            *.tar.zstd.001
+            *.tar.zstd.002
+            *.tar.zstd.003
+            *.tar.zstd.004
+     
+          tag_name: ${{ env.version }}
+          repository: ${{secrets.UPDATE_SHB_PY_REPO}}
+          token: ${{ secrets.SHB_PY_TOKEN }}
