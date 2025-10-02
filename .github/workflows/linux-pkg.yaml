@@ -98,7 +98,7 @@ jobs:
           dir: ${{ env.envName }}
           outputPath: ./${{env.envName}}-${{ env.version }}-linux-x64-${{ matrix.device }}.tar.zstd
           zstdLevel: '15'
-          chunkSize: '1.95GB'
+          chunkSize: '0.85GB'
           cleanPaths: |
             ./.venv/**/*.{h,cpp,c,hpp,cmake}
             ./.venv/conda-meta/**/*
