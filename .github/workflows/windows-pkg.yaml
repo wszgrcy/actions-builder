@@ -119,6 +119,8 @@ jobs:
             ./.vscode
             ./util
             ./zluda_init.py
+      - run: |
+          ls
 
       - name: release
         uses: softprops/action-gh-release@v2.4.0
