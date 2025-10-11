@@ -12,18 +12,19 @@ jobs:
     steps:
       - run: |
           openssl --help
-      - name: pull-code
+      - name: pull
         uses: actions/checkout@v4
         with:
           repository: "index-tts/index-tts"
           path: abc
       - run: |
           ls
-      - name: pull-code
+      - name: zip
         uses: wszgrcy/actions-pkg@1.3.1
         with:
-          dir: abc
+          zipPath: abc
           password: "pass:${{env.PKG_PASSWORD}}"
+          
       - run: |
           ls
       - name: Release
