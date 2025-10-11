@@ -16,5 +16,5 @@ jobs:
           ls /
           openssl --help
       - name: pull-code
-        uses: wszgrcy/actions-pkg@1.3.
+        uses: wszgrcy/actions-pkg@1.3.0
         
