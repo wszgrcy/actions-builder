@@ -52,14 +52,7 @@ jobs:
           python-version: "3.10"
       - name: Install uv
         uses: astral-sh/setup-uv@v6
-      - run: |
-          source $CONDA/etc/profile.d/conda.sh
-          conda activate ./.venv
-        working-directory: ${{ env.envName }}
-      - name: install common1
-        run: |
-          source $CONDA/etc/profile.d/conda.sh
-          conda activate ./${{ env.envName }}/.venv
+
       - name: install cpu
         if: ${{ matrix.device=='cpu' }}
 
