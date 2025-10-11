@@ -1,0 +1,16 @@
+name: zstd-w-test
+run-name: zstd-w-test
+on: [push]
+permissions:
+  contents: write
+env:
+  RUNNER_DEBUG: '1'
+  ACTIONS_STEP_DEBUG: true
+jobs:
+  update-release:
+    runs-on: windows-latest
+    steps:
+      - run: |
+          ls
+          bash
+          ls
