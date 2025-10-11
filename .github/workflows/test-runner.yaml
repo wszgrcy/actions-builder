@@ -11,6 +11,6 @@ jobs:
     runs-on: windows-latest
     steps:
       - run: |
-          ls
+          # ls
           bash
-          ls
+          ls /
