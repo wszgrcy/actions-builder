@@ -128,7 +128,10 @@ jobs:
           files: |
             *.enc
             *.tar.zstd
-            *.{001,002,003,004}
+            *.001
+            *.002
+            *.003
+            *.004
 
           tag_name: ${{ env.version }}
           repository: ${{secrets.UPDATE_SHB_PY_REPO}}

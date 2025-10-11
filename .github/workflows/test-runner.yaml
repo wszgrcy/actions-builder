@@ -1,6 +1,9 @@
 name: zstd-w-test
 run-name: zstd-w-test
-on: [push]
+on:
+  push:
+    paths:
+      - ".github/workflows/test-runner.yaml"
 permissions:
   contents: write
 env:
