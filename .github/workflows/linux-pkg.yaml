@@ -3,18 +3,18 @@ run-name: python-linux-pkg
 on:
   push:
     paths:
-      - '.github/workflows/linux-pkg.yaml'
+      - ".github/workflows/linux-pkg.yaml"
 
 permissions:
   contents: write
 env:
-  envName: 'funasr-env'
+  envName: "funasr-env"
   version: 1.0.0
 jobs:
   update-release:
     strategy:
       matrix:
-        device: [rocm]
+        device: [cpu, cuda, rocm, xpu]
     runs-on: ubuntu-latest
     steps:
       - name: Free Disk Space (Ubuntu)
@@ -30,15 +30,21 @@ jobs:
       - name: pull-code
         uses: actions/checkout@v4
         with:
-          repository: 'modelscope/FunASR'
-          path: './funasr'
+          repository: "modelscope/FunASR"
+          path: "./funasr"
+      - name: pull-code
+        uses: actions/checkout@v4
+        with:
+          repository: "wszgrcy/shb-python2"
+          token: ${{ secrets.SHB_PY_TOKEN }}
+          path: ${{ env.envName }}
       - uses: conda-incubator/setup-miniconda@v3
         with:
           # auto-activate-base: true
-          activate-environment: './${{ env.envName }}/.venv'
-          python-version: '3.10'
-    #   - name: Install uv
-    #     uses: astral-sh/setup-uv@v6
+          activate-environment: "./${{ env.envName }}/.venv"
+          python-version: "3.10"
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
       - run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate ./.venv
@@ -49,23 +55,23 @@ jobs:
           source $CONDA/etc/profile.d/conda.sh
           conda activate ../${{ env.envName }}/.venv
 
-    #   - name: install cpu
-    #     if: ${{ matrix.device=='cpu' }}
-    #     working-directory: funasr
-    #     run: |
-    #       source $CONDA/etc/profile.d/conda.sh
-    #       conda activate ../${{ env.envName }}/.venv
-    #       pip install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
-    #       pip install https://github.com/wszgrcy/shb-python-addon-repo/releases/download/1.2.2/deepspeed-0.17.5+cpu-cp310-cp310-linux_x86_64.whl
+      - name: install cpu
+        if: ${{ matrix.device=='cpu' }}
+        working-directory: funasr
+        run: |
+          source $CONDA/etc/profile.d/conda.sh
+          conda activate ../${{ env.envName }}/.venv
+          pip install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
+          pip install https://github.com/wszgrcy/shb-python-addon-repo/releases/download/1.2.2/deepspeed-0.17.5+cpu-cp310-cp310-linux_x86_64.whl
 
-    #   - name: install cuda
-    #     if: ${{ matrix.device=='cuda' }}
-    #     working-directory: funasr
-    #     run: |
-    #       source $CONDA/etc/profile.d/conda.sh
-    #       conda activate ../${{ env.envName }}/.venv
-    #       pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu129
-    #       pip install https://github.com/wszgrcy/shb-python-addon-repo/releases/download/1.2.2/deepspeed-0.17.5+cu129-cp310-cp310-linux_x86_64.whl
+      - name: install cuda
+        if: ${{ matrix.device=='cuda' }}
+        working-directory: funasr
+        run: |
+          source $CONDA/etc/profile.d/conda.sh
+          conda activate ../${{ env.envName }}/.venv
+          pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu129
+          pip install https://github.com/wszgrcy/shb-python-addon-repo/releases/download/1.2.2/deepspeed-0.17.5+cu129-cp310-cp310-linux_x86_64.whl
 
       - name: install rocm
         if: ${{ matrix.device=='rocm' }}
@@ -75,32 +81,35 @@ jobs:
           conda activate ../${{ env.envName }}/.venv
           pip install torch torchaudio --index-url https://download.pytorch.org/whl/rocm6.4
 
-    #   - name: install xpu
-    #     if: ${{ matrix.device=='xpu' }}
-    #     working-directory: funasr
-    #     run: |
-    #       source $CONDA/etc/profile.d/conda.sh
-    #       conda activate ../${{ env.envName }}/.venv
-    #       pip install torch torchaudio --index-url https://download.pytorch.org/whl/xpu
+      - name: install xpu
+        if: ${{ matrix.device=='xpu' }}
+        working-directory: funasr
+        run: |
+          source $CONDA/etc/profile.d/conda.sh
+          conda activate ../${{ env.envName }}/.venv
+          pip install torch torchaudio --index-url https://download.pytorch.org/whl/xpu
 
       - name: install common2
         working-directory: funasr
         run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate ../${{ env.envName }}/.venv
+          uv sync --active 
           pip install .
-          
+
           pip install fastapi
           pip install uvicorn
           pip install huggingface_hub
           pip install openai-whisper
+          pip install cachetools
           pip cache purge
-      - uses: wszgrcy/actions-pkg@1.2.2
+      - uses: wszgrcy/actions-pkg@1.3.1
         with:
           dir: ${{ env.envName }}
           outputPath: ./${{env.envName}}-${{ env.version }}-linux-x64-${{ matrix.device }}.tar.zstd
-          zstdLevel: '12'
-          chunkSize: '1.95GB'
+          zstdLevel: "12"
+          chunkSize: "1.95GB"
+          password: "pass:${{env.PKG_PASSWORD}}"
           cleanPaths: |
             ./.venv/**/*.{h,cpp,c,hpp,cmake}
             ./.venv/conda-meta/**/*
@@ -128,28 +137,16 @@ jobs:
       - run: |
           df -h
           ls -lh
-    
-      # - name: upload
-      #   uses: wszgrcy/upload-s3-action@2.0.7
-      #   with:
-      #     mode: upload
-      #     aws_key_id: ${{secrets.S3_ID}}
-      #     aws_secret_access_key: ${{secrets.S3_KEY}}
-      #     endpoint: ${{secrets.S3_ENDPOINT}}
-      #     aws_bucket: 'shenghuabi-repo'
-      #     source_dir: ./*.{zstd,001,002,003,004}
-      #     destination_dir: './${{env.VSCODE_VERSION}}'
+
       - name: release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v2.4.0
 
         with:
           files: |
+            *.enc
             *.tar.zstd
-            *.tar.zstd.001
-            *.tar.zstd.002
-            *.tar.zstd.003
-            *.tar.zstd.004
-     
+            *.tar.zstd.{001,002,003,004,005,006}
+
           tag_name: ${{ env.version }}
           repository: ${{secrets.UPDATE_SHB_PY_REPO}}
           token: ${{ secrets.SHB_PY_TOKEN }}
