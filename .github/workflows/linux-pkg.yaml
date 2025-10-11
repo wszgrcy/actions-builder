@@ -38,6 +38,13 @@ jobs:
           repository: "wszgrcy/shb-python2"
           token: ${{ secrets.SHB_PY_TOKEN }}
           path: ${{ env.envName }}
+          ref: "funasr"
+      - name: pull-code
+        uses: actions/checkout@v4
+        with:
+          repository: ${{secrets.INDEXTTS_REPO}}
+          path: indextts
+          ref: build
       - uses: conda-incubator/setup-miniconda@v3
         with:
           # auto-activate-base: true
@@ -50,53 +57,51 @@ jobs:
           conda activate ./.venv
         working-directory: ${{ env.envName }}
       - name: install common1
-        working-directory: funasr
         run: |
           source $CONDA/etc/profile.d/conda.sh
-          conda activate ../${{ env.envName }}/.venv
+          conda activate ./${{ env.envName }}/.venv
 
       - name: install cpu
         if: ${{ matrix.device=='cpu' }}
-        working-directory: funasr
+
         run: |
           source $CONDA/etc/profile.d/conda.sh
-          conda activate ../${{ env.envName }}/.venv
+          conda activate ./${{ env.envName }}/.venv
           pip install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
           pip install https://github.com/wszgrcy/shb-python-addon-repo/releases/download/1.2.2/deepspeed-0.17.5+cpu-cp310-cp310-linux_x86_64.whl
 
       - name: install cuda
         if: ${{ matrix.device=='cuda' }}
-        working-directory: funasr
+
         run: |
           source $CONDA/etc/profile.d/conda.sh
-          conda activate ../${{ env.envName }}/.venv
+          conda activate ./${{ env.envName }}/.venv
           pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu129
           pip install https://github.com/wszgrcy/shb-python-addon-repo/releases/download/1.2.2/deepspeed-0.17.5+cu129-cp310-cp310-linux_x86_64.whl
 
       - name: install rocm
         if: ${{ matrix.device=='rocm' }}
-        working-directory: funasr
+
         run: |
           source $CONDA/etc/profile.d/conda.sh
-          conda activate ../${{ env.envName }}/.venv
+          conda activate ./${{ env.envName }}/.venv
           pip install torch torchaudio --index-url https://download.pytorch.org/whl/rocm6.4
 
       - name: install xpu
         if: ${{ matrix.device=='xpu' }}
-        working-directory: funasr
+
         run: |
           source $CONDA/etc/profile.d/conda.sh
-          conda activate ../${{ env.envName }}/.venv
+          conda activate ./${{ env.envName }}/.venv
           pip install torch torchaudio --index-url https://download.pytorch.org/whl/xpu
 
       - name: install common2
-        working-directory: funasr
+        working-directory: indextts
         run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate ../${{ env.envName }}/.venv
           uv sync --active 
           pip install .
-
           pip install fastapi
           pip install uvicorn
           pip install huggingface_hub
