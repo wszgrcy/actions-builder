@@ -101,13 +101,13 @@ jobs:
           pip install cachetools
           pip cache purge
 
-      - uses: wszgrcy/actions-pkg@1.3.3
+      - uses: wszgrcy/actions-pkg@1.3.5
         with:
           unzipDir: ${{ env.envName }}
           zipPath: ./${{env.envName}}-${{ env.version }}-linux-x64-${{ matrix.device }}.tar.zstd
           zstdLevel: "12"
           chunkSize: "1.95GB"
-          password: "pass:${{env.PKG_PASSWORD}}"
+          password: "pass:${{secrets.PKG_PASSWORD}}"
           cleanPaths: |
             ./.venv/**/*.{h,cpp,c,hpp,cmake}
             ./.venv/conda-meta/**/*
@@ -131,11 +131,13 @@ jobs:
             ./.vscode
             ./util
             ./zluda_init.py
-      - run: |
-          ls
-          cat funasr-env-1.0.0-linux-x64-rocm.tar.zstd.enc.00* | openssl enc -d -aes-256-cbc -pbkdf2 -pass pass:${{env.PKG_PASSWORD}} >1.tar.zstd
-          ls
-        if: ${{ matrix.device=='rocm' }}
+      # - run: |
+      #     ls
+      #     openssl --help
+      #     openssl version
+      #     cat funasr-env-1.0.0-linux-x64-rocm.tar.zstd.enc.00* | openssl enc -d -aes-256-cbc -pbkdf2 -pass pass:${{env.PKG_PASSWORD}} >1.tar.zstd
+      #     ls -lh
+      #   if: ${{ matrix.device=='rocm' }}
       - name: release
         uses: softprops/action-gh-release@v2.4.0
         with:
