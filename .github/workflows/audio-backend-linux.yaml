@@ -56,7 +56,7 @@ jobs:
         working-directory: "./${{env.projectDir}}"
       - run: |
           ls 
-          ./${{ env.projectDir }}/backend/dist
+          ls -lh ./${{ env.projectDir }}/backend/dist
       - name: 压缩
         uses: wszgrcy/actions-pkg@1.4.0
         with:
