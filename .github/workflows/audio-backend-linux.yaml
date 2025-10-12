@@ -58,7 +58,7 @@ jobs:
           ls 
           ls -lh ./${{ env.projectDir }}/backend/dist
       - name: 压缩
-        uses: wszgrcy/actions-pkg@1.4.0
+        uses: wszgrcy/actions-pkg@1.4.1
         with:
           unzipDir: ./${{ env.projectDir }}/backend/dist
           zipPath: ./output/${{env.projectDir}}-${{ env.PUBLISH_VERSION }}-${{env.__platform}}-${{env.__arch}}.tar.zstd
