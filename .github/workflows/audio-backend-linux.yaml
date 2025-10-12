@@ -53,11 +53,11 @@ jobs:
       - name: build
         run: |
           npm run build:backend:exe
+          npm run build:backend:docker
         working-directory: "./${{env.projectDir}}"
       - run: |
           ls 
           ls -lh ./${{ env.projectDir }}/backend/dist
-          npm run build:backend:docker
           docker save -o ./docker-image/${{env.PUBLISH_VERSION}}-${{env.PUBLISH_VERSION}}.docker.tar ${{env.projectDir}}:${{env.PUBLISH_VERSION}}
       - name: 压缩1
         uses: wszgrcy/actions-pkg@1.4.1
