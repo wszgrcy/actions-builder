@@ -57,12 +57,22 @@ jobs:
       - run: |
           ls 
           ls -lh ./${{ env.projectDir }}/backend/dist
-      - name: 压缩
+          npm run build:backend:docker
+          docker save -o ./docker-image/${{env.PUBLISH_VERSION}}-${{env.PUBLISH_VERSION}}.docker.tar ${{env.projectDir}}:${{env.PUBLISH_VERSION}}
+      - name: 压缩1
         uses: wszgrcy/actions-pkg@1.4.1
         with:
           unzipDir: ./${{ env.projectDir }}/backend/dist
           zipPath: ./output/${{env.projectDir}}-${{ env.PUBLISH_VERSION }}-${{env.__platform}}-${{env.__arch}}.tar.zstd
           zipLevel: "12"
+          chunkSize: "1.95GB"
+          password: "pass:${{secrets.PKG_PASSWORD}}"
+      - name: 压缩2
+        uses: wszgrcy/actions-pkg@1.4.1
+        with:
+          unzipDir: ./docker-image
+          zipPath: ./output/${{env.projectDir}}-${{ env.PUBLISH_VERSION }}-${{env.__platform}}-${{env.__arch}}.docker.tar.zstd
+          zipLevel: "1"
           chunkSize: "1.95GB"
           password: "pass:${{secrets.PKG_PASSWORD}}"
 
@@ -74,6 +84,4 @@ jobs:
           repository: wszgrcy/shenghuabi-repo
           token: ${{secrets.SHB_REPO_UPLOAD}}
           tag_name: ${{env.PUBLISH_VERSION}}
-      - run: |
-          npm run build:backend:docker
-        working-directory: "./${{env.projectDir}}"
+
