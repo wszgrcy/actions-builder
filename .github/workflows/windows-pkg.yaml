@@ -71,7 +71,7 @@ jobs:
         run: |
           conda activate ./${{ env.envName }}/.venv
           pip install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
-      - name: install common2
+      - name: install indextts
         working-directory: indextts
         run: |
           conda activate ../${{ env.envName }}/.venv
@@ -79,10 +79,15 @@ jobs:
           pip install .
           pip install fastapi
           pip install uvicorn
-          pip install huggingface_hub
+          pip install huggingface_hub modelscope
           pip install openai-whisper
           pip install cachetools
           pip cache purge
+      - name: install funasr
+        working-directory: funasr
+        run: |
+          conda activate ../${{ env.envName }}/.venv
+          pip install .
 
       - uses: wszgrcy/actions-pkg@1.3.5
         with:
