@@ -42,7 +42,7 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v6
       - run: |
-          conda create -p ./.venv python=3.11
+          conda create -p ./.venv python=3.10
           conda activate ./.venv
         working-directory: ${{ env.envName }}
       - name: install zluda1
@@ -52,14 +52,12 @@ jobs:
           conda activate ./.venv
           python zluda_init.py
           pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu118
-          pip install https://github.com/wszgrcy/shb-python-addon-repo/releases/download/1.2.3/deepspeed-0.17.5+cu118-cp311-cp311-win_amd64.whl
-          pip install https://github.com/lshqqytiger/triton/releases/download/b115cb92/triton-3.4.0+gitb115cb92-cp311-cp311-win_amd64.whl
       - name: install cuda
         if: ${{ matrix.device=='cuda' }}
         run: |
           conda activate ./${{ env.envName }}/.venv
           pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu129
-          pip install https://github.com/wszgrcy/shb-python-addon-repo/releases/download/1.2.3/deepspeed-0.17.5+cu129-cp311-cp311-win_amd64.whl
+          pip install https://github.com/wszgrcy/shb-python-addon-repo/releases/download/1.2.2/deepspeed-0.17.5+cu129-cp310-cp310-win_amd64.whl
 
       - name: install xpu
         if: ${{ matrix.device=='xpu' }}
