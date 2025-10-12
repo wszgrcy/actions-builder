@@ -1,0 +1,73 @@
+name: audio-backend-linux
+run-name: audio-backend-linux
+on:
+  push:
+    paths:
+      - ".github/workflows/audio-backend-linux.yaml"
+
+permissions:
+  contents: write
+env:
+  PUBLISH_VERSION: "1.0.0"
+  ACTIONS_STEP_DEBUG: true
+  __platform: "linux"
+  __arch: "x64"
+  SENTRY_AUTH_TOKEN: ${{secrets.SENTRY_AUTH_TOKEN}}
+  projectDir: audio-backend
+
+jobs:
+  update-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Tailscale
+        uses: tailscale/github-action@v3
+        with:
+          tags: tag:ci
+          authkey: ${{secrets.TS_KEY}}
+          args: ${{secrets.TS_ADD_ARGS}}
+          hostname: github-ci-audio-${{env.__platform}}-${{env.__arch}}
+
+      - name: shenghuabi
+        uses: actions/checkout@v4
+        with:
+          path: ${{env.projectDir}}
+          repository: "root/audio-backend"
+          github-server-url: "http://lan-server.chloc:3000"
+          token: ${{secrets.REMOTE_REPO_TOKEN}}
+          ref: main
+      - name: nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: "${{env.projectDir}}/.node-version"
+
+      - name: npm config
+        run: echo "${{ secrets.REMOTE_NPMCONFIG }}" >>  ~/.npmrc
+      - name: init
+        run: |
+          git config --global user.name "wszgrcy"
+          git config --global user.email "wszgrcy@gmail.com"
+      - name: main/webview install
+        run: npm i
+        working-directory: "./${{env.projectDir}}"
+      - name: build
+        run: |
+          npm run build:backend:exe
+        working-directory: "./${{env.projectDir}}"
+      - name: 压缩
+        uses: wszgrcy/actions-pkg@1.4.0
+        with:
+          unzipDir: ./${{ env.projectDir }}/dist
+          zipPath: ./output/${{env.projectDir}}-${{ env.PUBLISH_VERSION }}-${{env.__platform}}-${{env.__arch}}.tar.zstd
+          zipLevel: "12"
+          chunkSize: "1.95GB"
+          password: "pass:${{secrets.PKG_PASSWORD}}"
+
+      - name: github发行
+        uses: wszgrcy/action-gh-release@1.2.0
+        with:
+          fail_on_unmatched_files: true
+          files: "./output/**/*"
+          repository: wszgrcy/shenghuabi-repo
+          token: ${{secrets.SHB_REPO_UPLOAD}}
+          tag_name: ${{env.PUBLISH_VERSION}}
