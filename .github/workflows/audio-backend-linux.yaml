@@ -8,7 +8,7 @@ on:
 permissions:
   contents: write
 env:
-  PUBLISH_VERSION: "1.0.0"
+  PUBLISH_VERSION: "1.0.1"
   ACTIONS_STEP_DEBUG: true
   __platform: "linux"
   __arch: "x64"
