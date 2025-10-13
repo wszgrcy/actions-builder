@@ -9,7 +9,7 @@ permissions:
   contents: write
 env:
   envName: "funasr-env"
-  version: 1.0.0
+  version: 1.0.1
 jobs:
   update-release:
     strategy:
@@ -138,13 +138,6 @@ jobs:
             ./.vscode
             ./util
             ./zluda_init.py
-      # - run: |
-      #     ls
-      #     openssl --help
-      #     openssl version
-      #     cat funasr-env-1.0.0-linux-x64-rocm.tar.zstd.enc.00* | openssl enc -d -aes-256-cbc -pbkdf2 -pass pass:${{env.PKG_PASSWORD}} >1.tar.zstd
-      #     ls -lh
-      #   if: ${{ matrix.device=='rocm' }}
       - name: release
         uses: softprops/action-gh-release@v2.4.0
         with:

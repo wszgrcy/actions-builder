@@ -9,7 +9,7 @@ permissions:
   contents: write
 env:
   envName: "funasr-env"
-  version: 1.0.0
+  version: 1.0.1
 jobs:
   update-release:
     strategy:
@@ -117,14 +117,6 @@ jobs:
             ./.vscode
             ./util
             ./zluda_init.py
-      # - run: |
-      #     ls
-      #     openssl --help
-      #     openssl version
-      #     cat funasr-env-1.0.0-win32-x64-zluda.tar.zstd.enc.00* | openssl enc -d -aes-256-cbc -pbkdf2 -pass pass:${{secrets.PKG_PASSWORD}} >1.tar.zstd
-      #     ls -lh
-      #   shell: bash
-      #   if: ${{ matrix.device=='zluda' }}
       - name: release
         uses: softprops/action-gh-release@v2.4.0
         with:
