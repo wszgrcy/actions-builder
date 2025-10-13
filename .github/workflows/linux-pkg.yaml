@@ -30,7 +30,8 @@ jobs:
       - name: pull-code
         uses: actions/checkout@v4
         with:
-          repository: "modelscope/FunASR"
+          repository: "wszgrcy/FunASR"
+          ref: "build"
           path: "./funasr"
       - name: pull-code
         uses: actions/checkout@v4
