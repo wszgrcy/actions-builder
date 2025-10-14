@@ -24,8 +24,8 @@ jobs:
           android: true
           dotnet: true
           haskell: true
-          large-packages: true
-          docker-images: false
+          large-packages: false
+          docker-images: true
           swap-storage: true
       - name: pull-code
         uses: actions/checkout@v4
