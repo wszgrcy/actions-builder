@@ -20,13 +20,16 @@ jobs:
       - name: Free Disk Space (Ubuntu)
         uses: jlumbroso/free-disk-space@main
         with:
-          tool-cache: false
+          tool-cache: true
           android: true
           dotnet: true
           haskell: true
-          large-packages: false
+          large-packages: true
           docker-images: true
           swap-storage: true
+      - run: |
+          type docker
+
       - name: pull-code
         uses: actions/checkout@v4
         with:
@@ -111,7 +114,7 @@ jobs:
       - name: docker build
         run: |
           ls ${{ env.envName }}
-          dokcer build -t ${{env.envName}}:${{ env.version }}-${{ matrix.device }} ./${{ env.envName }}/docker/dockerfile.${{matrix.device}}
+          docker build -t ${{env.envName}}:${{ env.version }}-${{ matrix.device }} ./${{ env.envName }}/docker/dockerfile.${{matrix.device}}
           docker save -o ./docker-image/${{env.PUBLISH_VERSION}}-${{env.PUBLISH_VERSION}}.docker.tar ${{env.projectDir}}:${{env.PUBLISH_VERSION}}
           docker image ls
           docker rm -f $(docker ps -a -q)
