@@ -114,7 +114,7 @@ jobs:
       - name: docker build
         working-directory: ${{ env.envName }}  
         run: |
-          ls ${{ env.envName }}
+          ls
           docker build -t ${{env.envName}}:${{ env.version }}-${{ matrix.device }} -f ./docker/dockerfile.${{matrix.device}} .
           docker save -o ./docker-image/${{env.PUBLISH_VERSION}}-${{env.PUBLISH_VERSION}}.docker.tar ${{env.projectDir}}:${{env.PUBLISH_VERSION}}
           docker image ls
