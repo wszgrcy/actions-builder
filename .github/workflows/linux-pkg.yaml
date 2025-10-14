@@ -25,7 +25,7 @@ jobs:
           dotnet: true
           haskell: true
           large-packages: true
-          docker-images: true
+          docker-images: false
           swap-storage: true
       - name: pull-code
         uses: actions/checkout@v4
