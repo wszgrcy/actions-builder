@@ -183,17 +183,17 @@ jobs:
         with:
           unzipDir: ./${{ env.envName }}
           zipPath: ./output/asr.tar.gz
-          zipLevel: "7"
+          zipLevel: "5"
           chunkSize: "9999GB"
           zipType: "gz"
       - name: docker build
         run: |
-          dust -r -n 30 -d 3 -z 1M /
+          dust -r -n 30 -d 3 -z 1M /home/runner
           dust -r -n 30 -d 3 -z 1M  ./
-          df -a
-          df -a .
           df -h .
+          ls -lh ./output
           docker build -t ${{env.envName}}:${{ env.version }}-${{ matrix.device }} -f ./docker/dockerfile.${{matrix.device}} .
+          docker image ls
           rm -rf ./output
           df -h .
 
