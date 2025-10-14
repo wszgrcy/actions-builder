@@ -19,7 +19,7 @@ jobs:
     steps:
       - run: |
           curl -o dust.deb https://github.com/bootandy/dust/releases/download/v1.2.3/du-dust_1.2.3-1_amd64.deb
-          sudo apt update list
+          sudo apt update
           sudo apt install ./dust.deb -y
           dust -n 30 -d 3
       - name: Free Disk Space (Ubuntu)
