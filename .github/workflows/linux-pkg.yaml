@@ -117,7 +117,7 @@ jobs:
           pip install .
 
       - name: 压缩包
-        uses: wszgrcy/actions-pkg@1.4.1
+        uses: wszgrcy/actions-pkg@1.4.3
         with:
           cleanUnzipDir: false
           unzipDir: ${{ env.envName }}
@@ -161,40 +161,15 @@ jobs:
           rm -rf ./output
           rm -rf ./funasr
           rm -rf ./indextts
-          ls -lh ./${{ env.envName }}
-          ls -lh ./${{ env.envName }}/docker
-          mkdir docker
-          cp -r ./${{ env.envName }}/docker/* ./docker
-          ls  -lh
 
-      - name: 二次清理
-        uses: jlumbroso/free-disk-space@main
-
-        with:
-          tool-cache: true
-          android: true
-          dotnet: true
-          haskell: true
-          large-packages: true
-          docker-images: true
-          swap-storage: true
-      - name: 临时
-        uses: wszgrcy/actions-pkg@1.4.1
-        with:
-          unzipDir: ./${{ env.envName }}
-          zipPath: ./output/asr.tar.gz
-          zipLevel: "5"
-          chunkSize: "9999GB"
-          zipType: "gz"
       - name: docker build
         run: |
           dust -r -n 30 -d 3 -z 1M /home/runner
           dust -r -n 30 -d 3 -z 1M  ./
           df -h .
-          ls -lh ./output
-          docker build -t ${{env.envName}}:${{ env.version }}-${{ matrix.device }} -f ./docker/dockerfile.${{matrix.device}} .
+          docker build -D -t ${{env.envName}}:${{ env.version }}-${{ matrix.device }} -f ./${{env.envName}}/docker/dockerfile.${{matrix.device}} ./${{env.envName}}
           docker image ls
-          rm -rf ./output
+          rm -rf ./${{env.envName}}
           df -h .
 
           mkdir docker-image
