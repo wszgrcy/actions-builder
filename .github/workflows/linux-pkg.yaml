@@ -19,8 +19,8 @@ jobs:
     steps:
       - run: |
           sudo snap install dust
-          dust -n 30 -d 3 /
-          dust -n 30 -d 3
+          sudo dust -n 30 -d 3 /
+          sudo dust -n 30 -d 3
           exit 1
       - name: Free Disk Space (Ubuntu)
         uses: BRAINSia/free-disk-space@v2.1.1
