@@ -20,7 +20,7 @@ jobs:
       - run: |
           ls -lh /tmp
       - name: Free Disk Space (Ubuntu)
-        uses: BRAINSia/free-disk-space@2.1.1
+        uses: BRAINSia/free-disk-space@v2.1.1
         with:
           tool-cache: true
           android: true
@@ -160,7 +160,7 @@ jobs:
           ls -lh
 
       - name: 二次清理
-        uses: BRAINSia/free-disk-space@2.1.1
+        uses: BRAINSia/free-disk-space@v2.1.1
         with:
           tool-cache: true
           android: true
