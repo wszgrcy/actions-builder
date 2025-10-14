@@ -163,6 +163,7 @@ jobs:
           rm -rf ./indextts
           ls -lh ./${{ env.envName }}
           ls -lh ./${{ env.envName }}/docker
+          mkdir docker
           cp -r ./${{ env.envName }}/docker/* ./docker
           ls  -lh
 
