@@ -17,8 +17,6 @@ jobs:
         device: [cpu, cuda, rocm, xpu]
     runs-on: ubuntu-latest
     steps:
-      - run: |
-          ls -lh /tmp
       - name: Free Disk Space (Ubuntu)
         uses: BRAINSia/free-disk-space@v2.1.1
         with:
@@ -105,6 +103,7 @@ jobs:
           pip install openai-whisper
           pip install cachetools
           pip cache purge
+          uv cache clean
       - name: install funasr
         working-directory: funasr
         run: |
@@ -182,8 +181,7 @@ jobs:
         run: |
           df -a
           df -a .
-          ls -lh /tmp
-          df -h ./${{ env.envName }}
+          df -h .
           docker build -t ${{env.envName}}:${{ env.version }}-${{ matrix.device }} -f ./${{ env.envName }}/docker/dockerfile.${{matrix.device}} ./${{ env.envName }}
           df -h .
           rm -rf ./${{ env.envName }}
