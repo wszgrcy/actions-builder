@@ -27,8 +27,6 @@ jobs:
           large-packages: true
           docker-images: true
           swap-storage: true
-      - run: |
-          type docker
 
       - name: pull-code
         uses: actions/checkout@v4
@@ -111,16 +109,10 @@ jobs:
           conda activate ../${{ env.envName }}/.venv
           pip install .
 
-      - name: docker build
-        run: |
-          docker build -t ${{env.envName}}:${{ env.version }}-${{ matrix.device }} -f ./${{ env.envName }}/docker/dockerfile.${{matrix.device}} ./${{ env.envName }}
-          mkdir docker-image
-          docker save -o ./docker-image/${{env.envName}}-${{ env.version }}-${{ matrix.device }}.docker.tar ${{env.envName}}:${{ env.version }}-${{ matrix.device }}
-          docker image rm ${{env.envName}}:${{ env.version }}-${{ matrix.device }}
-          # docker image rm ${{env.envName}}:${{ env.version }}-${{ matrix.device }}
       - name: 压缩包
         uses: wszgrcy/actions-pkg@1.4.1
         with:
+          cleanUnzipDir: false
           unzipDir: ${{ env.envName }}
           zipPath: ./output/${{env.envName}}-${{ env.version }}-linux-x64-${{ matrix.device }}.tar.zstd
           zipLevel: "12"
@@ -149,6 +141,40 @@ jobs:
             ./.vscode
             ./util
             ./zluda_init.py
+      - name: release
+        uses: softprops/action-gh-release@v2.4.0
+        with:
+          files: |
+            ./output/**/*
+          tag_name: ${{ env.version }}
+          repository: ${{secrets.UPDATE_SHB_PY_REPO}}
+          token: ${{ secrets.SHB_PY_TOKEN }}
+      - name: 清理
+        run: |
+          rm -rf ./output
+          rm -rf ./funasr
+          rm -rf ./indextts
+          
+      - name: 二次清理
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: true
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: true
+      - name: docker build
+        run: |
+          df -h /
+          docker build -t ${{env.envName}}:${{ env.version }}-${{ matrix.device }} -f ./${{ env.envName }}/docker/dockerfile.${{matrix.device}} ./${{ env.envName }}
+          rm -rf ./${{ env.envName }}
+          df -h /
+          mkdir docker-image
+          docker save -o ./docker-image/${{env.envName}}-${{ env.version }}-${{ matrix.device }}.docker.tar ${{env.envName}}:${{ env.version }}-${{ matrix.device }}
+          docker image rm ${{env.envName}}:${{ env.version }}-${{ matrix.device }}
+          # docker image rm ${{env.envName}}:${{ env.version }}-${{ matrix.device }}
       - name: 压缩docker
         uses: wszgrcy/actions-pkg@1.4.1
         with:
