@@ -154,6 +154,7 @@ jobs:
           rm -rf ./output
           rm -rf ./funasr
           rm -rf ./indextts
+          ls -lh
           
       - name: 二次清理
         uses: jlumbroso/free-disk-space@main
@@ -167,7 +168,7 @@ jobs:
           swap-storage: true
       - name: docker build
         run: |
-          df -h /
+          df -h ./${{ env.envName }}
           docker build -t ${{env.envName}}:${{ env.version }}-${{ matrix.device }} -f ./${{ env.envName }}/docker/dockerfile.${{matrix.device}} ./${{ env.envName }}
           rm -rf ./${{ env.envName }}
           df -h /
