@@ -165,15 +165,14 @@ jobs:
       - name: docker build
         run: |
           dust -r -n 30 -d 3 -z 1M /home/runner
-          dust -r -n 30 -d 3 -z 1M  ./
           df -h .
           docker build -D -t ${{env.envName}}:${{ env.version }}-${{ matrix.device }} -f ./${{env.envName}}/docker/dockerfile.${{matrix.device}} ./${{env.envName}}
           docker image ls
           rm -rf ./${{env.envName}}
           df -h .
-
+          dust -r -n 30 -d 3 -z 1M /home/runner
           mkdir docker-image
-          docker save -o ./docker-image/${{env.envName}}-${{ env.version }}-${{ matrix.device }}.docker.tar ${{env.envName}}:${{ env.version }}-${{ matrix.device }}
+          docker save  ${{env.envName}}:${{ env.version }}-${{ matrix.device }} | gzip > ./docker-image/${{env.envName}}-${{ env.version }}-${{ matrix.device }}.docker.tar.gz
           docker image rm ${{env.envName}}:${{ env.version }}-${{ matrix.device }}
           # docker image rm ${{env.envName}}:${{ env.version }}-${{ matrix.device }}
       - name: 压缩docker
