@@ -19,6 +19,7 @@ jobs:
     steps:
       - run: |
           sudo snap install dust
+          dust -n 30 -d 3 /
           dust -n 30 -d 3
           exit 1
       - name: Free Disk Space (Ubuntu)
