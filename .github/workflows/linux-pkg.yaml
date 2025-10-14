@@ -161,6 +161,7 @@ jobs:
           rm -rf ./output
           rm -rf ./funasr
           rm -rf ./indextts
+          ls -lh ./${{ env.envName }}
           ls -lh ./${{ env.envName }}/docker
           cp -r ./${{ env.envName }}/docker/* ./docker
           ls  -lh
