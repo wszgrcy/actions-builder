@@ -71,7 +71,7 @@ jobs:
         with:
           unzipDir: ./docker-image
           zipPath: ./output/${{env.projectDir}}-${{ env.PUBLISH_VERSION }}-${{env.__platform}}-${{env.__arch}}.docker.tar.zstd
-          zipLevel: "1"
+          zipLevel: "12"
           chunkSize: "1.95GB"
           password: "pass:${{secrets.PKG_PASSWORD}}"
 
