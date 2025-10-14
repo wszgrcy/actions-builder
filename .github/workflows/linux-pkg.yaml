@@ -162,7 +162,7 @@ jobs:
           rm -rf ./funasr
           rm -rf ./indextts
           cp -r ./${{ env.envName }}/docker/* ./docker
-          ls ./docker -lh
+          ls  -lh
 
       - name: 二次清理
         uses: jlumbroso/free-disk-space@main
