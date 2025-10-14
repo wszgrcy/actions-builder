@@ -170,9 +170,9 @@ jobs:
         run: |
           df -h ./${{ env.envName }}
           docker build -t ${{env.envName}}:${{ env.version }}-${{ matrix.device }} -f ./${{ env.envName }}/docker/dockerfile.${{matrix.device}} ./${{ env.envName }}
-          df -h ./${{ env.envName }}
+          df -h .
           rm -rf ./${{ env.envName }}
-          df -h ./${{ env.envName }}
+          df -h .
           mkdir docker-image
           docker save -o ./docker-image/${{env.envName}}-${{ env.version }}-${{ matrix.device }}.docker.tar ${{env.envName}}:${{ env.version }}-${{ matrix.device }}
           docker image rm ${{env.envName}}:${{ env.version }}-${{ matrix.device }}
