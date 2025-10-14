@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          snap install dust
+          sudo snap install dust
           dust -n 30 -d 3
           exit 1
       - name: Free Disk Space (Ubuntu)
@@ -160,8 +160,8 @@ jobs:
           rm -rf ./output
           rm -rf ./funasr
           rm -rf ./indextts
-          cp -r ./${{ env.envName }}/docker ./docker
-          ls -lh
+          cp -r ./${{ env.envName }}/docker/* ./docker
+          ls ./docker -lh
 
       - name: 二次清理
         uses: jlumbroso/free-disk-space@main
