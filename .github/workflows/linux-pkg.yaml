@@ -160,7 +160,8 @@ jobs:
           ls -lh
 
       - name: 二次清理
-        uses: BRAINSia/free-disk-space@v2.1.1
+        uses: jlumbroso/free-disk-space@main
+
         with:
           tool-cache: true
           android: true
@@ -169,7 +170,6 @@ jobs:
           large-packages: true
           docker-images: true
           swap-storage: true
-          mandb: true
       - name: 临时
         uses: wszgrcy/actions-pkg@1.4.1
         with:
@@ -180,6 +180,8 @@ jobs:
           zipType: 'gz'
       - name: docker build
         run: |
+          df -a
+          df -a .
           ls -lh /tmp
           df -h ./${{ env.envName }}
           docker build -t ${{env.envName}}:${{ env.version }}-${{ matrix.device }} -f ./${{ env.envName }}/docker/dockerfile.${{matrix.device}} ./${{ env.envName }}
