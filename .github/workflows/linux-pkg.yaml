@@ -17,6 +17,10 @@ jobs:
         device: [cpu, cuda, rocm, xpu]
     runs-on: ubuntu-latest
     steps:
+      - run: |
+          curl -o dust.deb https://github.com/bootandy/dust/releases/download/v1.2.3/du-dust_1.2.3-1_amd64.deb
+          apt install ./dust.deb
+          dust -n 30 -d 3
       - name: Free Disk Space (Ubuntu)
         uses: BRAINSia/free-disk-space@v2.1.1
         with:
@@ -156,6 +160,7 @@ jobs:
           rm -rf ./output
           rm -rf ./funasr
           rm -rf ./indextts
+          cp -r ./${{ env.envName }}/docker ./docker
           ls -lh
 
       - name: 二次清理
@@ -174,18 +179,17 @@ jobs:
         with:
           unzipDir: ./${{ env.envName }}
           zipPath: ./output/asr.tar.gz
-          zipLevel: "9"
+          zipLevel: "7"
           chunkSize: "9999GB"
-          zipType: 'gz'
+          zipType: "gz"
       - name: docker build
         run: |
           df -a
           df -a .
           df -h .
-          docker build -t ${{env.envName}}:${{ env.version }}-${{ matrix.device }} -f ./${{ env.envName }}/docker/dockerfile.${{matrix.device}} ./${{ env.envName }}
+          docker build -t ${{env.envName}}:${{ env.version }}-${{ matrix.device }} -f ./docker/dockerfile.${{matrix.device}} .
           df -h .
-          rm -rf ./${{ env.envName }}
-          df -h .
+
           mkdir docker-image
           docker save -o ./docker-image/${{env.envName}}-${{ env.version }}-${{ matrix.device }}.docker.tar ${{env.envName}}:${{ env.version }}-${{ matrix.device }}
           docker image rm ${{env.envName}}:${{ env.version }}-${{ matrix.device }}
