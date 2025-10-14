@@ -18,10 +18,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          curl -o dust.deb https://github.com/bootandy/dust/releases/download/v1.2.3/du-dust_1.2.3-1_amd64.deb
-          sudo apt update
-          sudo apt install ./dust.deb -y
+          deb-get install du-dust
+          snap install dust
           dust -n 30 -d 3
+          exit 1
       - name: Free Disk Space (Ubuntu)
         uses: BRAINSia/free-disk-space@v2.1.1
         with:
