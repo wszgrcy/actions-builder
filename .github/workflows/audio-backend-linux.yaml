@@ -57,7 +57,7 @@ jobs:
         working-directory: "./${{env.projectDir}}"
       - run: |
           mkdir docker-image
-          docker save -o ./docker-image/${{env.PUBLISH_VERSION}}-${{env.PUBLISH_VERSION}}.docker.tar ${{env.projectDir}}:${{env.PUBLISH_VERSION}}
+          docker save -o ./docker-image/${{env.projectDir}}-${{env.PUBLISH_VERSION}}.docker.tar ${{env.projectDir}}:${{env.PUBLISH_VERSION}}
       - name: 压缩1
         uses: wszgrcy/actions-pkg@1.4.1
         with:
