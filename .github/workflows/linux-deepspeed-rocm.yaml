@@ -70,7 +70,7 @@ jobs:
           echo "hello"
           sudo echo '#/bin/bash\necho gfx1100' > /opt/rocm/llvm/bin/amdgpu-arch && sudo chmod 755 /opt/rocm/llvm/bin/amdgpu-arch
           ls -lh /opt/rocm
-          DS_BUILD_EVOFORMER_ATTN=0 ROCM_PATH=/opt/rocm GPU_TARGETS="gfx1100" CMAKE_HIP_ARCHITECTURES=gfx1100 BNB_ROCM_ARCH="gfx1100" COMPUTE_BACKEND=hip PYTORCH_ROCM_ARCH=gfx1100 AMDGPU_TARGETS=gfx1100 DS_ACCELERATOR=cuda LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/opt/rocm/lib:/opt/rocm/lib64" LIBRARY_PATH="$LIBRARY_PATH:/opt/rocm/lib:/opt/rocm/lib64" PATH=$PATH:/opt/rocm/llvm/bin:/opt/rocm/bin DS_BUILD_SPARSE_ATTN=0 NCCL_DEBUG=INFO DS_BUILD_OPS=1  DS_BUILD_STRING="+rocm" ./install.sh
+          DS_BUILD_EVOFORMER_ATTN=0 DS_BUILD_GDS=0 DS_BUILD_SPARSE_ATTN=0 DS_BUILD_FP_QUANTIZER=0 ROCM_PATH=/opt/rocm GPU_TARGETS="gfx1100" CMAKE_HIP_ARCHITECTURES=gfx1100 BNB_ROCM_ARCH="gfx1100" COMPUTE_BACKEND=hip PYTORCH_ROCM_ARCH=gfx1100 AMDGPU_TARGETS=gfx1100 DS_ACCELERATOR=cuda LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/opt/rocm/lib:/opt/rocm/lib64" LIBRARY_PATH="$LIBRARY_PATH:/opt/rocm/lib:/opt/rocm/lib64" PATH=$PATH:/opt/rocm/llvm/bin:/opt/rocm/bin DS_BUILD_SPARSE_ATTN=0 NCCL_DEBUG=INFO DS_BUILD_OPS=1  DS_BUILD_STRING="+rocm" ./install.sh
       - run: ls ./dist
       - name: release
         uses: softprops/action-gh-release@v2
