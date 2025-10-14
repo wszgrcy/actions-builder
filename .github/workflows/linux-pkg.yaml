@@ -18,7 +18,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          deb-get install du-dust
           snap install dust
           dust -n 30 -d 3
           exit 1
