@@ -107,15 +107,17 @@ jobs:
           pip install huggingface_hub modelscope
           pip install openai-whisper
           pip install cachetools
-          pip cache purge
           uv cache clean
-          conda clean -a
       - name: install funasr
         working-directory: funasr
         run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate ../${{ env.envName }}/.venv
           pip install .
+          conda install -c conda-forge ffmpeg
+          conda clean -a
+          pip cache purge
+          
 
       - name: 压缩包
         uses: wszgrcy/actions-pkg@1.4.3
@@ -168,13 +170,13 @@ jobs:
           mkdir docker
           cp -r ./${{env.envName}}/docker/* ./docker
           rm -rf ./${{env.envName}}/docker
-          
+
           docker build -D -t ${{env.envName}}:${{ env.version }}-${{ matrix.device }} -f ./docker/dockerfile.${{matrix.device}} ./${{env.envName}}
           docker image ls
           rm -rf ./${{env.envName}}
           mkdir docker-image
           du -d 3 -h -a /home/runner
-          docker save  ${{env.envName}}:${{ env.version }}-${{ matrix.device }} | zstd -T0 -22 --ultra > ./docker-image/${{env.envName}}-${{ env.version }}-${{ matrix.device }}.docker.tar.zst
+          docker save  ${{env.envName}}:${{ env.version }}-${{ matrix.device }} | zstd -T0 -12 --ultra > ./docker-image/${{env.envName}}-${{ env.version }}-${{ matrix.device }}.docker.tar.zst
           du -d 3 -h -a /home/runner
           docker image rm ${{env.envName}}:${{ env.version }}-${{ matrix.device }}
       - name: 压缩docker
