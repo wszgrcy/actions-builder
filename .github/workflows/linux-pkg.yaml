@@ -55,7 +55,7 @@ jobs:
           ref: build
       - run: |
           echo 'miniconda之前'
-          df -ha  /
+          df -a  /
       - uses: conda-incubator/setup-miniconda@v3
         with:
           # auto-activate-base: true
@@ -63,9 +63,14 @@ jobs:
           python-version: "3.10"
       - run: |
           echo 'uv之前'
-          df -ha  /
+          df -a  /
       - name: Install uv
         uses: astral-sh/setup-uv@v6
+
+      - run: |
+          echo 'uv后'
+          df -a  /
+          du -d 2 -a /usr/share/miniconda 
 
       - name: install cpu
         if: ${{ matrix.device=='cpu' }}
@@ -196,6 +201,10 @@ jobs:
           rm -rf ./docker
           rm -rf /home/runner/.rustup
           rm -rf /home/runner/.dotnet
+          rm -rf /home/runner/.nvm
+          rm -rf /home/runner/.conda
+          rm -rf /home/runner/.cargo
+          rm -rf /home/runner/.cache
           du -d 3 -h -a /home/runner
           df -ha /
           ls -lh ./
