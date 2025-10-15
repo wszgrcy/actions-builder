@@ -194,7 +194,7 @@ jobs:
           rm -rf ./${{env.envName}}/docker
           df -h ./
           ls -lh ./
-          docker build -D -t ${{env.envName}}:${{ env.version }}-${{ matrix.device }} -f ./docker/dockerfile.${{matrix.device}} ./${{env.envName}}
+          docker build --target builder -D -t ${{env.envName}}:${{ env.version }}-${{ matrix.device }} -f ./docker/dockerfile.${{matrix.device}} ./${{env.envName}}
           df -ha ./
           docker image ls
           rm -rf ./${{env.envName}}
