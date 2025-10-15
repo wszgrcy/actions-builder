@@ -70,7 +70,7 @@ jobs:
         uses: wszgrcy/actions-pkg@1.4.1
         with:
           unzipDir: ./docker-image
-          zipPath: ./output/${{env.projectDir}}-${{ env.PUBLISH_VERSION }}-${{env.__platform}}-${{env.__arch}}.docker.tar.zstd
+          zipPath: ./output/${{env.projectDir}}-${{ env.PUBLISH_VERSION }}-${{env.__arch}}.docker.tar.zstd
           zipLevel: "12"
           chunkSize: "1.95GB"
           password: "pass:${{secrets.PKG_PASSWORD}}"
@@ -82,4 +82,4 @@ jobs:
           files: "./output/**/*"
           repository: wszgrcy/shenghuabi-repo
           token: ${{secrets.SHB_REPO_UPLOAD}}
-          tag_name: ${{env.PUBLISH_VERSION}} 
+          tag_name: ${{env.PUBLISH_VERSION}}
