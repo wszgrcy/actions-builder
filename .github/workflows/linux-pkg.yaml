@@ -205,6 +205,7 @@ jobs:
           rm -rf /home/runner/.conda
           rm -rf /home/runner/.cargo
           rm -rf /home/runner/.cache
+          rm -rf /usr/share/miniconda
           du -d 3 -h -a /home/runner
           df -ha /
           ls -lh ./
