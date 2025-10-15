@@ -187,7 +187,6 @@ jobs:
           rm -rf ./${{env.envName}}
           rm -rf ./docker
           rm -rf /home/runner/.rustup
-          rm -rf /home/runner/actions-runner/cached
           rm -rf /home/runner/.dotnet
           du -d 3 -h -a /home/runner
           df -h ./
