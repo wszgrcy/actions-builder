@@ -179,12 +179,14 @@ jobs:
           swap-storage: true
       - name: docker build
         run: |
+          sudo du -d 3 -h -a / | awk '$1 > 10M'
           mkdir docker
           cp -r ./${{env.envName}}/docker/* ./docker
           rm -rf ./${{env.envName}}/docker
           df -h ./
           ls -lh ./
           docker build --target builder -D -t ${{env.envName}}:${{ env.version }}-${{ matrix.device }} -f ./docker/dockerfile.${{matrix.device}} ./${{env.envName}}
+          sudo du -d 3 -h -a / | awk '$1 > 10M'
           df -ha ./
           docker image ls
           rm -rf ./${{env.envName}}
@@ -203,6 +205,7 @@ jobs:
           docker save  ${{env.envName}}:${{ env.version }}-${{ matrix.device }} | gzip > ./docker-image/${{env.envName}}-${{ env.version }}-${{ matrix.device }}.docker.tar.gz
           du -d 3 -h -a /home/runner
           docker image rm ${{env.envName}}:${{ env.version }}-${{ matrix.device }}
+          
       - name: 压缩docker
         uses: wszgrcy/actions-pkg@1.4.1
         with:
