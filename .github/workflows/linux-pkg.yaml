@@ -53,11 +53,17 @@ jobs:
           repository: ${{secrets.INDEXTTS_REPO}}
           path: indextts
           ref: build
+      - run: |
+          echo 'miniconda之前'
+          df -ha  /
       - uses: conda-incubator/setup-miniconda@v3
         with:
           # auto-activate-base: true
           activate-environment: "./${{ env.envName }}/.venv"
           python-version: "3.10"
+      - run: |
+          echo 'uv之前'
+          df -ha  /
       - name: Install uv
         uses: astral-sh/setup-uv@v6
 
@@ -165,6 +171,7 @@ jobs:
           rm -rf ./funasr
           rm -rf ./indextts
           du -d 3 -h -a /home/runner
+          rm -rf /home/runner/work/_temp
       - name: Free Disk Space (Ubuntu)
         uses: jlumbroso/free-disk-space@main
         with:
@@ -183,14 +190,14 @@ jobs:
           df -h ./
           ls -lh ./
           docker build -D -t ${{env.envName}}:${{ env.version }}-${{ matrix.device }} -f ./docker/dockerfile.${{matrix.device}} ./${{env.envName}}
+          df -ha ./
           docker image ls
           rm -rf ./${{env.envName}}
           rm -rf ./docker
           rm -rf /home/runner/.rustup
           rm -rf /home/runner/.dotnet
           du -d 3 -h -a /home/runner
-          df -h ./
-          df -h /
+          df -ha /
           ls -lh ./
           mkdir docker-image
           docker save  ${{env.envName}}:${{ env.version }}-${{ matrix.device }} | gzip > ./docker-image/${{env.envName}}-${{ env.version }}-${{ matrix.device }}.docker.tar.gz
