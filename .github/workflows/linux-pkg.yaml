@@ -165,6 +165,16 @@ jobs:
           rm -rf ./funasr
           rm -rf ./indextts
           du -d 3 -h -a /home/runner
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: true
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: true
       - name: docker build
         run: |
           mkdir docker
@@ -175,8 +185,11 @@ jobs:
           docker image ls
           rm -rf ./${{env.envName}}
           mkdir docker-image
+          rm -rf /home/runner/.rustup
           du -d 3 -h -a /home/runner
-          docker save  ${{env.envName}}:${{ env.version }}-${{ matrix.device }} | zstd -T0 -12 --ultra > ./docker-image/${{env.envName}}-${{ env.version }}-${{ matrix.device }}.docker.tar.zst
+          df -h ./
+          df -h /
+          docker save  ${{env.envName}}:${{ env.version }}-${{ matrix.device }} | zstd -T0 -19 --ultra > ./docker-image/${{env.envName}}-${{ env.version }}-${{ matrix.device }}.docker.tar.zst
           du -d 3 -h -a /home/runner
           docker image rm ${{env.envName}}:${{ env.version }}-${{ matrix.device }}
       - name: 压缩docker
