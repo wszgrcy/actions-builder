@@ -179,14 +179,14 @@ jobs:
           swap-storage: true
       - name: docker build
         run: |
-          sudo du -d 3 -h -a / | awk '$1 > 10M'
+          sudo du -d 3 -h -a / 
           mkdir docker
           cp -r ./${{env.envName}}/docker/* ./docker
           rm -rf ./${{env.envName}}/docker
           df -h ./
           ls -lh ./
           docker build --target builder -D -t ${{env.envName}}:${{ env.version }}-${{ matrix.device }} -f ./docker/dockerfile.${{matrix.device}} ./${{env.envName}}
-          sudo du -d 3 -h -a / | awk '$1 > 10M'
+          sudo du -d 3 -h -a / 
           df -ha ./
           docker image ls
           rm -rf ./${{env.envName}}
