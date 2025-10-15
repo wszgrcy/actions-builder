@@ -17,17 +17,6 @@ jobs:
         device: [cpu, cuda, rocm, xpu]
     runs-on: ubuntu-latest
     steps:
-      - run: |
-          # sudo snap install dust
-          # sudo dust -r -n 30 -d 3 -z 1M /
-          # dust -r -n 30 -d 3 -z 1M /
-          # dust -r -n 30 -d 3 -z 1M  ./
-          sudo rm -rf /usr/lib/jvm
-          sudo rm -rf /usr/local/julia1.11.7
-          sudo rm -rf /usr/share/az_12.5.0
-          sudo rm -rf /usr/share/swift
-          sudo rm -rf /opt/microsoft
-          sudo rm -rf /usr/local/aws-sam-cli
       - name: Free Disk Space (Ubuntu)
         uses: BRAINSia/free-disk-space@v2.1.1
         with:
@@ -171,48 +160,26 @@ jobs:
           rm -rf ./output
           rm -rf ./funasr
           rm -rf ./indextts
-          du -d 3 -h -a /home/runner
           rm -rf /home/runner/work/_temp
-      - name: Free Disk Space (Ubuntu)
-        uses: jlumbroso/free-disk-space@main
-        with:
-          tool-cache: true
-          android: true
-          dotnet: true
-          haskell: true
-          large-packages: true
-          docker-images: true
-          swap-storage: true
+          sudo rm -rf /usr/lib/jvm
+          sudo rm -rf /usr/local/julia1.11.7
+          sudo rm -rf /usr/share/az_12.5.0
+          sudo rm -rf /usr/share/swift
+          sudo rm -rf /opt/microsoft
+          sudo rm -rf /usr/local/aws-sam-cli
       - name: docker build
         run: |
-          df -ha
-          sudo du -d 3 -h -a / || true
-
           mkdir docker
           cp -r ./${{env.envName}}/docker/* ./docker
           rm -rf ./${{env.envName}}/docker
-          df -ha 
           docker build --target builder -D -t ${{env.envName}}:${{ env.version }}-${{ matrix.device }} -f ./docker/dockerfile.${{matrix.device}} ./${{env.envName}}
-          sudo du -d 3 -h -a / || true
-          df -ha 
           docker image ls
           rm -rf ./${{env.envName}}
-          rm -rf ./docker
-          rm -rf /home/runner/.rustup
-          rm -rf /home/runner/.dotnet
-          rm -rf /home/runner/.nvm
-          rm -rf /home/runner/.conda
-          rm -rf /home/runner/.cargo
-          rm -rf /home/runner/.cache
-          rm -rf /usr/share/miniconda
-          du -d 3 -h -a /home/runner
-          df -ha /
-          ls -lh ./
+          rm -rf ./docker         
           mkdir docker-image
           docker save  ${{env.envName}}:${{ env.version }}-${{ matrix.device }} | gzip > ./docker-image/${{env.envName}}-${{ env.version }}-${{ matrix.device }}.docker.tar.gz
-          du -d 3 -h -a /home/runner
           docker image rm ${{env.envName}}:${{ env.version }}-${{ matrix.device }}
-          
+
       - name: 压缩docker
         uses: wszgrcy/actions-pkg@1.4.1
         with:
