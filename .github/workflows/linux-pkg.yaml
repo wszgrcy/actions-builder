@@ -114,7 +114,7 @@ jobs:
           source $CONDA/etc/profile.d/conda.sh
           conda activate ../${{ env.envName }}/.venv
           pip install .
-          conda install -c conda-forge ffmpeg
+          # conda install -c conda-forge ffmpeg
           conda clean -a
           pip cache purge
           
@@ -187,13 +187,13 @@ jobs:
           rm -rf ./${{env.envName}}
           rm -rf ./docker
           mkdir docker-image
-          rm -rf /home/runner/.rustup
-          rm -rf /home/runner/actions-runner/cached
+          # rm -rf /home/runner/.rustup
+          # rm -rf /home/runner/actions-runner/cached
           du -d 3 -h -a /home/runner
           df -h ./
           df -h /
           ls -lh ./
-          docker save  ${{env.envName}}:${{ env.version }}-${{ matrix.device }} | zstd -T0 -19 --ultra > ./docker-image/${{env.envName}}-${{ env.version }}-${{ matrix.device }}.docker.tar.zst
+          docker save  ${{env.envName}}:${{ env.version }}-${{ matrix.device }} | gzip > ./docker-image/${{env.envName}}-${{ env.version }}-${{ matrix.device }}.docker.tar.zst
           du -d 3 -h -a /home/runner
           docker image rm ${{env.envName}}:${{ env.version }}-${{ matrix.device }}
       - name: 压缩docker
