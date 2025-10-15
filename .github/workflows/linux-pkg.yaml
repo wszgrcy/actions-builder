@@ -162,7 +162,7 @@ jobs:
           rm -rf ./output
           rm -rf ./funasr
           rm -rf ./indextts
-          du -d 2 -h -a ./
+          du -d 4 -h -a /
       - name: docker build
         run: |
           mkdir docker
@@ -173,9 +173,9 @@ jobs:
           docker image ls
           rm -rf ./${{env.envName}}
           mkdir docker-image
-          du -d 2 -h -a ./
+          du -d 4 -h -a /
           docker save  ${{env.envName}}:${{ env.version }}-${{ matrix.device }} | zstd -T0 -22 --ultra > ./docker-image/${{env.envName}}-${{ env.version }}-${{ matrix.device }}.docker.tar.zst
-          du -d 2 -h -a ./
+          du -d 4 -h -a /
           docker image rm ${{env.envName}}:${{ env.version }}-${{ matrix.device }}
       - name: 压缩docker
         uses: wszgrcy/actions-pkg@1.4.1
