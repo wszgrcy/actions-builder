@@ -105,7 +105,6 @@ jobs:
           pip install huggingface_hub modelscope
           pip install openai-whisper
           pip install cachetools
-          uv cache clean
       - name: install funasr
         working-directory: funasr
         run: |
