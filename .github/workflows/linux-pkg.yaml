@@ -105,6 +105,7 @@ jobs:
           pip install huggingface_hub modelscope
           pip install openai-whisper
           pip install cachetools
+          uv cache clean
       - name: install funasr
         working-directory: funasr
         run: |
@@ -166,7 +167,6 @@ jobs:
           rm -rf ./output
           rm -rf ./funasr
           rm -rf ./indextts
-          rm -rf /home/runner/work/_temp
           sudo rm -rf /usr/lib/jvm
           sudo rm -rf /usr/local/julia1.11.7
           sudo rm -rf /usr/share/az_12.5.0
