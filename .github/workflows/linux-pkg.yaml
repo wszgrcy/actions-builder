@@ -112,6 +112,13 @@ jobs:
           source $CONDA/etc/profile.d/conda.sh
           conda activate ../${{ env.envName }}/.venv
           pip install .
+
+      - name: install self dep
+        working-directory: ${{ env.envName }}
+        run: |
+          source $CONDA/etc/profile.d/conda.sh
+          conda activate ./.venv
+          pip install -r requirements.txt
           conda clean -a
           pip cache purge
 

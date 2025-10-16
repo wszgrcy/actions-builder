@@ -78,4 +78,4 @@ jobs:
           files: "./output/**/*"
           repository: wszgrcy/shenghuabi-repo
           token: ${{secrets.SHB_REPO_UPLOAD}}
-          tag_name: ${{env.PUBLISH_VERSION}}
+          tag_name: ${{env.PUBLISH_VERSION}} 
