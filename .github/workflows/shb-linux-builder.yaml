@@ -8,7 +8,7 @@ on:
 permissions:
   contents: write
 env:
-  PUBLISH_VERSION: '1.103.42'
+  PUBLISH_VERSION: '1.103.43'
   NODE_VERSION: '22.17.0'
   VSCODE_VERSION: '1.103.2'
   ACTIONS_STEP_DEBUG: true
