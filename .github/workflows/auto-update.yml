@@ -5,9 +5,9 @@ on:
     schedule:
         - cron: "0 */4 * * *"
     workflow_dispatch:
-    push:
-        paths:
-            - ".github/workflows/auto-update.yml"
+    # push:
+    #     paths:
+    #         - ".github/workflows/auto-update.yml"
 jobs:
     test:
         timeout-minutes: 10
