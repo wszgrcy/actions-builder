@@ -1,7 +1,8 @@
 name: docker build
 
 on:
-    workflow_dispatch:
+    schedule:
+        - cron: "0 */3 * * *"
 
 jobs:
     main:
@@ -53,7 +54,7 @@ jobs:
                   IMAGE_NAME="ghcr.io/${{github.actor}}/lms:1.0.${{ env.LLAMA_VERSION2 }}"
                   echo "Checking for image: $IMAGE_NAME"
 
-                  if docker manifest inspect "$IMAGE_NAME" > /dev/null 2>&1; then
+                  if docker pull "$IMAGE_NAME" > /dev/null 2>&1; then
                     echo "Image already exists, skipping build."
                     echo "image_exists=true" >> $GITHUB_ENV
                   else
