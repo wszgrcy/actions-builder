@@ -47,8 +47,22 @@ jobs:
               with:
                   images: ${{ github.actor }}/lms
 
+            - name: Check if image already exists
+              id: check_image
+              run: |
+                  IMAGE_NAME="ghcr.io/${{github.actor}}/lms:1.0.${{ env.LLAMA_VERSION2 }}"
+                  echo "Checking for image: $IMAGE_NAME"
+
+                  if docker pull "$IMAGE_NAME" > /dev/null 2>&1; then
+                    echo "Image already exists, skipping build."
+                    echo "image_exists=true" >> $GITHUB_ENV
+                  else
+                    echo "Image does not exist, proceeding with build."
+                    echo "image_exists=false" >> $GITHUB_ENV
+                  fi
             - name: build
               uses: docker/build-push-action@v5
+              if: env.image_exists == 'false'
               with:
                   context: .
                   file: ./dockerfile
