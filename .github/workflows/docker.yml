@@ -17,7 +17,7 @@ jobs:
 
                   echo "LLAMA_VERSION=$VERSION" >> $GITHUB_ENV
                   echo "LLAMA_VERSION2=${VERSION:1}" >> $GITHUB_ENV
-                  echo "LLAMA_VERSION=$VERSION" >> $GITHUB_OUTPUTS
+                  echo "LLAMA_VERSION=$VERSION" >> $GITHUB_OUTPUT
                   echo "Set LLAMA_VERSION=$VERSION"
 
             - name: Display version
