@@ -53,7 +53,7 @@ jobs:
                   context: .
                   file: ./dockerfile
                   push: true
-                  tags: ${{github.actor}}/lms:1.0.${{ env.LLAMA_VERSION2 }}
+                  tags: ghcr.io/${{github.actor}}/lms:1.0.${{ env.LLAMA_VERSION2 }}
                   labels: ${{ steps.meta.outputs.labels }}
                   target: builder
                   build-args: |
