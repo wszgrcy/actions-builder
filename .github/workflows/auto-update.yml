@@ -1,0 +1,29 @@
+name: update
+permissions:
+    contents: read
+on:
+    workflow_dispatch:
+    schedule:
+        - cron: "0 */1 * * *"
+    # push:
+    #     paths:
+    #         - ".github/workflows/auto-update.yml"
+jobs:
+    test:
+        timeout-minutes: 10
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v5
+              with:
+                  repository: "wszgrcy/auto-playwright"
+                  ref: main
+                  token: ${{secrets.AUTO_UPDATE}}
+            - uses: actions/setup-node@v5
+              with:
+                  node-version: lts/*
+            - name: Install dependencies
+              run: npm ci
+            - name: Install Playwright Browsers
+              run: npx playwright install --with-deps
+            - name: Run Playwright tests
+              run: npm test
