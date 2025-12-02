@@ -10,14 +10,12 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: vulkan-version
-              id: get_release
               run: |
                   RELEASE_INFO=$(curl -s https://api.github.com/repos/ggml-org/llama.cpp/releases/latest)
                   VERSION=$(echo $RELEASE_INFO | jq -r '.tag_name')
                   echo "VULKAN_VERSION=$VERSION" >> $GITHUB_ENV
                   echo "Set VULKAN_VERSION=$VERSION"
             - name: rocm-version
-              id: get_release
               run: |
                   RELEASE_INFO=$(curl -s https://api.github.com/repos/lemonade-sdk/llamacpp-rocm/releases/latest)
                   VERSION=$(echo $RELEASE_INFO | jq -r '.tag_name')
