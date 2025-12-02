@@ -9,23 +9,20 @@ jobs:
     main:
         runs-on: ubuntu-latest
         steps:
-            - name: Get latest release version
+            - name: vulkan-version
               id: get_release
               run: |
                   RELEASE_INFO=$(curl -s https://api.github.com/repos/ggml-org/llama.cpp/releases/latest)
-
                   VERSION=$(echo $RELEASE_INFO | jq -r '.tag_name')
-                  echo "Latest version: $VERSION"
-
-                  echo "LLAMA_VERSION=$VERSION" >> $GITHUB_ENV
-                  echo "LLAMA_VERSION2=${VERSION:1}" >> $GITHUB_ENV
-                  echo "LLAMA_VERSION=$VERSION" >> $GITHUB_OUTPUT
-                  echo "Set LLAMA_VERSION=$VERSION"
-
-            - name: Display version
+                  echo "VULKAN_VERSION=$VERSION" >> $GITHUB_ENV
+                  echo "Set VULKAN_VERSION=$VERSION"
+            - name: rocm-version
+              id: get_release
               run: |
-                  echo "LLAMA_VERSION is set to: ${{ env.LLAMA_VERSION }}"
-                  echo "${{steps.get_release.outputs.LLAMA_VERSION}}"
+                  RELEASE_INFO=$(curl -s https://api.github.com/repos/lemonade-sdk/llamacpp-rocm/releases/latest)
+                  VERSION=$(echo $RELEASE_INFO | jq -r '.tag_name')
+                  echo "ROCM_VERSION=$VERSION" >> $GITHUB_ENV
+                  echo "Set ROCM_VERSION=$VERSION"
             - name: Checkout code
               uses: actions/checkout@v5
               with:
@@ -52,7 +49,7 @@ jobs:
             - name: Check if image already exists
               id: check_image
               run: |
-                  IMAGE_NAME="ghcr.io/${{github.actor}}/lms:1.0.${{ env.LLAMA_VERSION2 }}"
+                  IMAGE_NAME="ghcr.io/${{github.actor}}/lms:${{ env.VULKAN_VERSION2 }}"
                   echo "Checking for image: $IMAGE_NAME"
 
                   if docker pull "$IMAGE_NAME" > /dev/null 2>&1; then
@@ -62,6 +59,19 @@ jobs:
                     echo "Image does not exist, proceeding with build."
                     echo "image_exists=false" >> $GITHUB_ENV
                   fi
+            - name: Check if image already exists
+              id: check_image
+              run: |
+                  IMAGE_NAME="ghcr.io/${{github.actor}}/lms-rocm:${{ env.VULKAN_VERSION }}-${{ env.ROCM_VERSION }}"
+                  echo "Checking for image: $IMAGE_NAME"
+
+                  if docker pull "$IMAGE_NAME" > /dev/null 2>&1; then
+                    echo "Image already exists, skipping build."
+                    echo "rocm_image_exists=true" >> $GITHUB_ENV
+                  else
+                    echo "Image does not exist, proceeding with build."
+                    echo "rocm_image_exists=false" >> $GITHUB_ENV
+                  fi
             - name: build
               uses: docker/build-push-action@v5
               if: env.image_exists == 'false'
@@ -69,9 +79,23 @@ jobs:
                   context: .
                   file: ./dockerfile
                   push: true
-                  tags: ghcr.io/${{github.actor}}/lms:1.0.${{ env.LLAMA_VERSION2 }}
+                  tags: ghcr.io/${{github.actor}}/lms:${{ env.VULKAN_VERSION }}
                   labels: ${{ steps.meta.outputs.labels }}
                   target: builder
                   build-args: |
-                      LLAMA_VERSION=${{ env.LLAMA_VERSION }}
+                      VULKAN_VERSION=${{ env.VULKAN_VERSION }}
+                      LLAMA_SWAP_VERSION=173
+            - name: build
+              uses: docker/build-push-action@v5
+              if: env.rocm_image_exists == 'false'
+              with:
+                  context: .
+                  file: ./dockerfile
+                  push: true
+                  tags: ghcr.io/${{github.actor}}/lms-rocm:${{ env.VULKAN_VERSION }}-${{ env.ROCM_VERSION }}
+                  labels: ${{ steps.meta.outputs.labels }}
+                  target: builder
+                  build-args: |
+                      VULKAN_VERSION=${{ env.VULKAN_VERSION }}
+                      ROCM_VERSION=${{ env.ROCM_VERSION }}
                       LLAMA_SWAP_VERSION=173
