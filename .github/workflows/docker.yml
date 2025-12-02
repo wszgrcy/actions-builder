@@ -45,7 +45,6 @@ jobs:
                   images: ${{ github.actor }}/lms
 
             - name: Check if image already exists
-              id: check_image
               run: |
                   IMAGE_NAME="ghcr.io/${{github.actor}}/lms:${{ env.VULKAN_VERSION2 }}"
                   echo "Checking for image: $IMAGE_NAME"
@@ -58,7 +57,6 @@ jobs:
                     echo "image_exists=false" >> $GITHUB_ENV
                   fi
             - name: Check if image already exists
-              id: check_image
               run: |
                   IMAGE_NAME="ghcr.io/${{github.actor}}/lms-rocm:${{ env.VULKAN_VERSION }}-${{ env.ROCM_VERSION }}"
                   echo "Checking for image: $IMAGE_NAME"
