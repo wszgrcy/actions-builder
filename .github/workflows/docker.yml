@@ -52,7 +52,7 @@ jobs:
 
       - name: Check if image already exists
         run: |
-          IMAGE_NAME="ghcr.io/${{github.actor}}/lms:${{ env.VULKAN_VERSION2 }}"
+          IMAGE_NAME="ghcr.io/${{github.actor}}/lms:${{ env.VULKAN_VERSION }}-${{inputs.mVersion}}"
           echo "Checking for image: $IMAGE_NAME"
 
           if docker pull "$IMAGE_NAME" > /dev/null 2>&1; then
@@ -64,7 +64,7 @@ jobs:
           fi
       - name: Check if image already exists
         run: |
-          IMAGE_NAME="ghcr.io/${{github.actor}}/lms-rocm:${{ env.VULKAN_VERSION }}-${{ env.ROCM_VERSION }}"
+          IMAGE_NAME="ghcr.io/${{github.actor}}/lms-rocm:${{ env.VULKAN_VERSION }}-${{ env.ROCM_VERSION }}-${{inputs.mVersion}}"
           echo "Checking for image: $IMAGE_NAME"
 
           if docker pull "$IMAGE_NAME" > /dev/null 2>&1; then
