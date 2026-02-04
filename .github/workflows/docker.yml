@@ -80,7 +80,7 @@ jobs:
                   target: builder
                   build-args: |
                       VULKAN_VERSION=${{ env.VULKAN_VERSION }}
-                      LLAMA_SWAP_VERSION=177
+                      LLAMA_SWAP_VERSION=189
             - name: build
               uses: docker/build-push-action@v5
               if: env.rocm_image_exists == 'false'
