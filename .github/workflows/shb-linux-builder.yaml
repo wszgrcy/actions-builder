@@ -8,7 +8,7 @@ on:
 permissions:
   contents: write
 env:
-  PUBLISH_VERSION: '1.103.47'
+  PUBLISH_VERSION: '1.103.48'
   NODE_VERSION: '22.17.0'
   VSCODE_VERSION: '1.103.2'
   ACTIONS_STEP_DEBUG: true
@@ -35,7 +35,7 @@ jobs:
           tags: tag:ci
           authkey: ${{secrets.TS_KEY}}
           args: ${{secrets.TS_ADD_ARGS}}
-          hostname: github-ci-${{env.__platform}}-${{env.__arch}}
+          hostname: github-shb-ci-${{env.__platform}}-${{env.__arch}}
 
       - name: shenghuabi
         uses: actions/checkout@v4
