@@ -33,7 +33,7 @@ jobs:
           authkey: ${{secrets.TS_KEY}}
           args: ${{secrets.TS_ADD_ARGS}}
           hostname: github-shb-ci-${{env.__platform}}-${{env.__arch}}
-          ping: lan-server.chloc
+          ping: lan-server.chloc 
 
       - name: shenghuabi
         uses: actions/checkout@v4
