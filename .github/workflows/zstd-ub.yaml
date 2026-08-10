@@ -1,0 +1,33 @@
+name: zstd-ub-test
+run-name: zstd-ub-test
+on: [push]
+permissions:
+  contents: write
+env:
+  RUNNER_DEBUG: '1'
+jobs:
+  update-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: pull-code
+        uses: actions/checkout@v4
+        with:
+          repository: 'index-tts/index-tts'
+      - run: |
+          which zstd
+          type zstd
+          type sudo
+      - uses: wszgrcy/actions-pkg@1.1.4
+        with:
+          dir: '.'
+          outputPath: ./abcd.tar.zstd
+          cleanPaths: |
+            **/*.py
+
+      - run: |
+          ls
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: abcd.tar.zstd
+          tag_name: 1.0.2

@@ -1,0 +1,46 @@
+name: name名字
+run-name: py-env
+on: [push]
+permissions:
+  contents: write
+env:
+  RUNNER_DEBUG: '1'
+jobs:
+  update-release:
+    runs-on: windows-latest
+    steps:
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          activate-environment: whatever
+      - name: pull-code
+        uses: actions/checkout@v4
+        with:
+          repository: 'index-tts/index-tts'
+      - run: |
+          conda create -p ../tts-env/.venv python=3.10
+          conda activate ../tts-env/.venv
+          conda install -c conda-forge ffmpeg
+          conda install -c conda-forge pynini==2.1.6
+          pip install WeTextProcessing --no-deps
+          pip install .
+          pip install bottle
+      - uses: wszgrcy/actions-pkg@1.0.27
+        with:
+          dir: '../tts-env'
+          outputPath: ./py-env.tar.zstd
+          cleanPaths: |
+            ./.venv/**/*.{h,cpp,c,hpp,cmake}
+            ./.venv/conda-meta/**/*
+            ./.venv/etc/conda/**/*
+            ./.venv/Library/cmake
+            ./.venv/Library/include
+            ./.venv/Library/etc
+            ./.venv/fonts
+            ./.venv/include
+            ./.venv/etc
+          zstdLevel: '22'
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: py-env.tar.zstd
+          tag_name: 1.0.1
