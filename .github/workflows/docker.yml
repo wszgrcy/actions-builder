@@ -101,4 +101,4 @@ jobs:
             VULKAN_VERSION=${{ env.VULKAN_VERSION }}
             ROCM_VERSION=${{ env.ROCM_VERSION }}
             LLAMA_SWAP_VERSION=249
-            SH_VERSION=v0.6.3-alpha1
+            SH_VERSION=v0.6.3-beta2
