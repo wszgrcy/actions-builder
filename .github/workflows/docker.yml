@@ -27,6 +27,19 @@ jobs:
           VERSION=$(echo $RELEASE_INFO | jq -r '.tag_name')
           echo "ROCM_VERSION=$VERSION" >> $GITHUB_ENV
           echo "Set ROCM_VERSION=$VERSION"
+
+      # 新增：获取 strix-halo 版本，仅当以 v 开头时保存
+      - name: strix-version
+        run: |
+          RELEASE_INFO=$(curl -s https://api.github.com/repos/Nathanw1014/strix-halo-llamacpp/releases/latest)
+          VERSION=$(echo $RELEASE_INFO | jq -r '.tag_name')
+          if [[ "$VERSION" == v* ]]; then
+            echo "SH_VERSION=$VERSION" >> $GITHUB_ENV
+            echo "Set SH_VERSION=$VERSION"
+          else
+            echo "Version $VERSION does not start with 'v', skipping"
+          fi
+
       - name: Checkout code
         uses: actions/checkout@v5
         with:
@@ -50,11 +63,10 @@ jobs:
         with:
           images: ${{ github.actor }}/lms
 
-      - name: Check if image already exists
+      - name: Check if image already exists (vulkan)
         run: |
           IMAGE_NAME="ghcr.io/${{github.actor}}/lms:${{ env.VULKAN_VERSION }}-${{inputs.mVersion}}"
           echo "Checking for image: $IMAGE_NAME"
-
           if docker pull "$IMAGE_NAME" > /dev/null 2>&1; then
             echo "Image already exists, skipping build."
             echo "image_exists=true" >> $GITHUB_ENV
@@ -62,11 +74,12 @@ jobs:
             echo "Image does not exist, proceeding with build."
             echo "image_exists=false" >> $GITHUB_ENV
           fi
-      - name: Check if image already exists
-        run: |
-          IMAGE_NAME="ghcr.io/${{github.actor}}/lms-rocm:${{ env.VULKAN_VERSION }}-${{ env.ROCM_VERSION }}-${{inputs.mVersion}}"
-          echo "Checking for image: $IMAGE_NAME"
 
+      # ===== 修改：rocm 镜像检查中加入 SH_VERSION =====
+      - name: Check if image already exists (rocm)
+        run: |
+          IMAGE_NAME="ghcr.io/${{github.actor}}/lms-rocm:${{ env.VULKAN_VERSION }}-${{ env.ROCM_VERSION }}-${{ env.SH_VERSION }}-${{inputs.mVersion}}"
+          echo "Checking for image: $IMAGE_NAME"
           if docker pull "$IMAGE_NAME" > /dev/null 2>&1; then
             echo "Image already exists, skipping build."
             echo "rocm_image_exists=true" >> $GITHUB_ENV
@@ -74,7 +87,8 @@ jobs:
             echo "Image does not exist, proceeding with build."
             echo "rocm_image_exists=false" >> $GITHUB_ENV
           fi
-      - name: build
+
+      - name: build (vulkan)
         uses: docker/build-push-action@v5
         if: env.image_exists == 'false'|| inputs.mVersion != '0'
         with:
@@ -87,18 +101,20 @@ jobs:
           build-args: |
             VULKAN_VERSION=${{ env.VULKAN_VERSION }}
             LLAMA_SWAP_VERSION=250
-      - name: build
+
+      # ===== 修改：rocm 镜像标签中也加入 SH_VERSION =====
+      - name: build (rocm)
         uses: docker/build-push-action@v5
         if: env.rocm_image_exists == 'false'|| inputs.mVersion != '0'
         with:
           context: .
           file: ./dockerfile.rocm1151
           push: true
-          tags: ghcr.io/${{github.actor}}/lms-rocm:${{ env.VULKAN_VERSION }}-${{ env.ROCM_VERSION }}-${{inputs.mVersion}}
+          tags: ghcr.io/${{github.actor}}/lms-rocm:${{ env.VULKAN_VERSION }}-${{ env.ROCM_VERSION }}-${{ env.SH_VERSION }}-${{inputs.mVersion}}
           labels: ${{ steps.meta.outputs.labels }}
           target: builder
           build-args: |
             VULKAN_VERSION=${{ env.VULKAN_VERSION }}
             ROCM_VERSION=${{ env.ROCM_VERSION }}
             LLAMA_SWAP_VERSION=250
-            SH_VERSION=v0.6.8
+            SH_VERSION=${{ env.SH_VERSION }}
