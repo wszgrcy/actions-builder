@@ -15,45 +15,58 @@ jobs:
   main:
     runs-on: ubuntu-latest
     steps:
+      # ---------- 获取 vulkan 版本（要求以 b 开头） ----------
       - name: vulkan-version
         run: |
-          RELEASE_INFO=$(curl -s https://api.github.com/repos/ggml-org/llama.cpp/releases/latest)
-          VERSION=$(echo $RELEASE_INFO | jq -r '.tag_name')
-          if [[ "$VERSION" == b* ]]; then
+          # 取最近 10 个 release，过滤 tag_name 以 b 开头的版本，取第一个
+          RELEASES=$(curl -s "https://api.github.com/repos/ggml-org/llama.cpp/releases?per_page=10")
+          VERSION=$(echo "$RELEASES" | jq -r '.[] | select(.tag_name | startswith("b")) | .tag_name' | head -n 1)
+          if [ -n "$VERSION" ]; then
             echo "VULKAN_VERSION=$VERSION" >> $GITHUB_ENV
             echo "Set VULKAN_VERSION=$VERSION"
           else
-            echo "Version $VERSION does not start with 'b', skipping"
+            echo "No version starting with 'b' found in recent 10 releases, skipping"
           fi
+
+      # ---------- 获取 rocm 版本（无前缀限制，直接取最新） ----------
       - name: rocm-version
         run: |
-          RELEASE_INFO=$(curl -s https://api.github.com/repos/lemonade-sdk/llamacpp-rocm/releases/latest)
-          VERSION=$(echo $RELEASE_INFO | jq -r '.tag_name')
-          echo "ROCM_VERSION=$VERSION" >> $GITHUB_ENV
-          echo "Set ROCM_VERSION=$VERSION"
+          # 取最近 10 个，取第一个（最新）
+          RELEASES=$(curl -s "https://api.github.com/repos/lemonade-sdk/llamacpp-rocm/releases?per_page=10")
+          VERSION=$(echo "$RELEASES" | jq -r '.[0].tag_name')
+          if [ -n "$VERSION" ] && [ "$VERSION" != "null" ]; then
+            echo "ROCM_VERSION=$VERSION" >> $GITHUB_ENV
+            echo "Set ROCM_VERSION=$VERSION"
+          else
+            echo "No release found, skipping"
+          fi
 
-      # 新增：获取 strix-halo 版本，仅当以 v 开头时保存
+      # ---------- 获取 strix-halo 版本（要求以 v 开头） ----------
       - name: strix-version
         run: |
-          RELEASE_INFO=$(curl -s https://api.github.com/repos/Nathanw1014/strix-halo-llamacpp/releases/latest)
-          VERSION=$(echo $RELEASE_INFO | jq -r '.tag_name')
-          if [[ "$VERSION" == v* ]]; then
+          # 取最近 10 个 release，过滤 tag_name 以 v 开头的版本，取第一个
+          RELEASES=$(curl -s "https://api.github.com/repos/Nathanw1014/strix-halo-llamacpp/releases?per_page=10")
+          VERSION=$(echo "$RELEASES" | jq -r '.[] | select(.tag_name | startswith("v")) | .tag_name' | head -n 1)
+          if [ -n "$VERSION" ]; then
             echo "SH_VERSION=$VERSION" >> $GITHUB_ENV
             echo "Set SH_VERSION=$VERSION"
           else
-            echo "Version $VERSION does not start with 'v', skipping"
+            echo "No version starting with 'v' found in recent 10 releases, skipping"
           fi
 
+      # ---------- 检出仓库代码 ----------
       - name: Checkout code
         uses: actions/checkout@v5
         with:
           repository: "wszgrcy/llamacpp-docker"
           ref: main
-          token: ${{secrets.DOCKER_REPO}}
+          token: ${{ secrets.DOCKER_REPO }}
 
+      # ---------- 设置 Docker Buildx ----------
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      # ---------- 登录 GitHub Container Registry ----------
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
@@ -61,12 +74,14 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
+      # ---------- 生成元数据（标签） ----------
       - name: metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: ${{ github.actor }}/lms
 
+      # ---------- 检查 vulkan 镜像是否已存在 ----------
       - name: Check if image already exists (vulkan)
         run: |
           IMAGE_NAME="ghcr.io/${{github.actor}}/lms:${{ env.VULKAN_VERSION }}-${{inputs.mVersion}}"
@@ -79,7 +94,7 @@ jobs:
             echo "image_exists=false" >> $GITHUB_ENV
           fi
 
-      # ===== 修改：rocm 镜像检查中加入 SH_VERSION =====
+      # ---------- 检查 rocm 镜像是否已存在（标签包含 SH_VERSION） ----------
       - name: Check if image already exists (rocm)
         run: |
           IMAGE_NAME="ghcr.io/${{github.actor}}/lms-rocm:${{ env.VULKAN_VERSION }}-${{ env.ROCM_VERSION }}-${{ env.SH_VERSION }}-${{inputs.mVersion}}"
@@ -92,9 +107,10 @@ jobs:
             echo "rocm_image_exists=false" >> $GITHUB_ENV
           fi
 
+      # ---------- 构建并推送 vulkan 镜像 ----------
       - name: build (vulkan)
         uses: docker/build-push-action@v5
-        if: env.image_exists == 'false'|| inputs.mVersion != '0'
+        if: env.image_exists == 'false' || inputs.mVersion != '0'
         with:
           context: .
           file: ./dockerfile
@@ -106,10 +122,10 @@ jobs:
             VULKAN_VERSION=${{ env.VULKAN_VERSION }}
             LLAMA_SWAP_VERSION=250
 
-      # ===== 修改：rocm 镜像标签中也加入 SH_VERSION =====
+      # ---------- 构建并推送 rocm 镜像（标签包含 SH_VERSION） ----------
       - name: build (rocm)
         uses: docker/build-push-action@v5
-        if: env.rocm_image_exists == 'false'|| inputs.mVersion != '0'
+        if: env.rocm_image_exists == 'false' || inputs.mVersion != '0'
         with:
           context: .
           file: ./dockerfile.rocm1151
