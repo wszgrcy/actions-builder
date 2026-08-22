@@ -19,8 +19,12 @@ jobs:
         run: |
           RELEASE_INFO=$(curl -s https://api.github.com/repos/ggml-org/llama.cpp/releases/latest)
           VERSION=$(echo $RELEASE_INFO | jq -r '.tag_name')
-          echo "VULKAN_VERSION=$VERSION" >> $GITHUB_ENV
-          echo "Set VULKAN_VERSION=$VERSION"
+          if [[ "$VERSION" == b* ]]; then
+            echo "VULKAN_VERSION=$VERSION" >> $GITHUB_ENV
+            echo "Set VULKAN_VERSION=$VERSION"
+          else
+            echo "Version $VERSION does not start with 'b', skipping"
+          fi
       - name: rocm-version
         run: |
           RELEASE_INFO=$(curl -s https://api.github.com/repos/lemonade-sdk/llamacpp-rocm/releases/latest)
