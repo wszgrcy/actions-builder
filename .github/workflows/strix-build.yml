@@ -47,6 +47,6 @@ jobs:
           tag_name: ${{ steps.version.outputs.version }}
           files: strix-llama.cpp-${{ steps.version.outputs.version }}.tar.gz
       - name: Call reusable workflow
-        uses: ./.github/workflows/reusable.yml  # 调用本地工作流
+        uses: ./.github/workflows/docker.yml  # 调用本地工作流
         with:
           mVersion: ${{ steps.version.outputs.version }}
