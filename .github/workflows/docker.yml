@@ -10,7 +10,13 @@ on:
         type: string
   schedule:
     - cron: "0 */3 * * *"
-
+  workflow_call:
+    inputs:
+      mVersion:
+        description: "构建用"
+        required: false
+        default: "0"
+        type: string
 jobs:
   main:
     runs-on: ubuntu-latest

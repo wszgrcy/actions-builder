@@ -1,0 +1,48 @@
+name: Build Strix
+
+on:
+  push:
+    branches: [ main ]
+  schedule:
+    - cron: '0 */3 * * *'      # 每3小时运行一次（UTC 整点）
+  workflow_dispatch:           # 保留手动触发
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Compute version from commit count
+        id: version
+        run: echo "version=v0.0.$(git rev-list --count HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Install Vulkan dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y cmake build-essential libvulkan-dev
+
+      - name: Configure Vulkan build
+        run: cmake -B build -DGGML_VULKAN=ON -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build build --config Release -j $(nproc)
+
+      - name: Package binaries
+        run: tar -czf strix-llama.cpp-${{ steps.version.outputs.version }}.tar.gz -C build/bin .
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          files: strix-llama.cpp-${{ steps.version.outputs.version }}.tar.gz
+      - name: Call reusable workflow
+        uses: ./.github/workflows/reusable.yml  # 调用本地工作流
+        with:
+          mVersion: ${{ steps.version.outputs.version }}
