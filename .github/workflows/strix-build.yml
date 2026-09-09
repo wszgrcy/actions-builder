@@ -19,7 +19,10 @@ jobs:
         with:
           fetch-depth: 0
           repository: 'halo-box/strix-llama.cpp'
-
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-13 g++-13 cmake make glslc libvulkan-dev spirv-headers
       - name: Compute version from commit count
         id: version
         run: echo "version=v0.0.$(git rev-list --count HEAD)" >> $GITHUB_OUTPUT
