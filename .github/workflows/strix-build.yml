@@ -50,7 +50,7 @@ jobs:
         uses: actions/checkout@v7
         with:
           path: builder
-      - run:
+      - run: |
           ls -lh
           ls -lh ./builder
       - name: Call reusable workflow
