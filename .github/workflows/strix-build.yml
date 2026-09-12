@@ -50,6 +50,9 @@ jobs:
         uses: actions/checkout@v7
         with:
           path: builder
+      - run:
+          ls -lh
+          ls -lh ./builder
       - name: Call reusable workflow
         uses: ./builder/.github/workflows/docker.yml
         with:
