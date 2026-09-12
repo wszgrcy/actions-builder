@@ -2,10 +2,10 @@ name: Build Strix
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   schedule:
-    - cron: '0 */3 * * *'      # 每3小时运行一次（UTC 整点）
-  workflow_dispatch:           # 保留手动触发
+    - cron: '0 */3 * * *' # 每3小时运行一次（UTC 整点）
+  workflow_dispatch: # 保留手动触发
 
 permissions:
   contents: write
@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
           repository: 'halo-box/strix-llama.cpp'
@@ -46,7 +46,11 @@ jobs:
         with:
           tag_name: ${{ steps.version.outputs.version }}
           files: strix-llama.cpp-${{ steps.version.outputs.version }}.tar.gz
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          path: builder
       - name: Call reusable workflow
-        uses: ./.github/workflows/docker.yml  # 调用本地工作流
+        uses: ./builder/.github/workflows/docker.yml
         with:
           mVersion: ${{ steps.version.outputs.version }}
