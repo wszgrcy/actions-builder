@@ -4,8 +4,8 @@ on:
   push:
     branches: [main]
   schedule:
-    - cron: '0 */3 * * *' # 每3小时运行一次（UTC 整点）
-  workflow_dispatch: # 保留手动触发
+    - cron: '0 */3 * * *'   # 每3小时运行一次（UTC 整点）
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -13,6 +13,8 @@ permissions:
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -46,14 +48,10 @@ jobs:
         with:
           tag_name: ${{ steps.version.outputs.version }}
           files: strix-llama.cpp-${{ steps.version.outputs.version }}.tar.gz
-      - name: Checkout code
-        uses: actions/checkout@v7
-        with:
-          path: builder
-      - run: |
-          ls -lh
-          ls -lh ./builder
-      - name: Call reusable workflow
-        uses: ./builder/.github/workflows/docker.yml
-        with:
-          mVersion: ${{ steps.version.outputs.version }}
+
+  # 调用可重用工作流：必须是独立 job，不能写在 steps 里
+  call-docker:
+    needs: build-and-release
+    uses: ./.github/workflows/docker.yml
+    with:
+      mVersion: ${{ needs.build-and-release.outputs.version }}
