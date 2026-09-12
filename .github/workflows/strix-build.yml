@@ -55,3 +55,4 @@ jobs:
     uses: ./.github/workflows/docker.yml
     with:
       mVersion: ${{ needs.build-and-release.outputs.version }}
+    secrets: inherit  
