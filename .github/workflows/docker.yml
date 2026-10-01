@@ -140,7 +140,7 @@ jobs:
           target: builder
           build-args: |
             VULKAN_VERSION=${{ env.VULKAN_VERSION }}
-            LLAMA_SWAP_VERSION=255
+            LLAMA_SWAP_VERSION=261
 
       # ---------- 构建并推送 rocm 镜像（标签包含 SH_VERSION） ----------
       - name: build (rocm)
@@ -156,6 +156,6 @@ jobs:
           build-args: |
             VULKAN_VERSION=${{ env.VULKAN_VERSION }}
             ROCM_VERSION=${{ env.ROCM_VERSION }}
-            LLAMA_SWAP_VERSION=255
+            LLAMA_SWAP_VERSION=261
             SH_VERSION=${{ env.SH_VERSION }}
             STRI_LLAMA=${{ env.STRI_LLAMA }}
