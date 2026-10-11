@@ -156,6 +156,6 @@ jobs:
           build-args: |
             VULKAN_VERSION=${{ env.VULKAN_VERSION }}
             ROCM_VERSION=${{ env.ROCM_VERSION }}
-            LLAMA_SWAP_VERSION=2262
+            LLAMA_SWAP_VERSION=263
             SH_VERSION=${{ env.SH_VERSION }}
             STRI_LLAMA=${{ env.STRI_LLAMA }}
